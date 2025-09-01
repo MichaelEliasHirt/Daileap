@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=4 uid="uid://dnmnvsv4ug34w"]
+
+[ext_resource type="Script" uid="uid://65gcglg46dtd" path="res://Game/level_chunk_res.gd" id="1_3t4oe"]
+
+[resource]
+resource_name = "TestLevel1"
+script = ExtResource("1_3t4oe")
+mainground_tile_map_data = PackedByteArray("AAAAAAMAAAABAAEAAAAAAAIAAAABAAEAAAABAAIAAAABAAEAAAACAAEAAAABAAEAAAADAAEAAAABAAEAAAAEAAAAAAABAAEAAAAEAAEAAAABAAEAAAAEAAIAAAABAAEAAAAEAAMAAAABAAEAAAAEAAQAAAABAAEAAAAEAAUAAAABAAEAAAAEAAYAAAABAAEAAAAEAAcAAAABAAEAAAAEAAgAAAABAAEAAAAEAAkAAAABAAEAAAAEAAoAAAABAAEAAAAEAAsAAAABAAEAAAAEAAwAAAABAAEAAAAEAA0AAAABAAEAAAAFAA4AAAABAAEAAAA=")
+background_tile_map_data = PackedByteArray()
