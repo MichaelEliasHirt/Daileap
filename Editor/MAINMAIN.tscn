@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://bt7ywqr6vm2e0"]
+
+[ext_resource type="Script" uid="uid://c5fmvfjsvbqop" path="res://Editor/mainmain.gd" id="1_wasmj"]
+[ext_resource type="PackedScene" uid="uid://vbr7dj3lqc26" path="res://Main/main.tscn" id="2_qtai0"]
+[ext_resource type="PackedScene" uid="uid://ijd8340qnv2b" path="res://Editor/EditorMain.tscn" id="3_hv4je"]
+
+[node name="Mainmain" type="Node"]
+script = ExtResource("1_wasmj")
+GameMain = ExtResource("2_qtai0")
+EditorMain = ExtResource("3_hv4je")
+LaunchinEditor = true

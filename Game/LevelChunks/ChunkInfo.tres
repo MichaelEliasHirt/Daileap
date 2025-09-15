@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ChunkInfo" load_steps=2 format=3 uid="uid://b25ppso5r1lnf"]
+
+[ext_resource type="Script" uid="uid://dppmi8fgjj6wr" path="res://Game/level_chunk_info_res.gd" id="1_qhanp"]
+
+[resource]
+script = ExtResource("1_qhanp")
+count = -1
+name = Array[String]([])
+valid = Array[bool]([])
+width = Array[int]([])
+entrances = Array[int]([])
+exits = Array[int]([])
+metadata/_custom_type_script = "uid://dppmi8fgjj6wr"

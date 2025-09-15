@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dhmydjq0v5nse"]
+
+[node name="Test" type="Node2D"]
+
+[node name="Window" type="Window" parent="."]
+title = "lol"
+initial_position = 1
+
+[node name="ColorRect" type="ColorRect" parent="Window"]
+offset_right = 40.0
+offset_bottom = 40.0
