@@ -5,10 +5,6 @@
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ps1nv"]
 texture = ExtResource("1_ytky5")
 0:0/0 = 0
-0:0/0/terrain_set = 0
-0:0/0/terrain = 0
-0:0/0/terrains_peering_bit/bottom_side = 0
-0:0/0/terrains_peering_bit/top_side = 0
 1:0/0 = 0
 1:0/0/probability = 0.5
 2:0/0 = 0
