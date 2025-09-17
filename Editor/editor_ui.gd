@@ -53,6 +53,11 @@ func _ready() -> void:
 	
 	_connect_methods()
 	
+
+
+
+	
+	
 	
 
 

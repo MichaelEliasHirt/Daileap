@@ -1,20 +1,66 @@
-[gd_scene load_steps=15 format=4 uid="uid://ijd8340qnv2b"]
+[gd_scene load_steps=30 format=3 uid="uid://ijd8340qnv2b"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://Editor/editor_main.gd" id="1_0by7s"]
 [ext_resource type="TileSet" uid="uid://dqltvs87wbfs5" path="res://Game/mainground_tileset.tres" id="2_byuek"]
 [ext_resource type="Script" uid="uid://dsug7thwo4kis" path="res://Editor/editor_ui.gd" id="2_klsmt"]
 [ext_resource type="TileSet" uid="uid://bpnly4l6tgk65" path="res://Game/background_tileset.tres" id="3_52hkk"]
 [ext_resource type="Texture2D" uid="uid://ba34v2ynk1h80" path="res://assets/editor/Auto_Btn1.png" id="4_52hkk"]
+[ext_resource type="Script" uid="uid://beo7f7dw48ml2" path="res://Editor/fit_to_screen.gd" id="4_eaaeh"]
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://Editor/tile_maps.gd" id="5_nn3ui"]
 [ext_resource type="Texture2D" uid="uid://dm4wfaodwfrpf" path="res://assets/editor/Auto_Btn2.png" id="5_rtp05"]
-[ext_resource type="Script" uid="uid://21tfruwnnvmv" path="res://Game/camera_2d.gd" id="7_klsmt"]
+[ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://Editor/GridHighlight.gdshader" id="6_2cvn4"]
+[ext_resource type="Texture2D" uid="uid://3e78ed4d1f6w" path="res://assets/editor/Slider_Handel.png" id="6_nn3ui"]
+[ext_resource type="Texture2D" uid="uid://da4xfrwaaeibf" path="res://assets/editor/Border.png" id="6_oqyr1"]
+[ext_resource type="Texture2D" uid="uid://bor1ow4b41bcp" path="res://assets/editor/Settings.png" id="6_pvq6k"]
+[ext_resource type="Script" uid="uid://bdcns3upjw801" path="res://Editor/debug_info_label.gd" id="8_xhi6p"]
+[ext_resource type="Texture2D" uid="uid://dn7jc2lk8g75q" path="res://assets/editor/Slider_Bar.png" id="9_6jueb"]
 
-[sub_resource type="Gradient" id="Gradient_rtp05"]
-colors = PackedColorArray(1, 0.392157, 0.392157, 1, 1, 1, 1, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2cvn4"]
+shader = ExtResource("6_2cvn4")
+shader_parameter/grid_size = 16.0
+shader_parameter/line_thickness = 0.5
+shader_parameter/line_color = Color(0.8, 0.8, 0.8, 1)
+shader_parameter/mouse_position = Vector2(0, 0)
+shader_parameter/mouse_offset = Vector2(-8, 0)
+shader_parameter/grid_offset = Vector2(0, 8)
+shader_parameter/fade_radius = 50.0
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_klsmt"]
-gradient = SubResource("Gradient_rtp05")
-fill_to = Vector2(0, 0)
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jueb"]
+atlas = ExtResource("6_pvq6k")
+region = Rect2(0, 0, 20, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xhi6p"]
+atlas = ExtResource("6_pvq6k")
+region = Rect2(20, 0, 20, 20)
+
+[sub_resource type="LabelSettings" id="LabelSettings_eaaeh"]
+font_size = 10
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.3137255)
+
+[sub_resource type="Theme" id="Theme_klsmt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nn3ui"]
+atlas = ExtResource("6_nn3ui")
+region = Rect2(0, 0, 25, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pvq6k"]
+load_path = "res://.godot/imported/Slider_Handel.png-22b72bb0a70b11211a86d0fa26011c64.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqyr1"]
+atlas = SubResource("CompressedTexture2D_pvq6k")
+region = Rect2(25, 0, 25, 40)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqyr1"]
+texture = ExtResource("9_6jueb")
+texture_margin_right = 15.0
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jueb"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xhi6p"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klsmt"]
 bg_color = Color(0.92102, 0.39285, 0.570104, 1)
@@ -40,21 +86,19 @@ MaingroundTileset = ExtResource("2_byuek")
 BackgroundTileset = ExtResource("3_52hkk")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(104, 432)
-offset = Vector2(0, -50)
+offset = Vector2(129, 0)
 zoom = Vector2(2, 2)
-limit_left = 0
-limit_right = 208
+limit_enabled = false
 position_smoothing_speed = 3.0
-script = ExtResource("7_klsmt")
 
 [node name="BehindMap" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="TextureRect" type="TextureRect" parent="BehindMap"]
-offset_right = 416.0
-offset_bottom = 740.0
-texture = SubResource("GradientTexture2D_klsmt")
+[node name="BackgroundColor" type="ColorRect" parent="BehindMap"]
+offset_right = 500.0
+offset_bottom = 700.0
+color = Color(0.39607844, 0.32941177, 0.39607844, 1)
+script = ExtResource("4_eaaeh")
 
 [node name="TileMaps" type="Node2D" parent="."]
 unique_name_in_owner = true
@@ -63,7 +107,6 @@ script = ExtResource("5_nn3ui")
 
 [node name="Mainground" type="TileMapLayer" parent="TileMaps"]
 unique_name_in_owner = true
-tile_map_data = PackedByteArray("AAALABkAAQAEAAEAAAALABoAAQAEAAEAAAAKABoAAQAEAAEAAAAJABoAAQAEAAEAAAAIABoAAQAEAAEAAAAIABkAAQAEAAEAAAAIABgAAQAEAAEAAAAIABcAAQAEAAEAAAAIABYAAQAEAAEAAAAIABUAAQAEAAEAAAAJABQAAQAEAAEAAAAKABQAAQAEAAEAAAAKABMAAQAEAAEAAAALABMAAQAEAAEAAAAMABMAAQAEAAEAAAANABMAAQAEAAEAAAAOABMAAQAEAAEAAAAPABMAAQAEAAEAAAAQABMAAQAEAAEAAAARABQAAQAEAAEAAAASABQAAQAEAAEAAAASABUAAQAEAAEAAAATABYAAQAEAAEAAAATABcAAQAEAAEAAAATABgAAQAEAAEAAAATABkAAQAEAAEAAAATABoAAQAEAAEAAAASABsAAQAEAAEAAAASABwAAQAEAAEAAAASAB0AAQAEAAEAAAARAB4AAQAEAAEAAAAQAB8AAQAEAAEAAAAPAB8AAQAEAAEAAAAOAB8AAQAEAAEAAAANACAAAQAEAAEAAAAMACAAAQAEAAEAAAAMAB8AAQAEAAEAAAALAB4AAQAEAAEAAAAKAB4AAQAEAAEAAAAKAB0AAQAEAAEAAAAJABwAAQAEAAEAAAAJABsAAQAEAAEAAAAIABQAAQAEAAEAAAAIABMAAQAEAAEAAAAIABIAAQAEAAEAAAAJABIAAQAEAAEAAAAKABIAAQAEAAEAAAALABEAAQAEAAEAAAAMABEAAQAEAAEAAAANABEAAQAEAAEAAAAOABEAAQAEAAEAAAAPABEAAQAEAAEAAAAQABEAAQAEAAEAAAARABEAAQAEAAEAAAASABEAAQAEAAEAAAATABEAAQAEAAEAAAAUABEAAQAEAAEAAAAVABEAAQAEAAEAAAAWABEAAQAEAAEAAAAWABAAAQAEAAEAAAAVABAAAQAEAAEAAAAUAA8AAQAEAAEAAAATAA8AAQAEAAEAAAASAA4AAQAEAAEAAAARAA4AAQAEAAEAAAAQAA0AAQAEAAEAAAAPAA0AAQAEAAEAAAAOAA0AAQAEAAEAAAANAAwAAQAEAAEAAAAMAAwAAQAEAAEAAAAMAA0AAQAEAAEAAAAMAA4AAQAEAAEAAAAMAA8AAQAEAAEAAAAMABAAAQAEAAEAAAAMABIAAQAEAAEA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")
 tile_set = ExtResource("2_byuek")
 occlusion_enabled = false
 
@@ -72,24 +115,61 @@ unique_name_in_owner = true
 collision_enabled = false
 navigation_enabled = false
 
+[node name="HighlightGrid" type="ColorRect" parent="TileMaps"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_2cvn4")
+offset_right = 492.0
+offset_bottom = 459.0
+color = Color(1, 1, 1, 0)
+
 [node name="BeforeMap" type="CanvasLayer" parent="."]
 layer = 0
 
-[node name="Control" type="Control" parent="BeforeMap"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 416.0
-offset_bottom = 740.0
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Control" type="Control" parent="BeforeMap/MarginContainer"]
+layout_mode = 2
 mouse_default_cursor_shape = 3
 
 [node name="UI" type="Control" parent="BeforeMap"]
 unique_name_in_owner = true
 layout_mode = 3
-anchors_preset = 0
-offset_right = 416.0
-offset_bottom = 740.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_klsmt")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BeforeMap/UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -250.0
+offset_bottom = -350.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+texture = ExtResource("6_oqyr1")
+region_rect = Rect2(0, 0, 46, 46)
+patch_margin_left = 13
+patch_margin_top = 13
+patch_margin_right = 13
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("4_eaaeh")
 
 [node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI"]
 layout_mode = 1
@@ -99,16 +179,84 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/MarginContainer"]
 layout_mode = 2
 mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="SettingsBtn" type="TextureButton" parent="BeforeMap/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_6jueb")
+texture_pressed = SubResource("AtlasTexture_xhi6p")
+stretch_mode = 5
+
+[node name="DebugInfoLabel" type="Label" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+texture_filter = 2
+layout_mode = 2
+text = "X: 0 Y:0"
+label_settings = SubResource("LabelSettings_eaaeh")
+horizontal_alignment = 2
+script = ExtResource("8_xhi6p")
 
 [node name="Spacer" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 mouse_default_cursor_shape = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 30.0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 10
+
+[node name="VerticalSlider" type="VSlider" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_klsmt")
+theme_override_icons/grabber = SubResource("AtlasTexture_nn3ui")
+theme_override_icons/grabber_highlight = SubResource("AtlasTexture_oqyr1")
+theme_override_styles/slider = SubResource("StyleBoxTexture_oqyr1")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_6jueb")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_xhi6p")
+max_value = 1.0
+step = 0.001
+
+[node name="Spacer2" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="InvContainer" type="TabContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer" groups=["InvTabContainer"]]
 unique_name_in_owner = true
@@ -181,6 +329,7 @@ tooltip_text = "Auto Tiles:"
 theme_override_icons/checked = ExtResource("4_52hkk")
 theme_override_icons/unchecked = ExtResource("5_rtp05")
 
-[connection signal="gui_input" from="BeforeMap/Control" to="." method="_on_control_gui_input"]
+[connection signal="gui_input" from="BeforeMap/MarginContainer/Control" to="." method="_on_control_gui_input"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="." method="_on_ui_selection_changed"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="TileMaps" method="_on_ui_selection_changed"]
+[connection signal="value_changed" from="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer/VerticalSlider" to="." method="_on_vertical_slider_value_changed"]

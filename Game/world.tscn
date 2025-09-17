@@ -557,7 +557,7 @@ navigation_enabled = false
 [node name="Player" parent="." instance=ExtResource("2_jwkme")]
 position = Vector2(93, 166)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("follow_player")]
 position = Vector2(51, 189)
 offset = Vector2(0, -50)
 zoom = Vector2(2, 2)
@@ -565,6 +565,8 @@ limit_left = 0
 limit_right = 208
 position_smoothing_speed = 3.0
 script = ExtResource("3_jwkme")
+follow_player = NodePath("../Player")
+smoothing_enabled = true
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 

@@ -1,11 +1,17 @@
-[gd_scene format=3 uid="uid://dhmydjq0v5nse"]
+[gd_scene load_steps=3 format=3 uid="uid://dhmydjq0v5nse"]
 
-[node name="Test" type="Node2D"]
+[ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://Editor/GridHighlight.gdshader" id="1_37kl0"]
 
-[node name="Window" type="Window" parent="."]
-title = "lol"
-initial_position = 1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8uh7m"]
+shader = ExtResource("1_37kl0")
+shader_parameter/scale = Vector2(0.25, 0.25)
+shader_parameter/coarse_grid_color = Color(1, 1, 1, 1)
+shader_parameter/coarse_grid_line_width = Vector2(0.03, 0.03)
 
-[node name="ColorRect" type="ColorRect" parent="Window"]
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Node2D" type="ColorRect"]
+material = SubResource("ShaderMaterial_8uh7m")
+offset_left = -16.0
+offset_top = -27.0
+offset_right = 619.0
+offset_bottom = 617.0
+color = Color(0.101960786, 0.21568628, 0.37254903, 1)

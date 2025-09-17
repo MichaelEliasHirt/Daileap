@@ -1,5 +1,8 @@
 extends Node2D
 
+@onready var debug_info_label: Label = %DebugInfoLabel
+@onready var grid: ColorRect = %HighlightGrid
+
 enum SelectionType {
 	tile, terrain
 }
@@ -15,6 +18,15 @@ var selection_terrainid: int
 
 var active_tilemap_layer: TileMapLayer
 
+var last_coords: Vector2i
+
+func _process(_delta: float) -> void:
+	var coords = %Mainground.local_to_map(get_local_mouse_position())
+	if coords != last_coords:
+		last_coords = coords
+		debug_info_label.update_info(coords)
+	
+	grid.material.set_shader_parameter("mouse_position", grid.get_local_mouse_position())
 
 
 func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
@@ -24,22 +36,26 @@ func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
 
 func _place_terrain(at:Vector2i, terrainset:int, terrainid:int):
 	if active_tilemap_layer:
-		print(1)
 		active_tilemap_layer.set_cells_terrain_connect([at],terrainset,terrainid)
 
 
 func place(at: Vector2i):
-
-	match selection_type:
-		SelectionType.tile:
-			_place_tile(at, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-		SelectionType.terrain:
-			_place_terrain(at, selection_terrainset, selection_terrainid)
+	if is_placeable_location(at):
+		match selection_type:
+			SelectionType.tile:
+				_place_tile(at, selection_tilesrc, selection_tilecoords,selection_tilealtid)
+			SelectionType.terrain:
+				_place_terrain(at, selection_terrainset, selection_terrainid)
 
 
 func place_mouse_coords(at: Vector2):
 	place(%Mainground.local_to_map(to_local(at)))
-	
+
+
+func is_placeable_location(at:Vector2i):
+	var placeable_rect = Rect2i(-abs(owner.chunks_left * (owner.chunk_width-1)),0,
+		abs(owner.chunks_right * (owner.chunk_width-1)+owner.chunk_width)+1,owner.height+1)
+	return placeable_rect.has_point(at)
 
 
 func _on_ui_selection_changed(selection: Dictionary) -> void:

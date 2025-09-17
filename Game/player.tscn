@@ -217,6 +217,7 @@ falling = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -24)
+scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_n07e0")
 animation = &"jump_down"
 frame = 2
