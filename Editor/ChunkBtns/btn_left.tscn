@@ -1,0 +1,28 @@
+[gd_scene load_steps=7 format=3 uid="uid://dcwntegp1ayiv"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gwsgn"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jjgwe"]
+atlas = SubResource("CompressedTexture2D_gwsgn")
+region = Rect2(84, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_p2k64"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7qyqc"]
+atlas = SubResource("CompressedTexture2D_p2k64")
+region = Rect2(84, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_l4t1e"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6hut"]
+atlas = SubResource("CompressedTexture2D_l4t1e")
+region = Rect2(84, 42, 40, 40)
+
+[node name="BtnLeft" type="TextureButton"]
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_jjgwe")
+texture_pressed = SubResource("AtlasTexture_7qyqc")
+texture_hover = SubResource("AtlasTexture_i6hut")

@@ -23,8 +23,7 @@ func _physics_process(delta: float) -> void:
 	global_position = camera_position.floor()
 
 	@warning_ignore("integer_division")
-	screen_idx = int(follow_player.global_position.x) / screen_width
-	
+	screen_idx = floor(follow_player.global_position.x / screen_width)
 	if last_screen_idx != screen_idx:
 		change_screens()
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://ijd8340qnv2b"]
+[gd_scene load_steps=117 format=3 uid="uid://ijd8340qnv2b"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://Editor/editor_main.gd" id="1_0by7s"]
 [ext_resource type="TileSet" uid="uid://dqltvs87wbfs5" path="res://Game/mainground_tileset.tres" id="2_byuek"]
@@ -9,11 +9,34 @@
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://Editor/tile_maps.gd" id="5_nn3ui"]
 [ext_resource type="Texture2D" uid="uid://dm4wfaodwfrpf" path="res://assets/editor/Auto_Btn2.png" id="5_rtp05"]
 [ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://Editor/GridHighlight.gdshader" id="6_2cvn4"]
+[ext_resource type="Texture2D" uid="uid://dx7b6erj4ulhm" path="res://assets/editor/TempTileset.png" id="6_ggfqn"]
 [ext_resource type="Texture2D" uid="uid://3e78ed4d1f6w" path="res://assets/editor/Slider_Handel.png" id="6_nn3ui"]
 [ext_resource type="Texture2D" uid="uid://da4xfrwaaeibf" path="res://assets/editor/Border.png" id="6_oqyr1"]
-[ext_resource type="Texture2D" uid="uid://bor1ow4b41bcp" path="res://assets/editor/Settings.png" id="6_pvq6k"]
+[ext_resource type="Texture2D" uid="uid://b8tec46w0offr" path="res://assets/editor/Entrance.png" id="7_huxxj"]
+[ext_resource type="Texture2D" uid="uid://ymv2rggcud3c" path="res://assets/editor/fill.png" id="8_jx4ho"]
 [ext_resource type="Script" uid="uid://bdcns3upjw801" path="res://Editor/debug_info_label.gd" id="8_xhi6p"]
 [ext_resource type="Texture2D" uid="uid://dn7jc2lk8g75q" path="res://assets/editor/Slider_Bar.png" id="9_6jueb"]
+[ext_resource type="Texture2D" uid="uid://gwgd5kluxw0h" path="res://assets/editor/Box.png" id="9_66jg8"]
+[ext_resource type="Script" uid="uid://bj3cc0bcsmkij" path="res://Editor/save_menu.gd" id="10_5t4qa"]
+[ext_resource type="Script" uid="uid://c3m8oopftunvi" path="res://Editor/settings.gd" id="10_kgkjt"]
+[ext_resource type="Texture2D" uid="uid://d34xfadvo66lo" path="res://assets/editor/arrow_down.png" id="10_n7ook"]
+[ext_resource type="Script" uid="uid://65gcglg46dtd" path="res://Game/level_chunk_res.gd" id="11_8doqv"]
+[ext_resource type="Texture2D" uid="uid://dj6ais01bn55p" path="res://assets/editor/arrow_up.png" id="11_iyhwv"]
+[ext_resource type="Script" uid="uid://cbk7w8en4uehm" path="res://Editor/file_dialog.gd" id="11_mbc6a"]
+[ext_resource type="Script" uid="uid://bef1bwapspkeq" path="res://Editor/side_chunk_manager.gd" id="12_mbc6a"]
+[ext_resource type="Texture2D" uid="uid://4qmvmkrjuhqa" path="res://assets/editor/SideChunksBtns.png" id="13_ygs4s"]
+[ext_resource type="Texture2D" uid="uid://kl8ef2l2koyc" path="res://assets/editor/MenuBtns.png" id="16_kgkjt"]
+[ext_resource type="Script" uid="uid://dk4odooa2lbic" path="res://Editor/menu_btns.gd" id="19_hvdjx"]
+[ext_resource type="Texture2D" uid="uid://cp0aux1dmm77r" path="res://assets/editor/ArrowBtns.png" id="24_w1p71"]
+[ext_resource type="Texture2D" uid="uid://buytq20f1bbcj" path="res://assets/editor/ToolsBtns.png" id="27_firr7"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_firr7"]
+texture = ExtResource("6_ggfqn")
+0:0/0 = 0
+1:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_3sevu"]
+sources/0 = SubResource("TileSetAtlasSource_firr7")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2cvn4"]
 shader = ExtResource("6_2cvn4")
@@ -21,17 +44,213 @@ shader_parameter/grid_size = 16.0
 shader_parameter/line_thickness = 0.5
 shader_parameter/line_color = Color(0.8, 0.8, 0.8, 1)
 shader_parameter/mouse_position = Vector2(0, 0)
-shader_parameter/mouse_offset = Vector2(-8, 0)
+shader_parameter/mouse_offset = Vector2(0, 0)
 shader_parameter/grid_offset = Vector2(0, 8)
 shader_parameter/fade_radius = 50.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6jueb"]
-atlas = ExtResource("6_pvq6k")
-region = Rect2(0, 0, 20, 20)
+[sub_resource type="Resource" id="Resource_hvdjx"]
+script = ExtResource("11_8doqv")
+name = "NewLevelChunk"
+mainground_tile_map_data = null
+background_tile_map_data = null
+height = 10
+metadata/_custom_type_script = "uid://65gcglg46dtd"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xhi6p"]
-atlas = ExtResource("6_pvq6k")
-region = Rect2(20, 0, 20, 20)
+[sub_resource type="LabelSettings" id="LabelSettings_mbc6a"]
+font_size = 18
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_66jg8"]
+font_size = 30
+font_color = Color(0.33328104, 0.51710975, 0.5129915, 1)
+outline_size = 20
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_n7ook"]
+font_size = 24
+font_color = Color(0.33328104, 0.51710975, 0.5129915, 1)
+outline_size = 20
+shadow_size = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66jg8"]
+texture = ExtResource("9_66jg8")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.8235294, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3fj2"]
+texture = ExtResource("9_66jg8")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.8235294, 1, 1, 1)
+
+[sub_resource type="Theme" id="Theme_66jg8"]
+LineEdit/colors/clear_button_color_pressed = Color(1, 1, 1, 1)
+LineEdit/colors/font_color = Color(0.10457767, 0.30798373, 0.290456, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/focus = SubResource("StyleBoxTexture_66jg8")
+LineEdit/styles/normal = SubResource("StyleBoxTexture_a3fj2")
+SpinBox/colors/down_hover_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/colors/down_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/colors/down_pressed_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/colors/up_hover_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/colors/up_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/colors/up_pressed_icon_modulate = Color(0.105882354, 0.28627452, 0.27450982, 1)
+SpinBox/icons/down = ExtResource("10_n7ook")
+SpinBox/icons/down_disabled = ExtResource("10_n7ook")
+SpinBox/icons/down_hover = ExtResource("10_n7ook")
+SpinBox/icons/down_pressed = ExtResource("10_n7ook")
+SpinBox/icons/up = ExtResource("11_iyhwv")
+SpinBox/icons/up_disabled = ExtResource("11_iyhwv")
+SpinBox/icons/up_hover = ExtResource("11_iyhwv")
+SpinBox/icons/up_pressed = ExtResource("11_iyhwv")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kgkjt"]
+atlas = ExtResource("13_ygs4s")
+region = Rect2(168, 16, 40, 24)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5t4qa"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mbc6a"]
+atlas = SubResource("CompressedTexture2D_5t4qa")
+region = Rect2(168, 58, 40, 24)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8doqv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hvdjx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w1p71"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_270gi"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aebqt"]
+atlas = SubResource("CompressedTexture2D_270gi")
+region = Rect2(0, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pyly7"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ccql"]
+atlas = SubResource("CompressedTexture2D_pyly7")
+region = Rect2(0, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0wady"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u1fh4"]
+atlas = SubResource("CompressedTexture2D_0wady")
+region = Rect2(0, 42, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ggfqn"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_firr7"]
+atlas = SubResource("CompressedTexture2D_ggfqn")
+region = Rect2(42, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3sevu"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2vxet"]
+atlas = SubResource("CompressedTexture2D_3sevu")
+region = Rect2(42, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_cskgi"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mpeba"]
+atlas = SubResource("CompressedTexture2D_cskgi")
+region = Rect2(42, 42, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kgkjt"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5t4qa"]
+atlas = SubResource("CompressedTexture2D_kgkjt")
+region = Rect2(0, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mbc6a"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8doqv"]
+atlas = SubResource("CompressedTexture2D_mbc6a")
+region = Rect2(0, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hvdjx"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w1p71"]
+atlas = SubResource("CompressedTexture2D_hvdjx")
+region = Rect2(0, 42, 40, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38avg"]
+atlas = ExtResource("16_kgkjt")
+region = Rect2(23, 0, 21, 21)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gx14m"]
+load_path = "res://.godot/imported/MenuBtns.png-e41fb870fa7d7ba5c61f39ecda2731bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55a2b"]
+atlas = SubResource("CompressedTexture2D_gx14m")
+region = Rect2(23, 23, 21, 21)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w1p71"]
+load_path = "res://.godot/imported/MenuBtns.png-e41fb870fa7d7ba5c61f39ecda2731bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gx14m"]
+atlas = SubResource("CompressedTexture2D_w1p71")
+region = Rect2(46, 0, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lec2u"]
+atlas = SubResource("CompressedTexture2D_w1p71")
+region = Rect2(46, 0, 21, 21)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_uq741"]
+load_path = "res://.godot/imported/MenuBtns.png-e41fb870fa7d7ba5c61f39ecda2731bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7iob3"]
+atlas = SubResource("CompressedTexture2D_uq741")
+region = Rect2(46, 23, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ggfqn"]
+atlas = ExtResource("16_kgkjt")
+region = Rect2(69, 0, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3sevu"]
+atlas = ExtResource("16_kgkjt")
+region = Rect2(69, 0, 21, 21)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2vxet"]
+load_path = "res://.godot/imported/MenuBtns.png-e41fb870fa7d7ba5c61f39ecda2731bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cskgi"]
+atlas = SubResource("CompressedTexture2D_2vxet")
+region = Rect2(69, 23, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xpy7x"]
+atlas = ExtResource("16_kgkjt")
+region = Rect2(23, 0, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hvdjx"]
+atlas = ExtResource("16_kgkjt")
+region = Rect2(0, 0, 21, 21)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8doqv"]
+load_path = "res://.godot/imported/MenuBtns.png-e41fb870fa7d7ba5c61f39ecda2731bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_huxxj"]
+atlas = SubResource("CompressedTexture2D_8doqv")
+region = Rect2(0, 23, 21, 21)
 
 [sub_resource type="LabelSettings" id="LabelSettings_eaaeh"]
 font_size = 10
@@ -62,6 +281,100 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xhi6p"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_uq741"]
+atlas = ExtResource("24_w1p71")
+region = Rect2(0, 0, 24, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7iob3"]
+load_path = "res://.godot/imported/ArrowBtns.png-c5dd3d83ba52a4263ffd1df03e2f9f96.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2vvvf"]
+atlas = SubResource("CompressedTexture2D_7iob3")
+region = Rect2(0, 44, 24, 40)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_firr7"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mpeba"]
+load_path = "res://.godot/imported/ToolsBtns.png-7adf3eb12369a4e9591009e847f3a0d7.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cisyn"]
+atlas = SubResource("CompressedTexture2D_mpeba")
+region = Rect2(2, 2, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8hpd0"]
+atlas = ExtResource("27_firr7")
+region = Rect2(0, 54, 25, 25)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_20ucg"]
+load_path = "res://.godot/imported/ToolsBtns.png-7adf3eb12369a4e9591009e847f3a0d7.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_20ucg"]
+atlas = SubResource("CompressedTexture2D_20ucg")
+region = Rect2(2, 29, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1myvr"]
+atlas = ExtResource("27_firr7")
+region = Rect2(29, 2, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d1d7l"]
+atlas = ExtResource("27_firr7")
+region = Rect2(27, 54, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fsdrh"]
+atlas = SubResource("CompressedTexture2D_20ucg")
+region = Rect2(29, 29, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oggos"]
+atlas = ExtResource("27_firr7")
+region = Rect2(56, 2, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcke1"]
+atlas = ExtResource("27_firr7")
+region = Rect2(54, 54, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rk5tv"]
+atlas = SubResource("CompressedTexture2D_20ucg")
+region = Rect2(56, 29, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnual"]
+atlas = ExtResource("27_firr7")
+region = Rect2(83, 2, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8m5k1"]
+atlas = ExtResource("27_firr7")
+region = Rect2(81, 54, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grcib"]
+atlas = SubResource("CompressedTexture2D_20ucg")
+region = Rect2(83, 29, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ro857"]
+atlas = ExtResource("27_firr7")
+region = Rect2(110, 2, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p0a31"]
+atlas = ExtResource("27_firr7")
+region = Rect2(108, 54, 25, 25)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_el5kl"]
+load_path = "res://.godot/imported/ToolsBtns.png-7adf3eb12369a4e9591009e847f3a0d7.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q24mo"]
+atlas = SubResource("CompressedTexture2D_el5kl")
+region = Rect2(110, 29, 21, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hpyal"]
+atlas = ExtResource("24_w1p71")
+region = Rect2(28, 0, 24, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jtsj0"]
+atlas = ExtResource("24_w1p71")
+region = Rect2(28, 0, 24, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ko1pa"]
+atlas = SubResource("CompressedTexture2D_7iob3")
+region = Rect2(28, 44, 24, 40)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klsmt"]
 bg_color = Color(0.92102, 0.39285, 0.570104, 1)
 
@@ -86,8 +399,7 @@ MaingroundTileset = ExtResource("2_byuek")
 BackgroundTileset = ExtResource("3_52hkk")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2(129, 0)
-zoom = Vector2(2, 2)
+zoom = Vector2(1.9, 1.9)
 limit_enabled = false
 position_smoothing_speed = 3.0
 
@@ -95,37 +407,72 @@ position_smoothing_speed = 3.0
 layer = -1
 
 [node name="BackgroundColor" type="ColorRect" parent="BehindMap"]
-offset_right = 500.0
+offset_right = 416.0
 offset_bottom = 700.0
 color = Color(0.39607844, 0.32941177, 0.39607844, 1)
 script = ExtResource("4_eaaeh")
 
 [node name="TileMaps" type="Node2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(8, 0)
+position = Vector2(-8, 0)
 script = ExtResource("5_nn3ui")
-
-[node name="Mainground" type="TileMapLayer" parent="TileMaps"]
-unique_name_in_owner = true
-tile_set = ExtResource("2_byuek")
-occlusion_enabled = false
 
 [node name="Background" type="TileMapLayer" parent="TileMaps"]
 unique_name_in_owner = true
 collision_enabled = false
 navigation_enabled = false
 
+[node name="Mainground" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+tile_set = ExtResource("2_byuek")
+occlusion_enabled = false
+
+[node name="PrevTilemap" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+tile_set = SubResource("TileSet_3sevu")
+occlusion_enabled = false
+navigation_enabled = false
+
 [node name="HighlightGrid" type="ColorRect" parent="TileMaps"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_2cvn4")
-offset_right = 492.0
+offset_left = 8.0
+offset_right = 424.0
 offset_bottom = 459.0
 color = Color(1, 1, 1, 0)
+
+[node name="EntranceArrow" type="Node2D" parent="TileMaps"]
+unique_name_in_owner = true
+scale = Vector2(2, 1.5)
+
+[node name="Sprite2d" type="Sprite2D" parent="TileMaps/EntranceArrow"]
+modulate = Color(0, 0.7044197, 0, 1)
+position = Vector2(0, 7.333333)
+texture = ExtResource("7_huxxj")
+
+[node name="ExitArrow" type="Node2D" parent="TileMaps"]
+unique_name_in_owner = true
+scale = Vector2(2, 1.5)
+
+[node name="Sprite2d" type="Sprite2D" parent="TileMaps/ExitArrow"]
+modulate = Color(0, 0.6181798, 1.3167266, 1)
+position = Vector2(0, -8.666667)
+texture = ExtResource("7_huxxj")
 
 [node name="BeforeMap" type="CanvasLayer" parent="."]
 layer = 0
 
+[node name="Control" type="Control" parent="BeforeMap"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 3
+
 [node name="MarginContainer" type="MarginContainer" parent="BeforeMap"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -135,10 +482,6 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
-
-[node name="Control" type="Control" parent="BeforeMap/MarginContainer"]
-layout_mode = 2
-mouse_default_cursor_shape = 3
 
 [node name="UI" type="Control" parent="BeforeMap"]
 unique_name_in_owner = true
@@ -151,16 +494,304 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_klsmt")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="BeforeMap/UI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -250.0
-offset_bottom = -350.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="SaveMenuContainer" type="Control" parent="BeforeMap/UI/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="TextureRect" type="TextureRect" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -233.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_jx4ho")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -233.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer"]
+layout_mode = 2
+texture = ExtResource("9_66jg8")
+region_rect = Rect2(0, 0, 40, 40)
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 12
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="SaveMenu" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+script = ExtResource("10_5t4qa")
+directory_path = "res://Game/LevelChunks"
+default_new_res = SubResource("Resource_hvdjx")
+
+[node name="LoadDialog" type="FileDialog" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu"]
+gui_embed_subwindows = true
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 4
+dialog_close_on_escape = false
+file_mode = 0
+display_mode = 1
+root_subfolder = "res://Game/LevelChunks/"
+hidden_files_toggle_enabled = false
+file_filter_toggle_enabled = false
+folder_creation_enabled = false
+favorites_enabled = false
+recent_list_enabled = false
+layout_toggle_enabled = false
+script = ExtResource("11_mbc6a")
+
+[node name="NameEdit" type="LineEdit" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu"]
+layout_mode = 2
+placeholder_text = "Level Chunk Name"
+alignment = 1
+max_length = 15
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+caret_blink = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu"]
+layout_mode = 2
+
+[node name="NewBtn" type="Button" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "New
+"
+
+[node name="LoadBtn" type="Button" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Load
+"
+
+[node name="SaveBtn" type="Button" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Save"
+
+[node name="ErrorLabel" type="Label" parent="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_mbc6a")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="SettingsContainer" type="Control" parent="BeforeMap/UI/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="TextureRect" type="TextureRect" parent="BeforeMap/UI/VBoxContainer/SettingsContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -233.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_jx4ho")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -233.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer"]
+layout_mode = 2
+texture = ExtResource("9_66jg8")
+region_rect = Rect2(0, 0, 40, 40)
+patch_margin_left = 14
+patch_margin_top = 14
+patch_margin_right = 14
+patch_margin_bottom = 12
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Settings" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("10_kgkjt")
+
+[node name="Label" type="Label" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings"]
+layout_mode = 2
+text = "Settings: "
+label_settings = SubResource("LabelSettings_66jg8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer"]
+layout_mode = 2
+text = "Height: "
+label_settings = SubResource("LabelSettings_n7ook")
+
+[node name="HeightEdit" type="SpinBox" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = SubResource("Theme_66jg8")
+min_value = 10.0
+value = 10.0
+suffix = "tiles"
+custom_arrow_step = 10.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2"]
+layout_mode = 2
+text = "Side Chunks: "
+label_settings = SubResource("LabelSettings_n7ook")
+
+[node name="Control" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2"]
+layout_mode = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control"]
+self_modulate = Color(0.8627451, 1, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("9_66jg8")
+region_rect = Rect2(0, 0, 40, 40)
+patch_margin_left = 11
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="SideChunkManager" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer"]
+layout_mode = 2
+script = ExtResource("12_mbc6a")
+
+[node name="HSlider" type="HSlider" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager"]
+layout_mode = 2
+theme_override_icons/grabber = SubResource("AtlasTexture_kgkjt")
+theme_override_icons/grabber_highlight = SubResource("AtlasTexture_mbc6a")
+theme_override_styles/slider = SubResource("StyleBoxEmpty_8doqv")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_hvdjx")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_w1p71")
+max_value = 5.0
+
+[node name="HboxContainer" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager"]
+layout_mode = 2
+
+[node name="AddBtnLeft" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HboxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_aebqt")
+texture_pressed = SubResource("AtlasTexture_4ccql")
+texture_hover = SubResource("AtlasTexture_u1fh4")
+
+[node name="BtnCenter" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HboxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_firr7")
+texture_pressed = SubResource("AtlasTexture_2vxet")
+texture_hover = SubResource("AtlasTexture_mpeba")
+
+[node name="AddBtnRight" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HboxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_5t4qa")
+texture_pressed = SubResource("AtlasTexture_8doqv")
+texture_hover = SubResource("AtlasTexture_w1p71")
+
+[node name="GameBorder" type="NinePatchRect" parent="BeforeMap/UI/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("6_oqyr1")
 region_rect = Rect2(0, 0, 46, 46)
 patch_margin_left = 13
@@ -171,7 +802,7 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 script = ExtResource("4_eaaeh")
 
-[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI"]
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -183,24 +814,46 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
+[node name="MenuBtns" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 alignment = 2
+script = ExtResource("19_hvdjx")
+SaveBtnUnsafed = Array[Texture2D]([SubResource("AtlasTexture_38avg"), SubResource("AtlasTexture_38avg"), SubResource("AtlasTexture_55a2b")])
+SaveBtnSafed = Array[Texture2D]([SubResource("AtlasTexture_gx14m"), SubResource("AtlasTexture_lec2u"), SubResource("AtlasTexture_7iob3")])
 
-[node name="SettingsBtn" type="TextureButton" parent="BeforeMap/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ValidBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns"]
+z_index = 11
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-toggle_mode = true
-texture_normal = SubResource("AtlasTexture_6jueb")
-texture_pressed = SubResource("AtlasTexture_xhi6p")
+texture_normal = SubResource("AtlasTexture_ggfqn")
+texture_pressed = SubResource("AtlasTexture_3sevu")
+texture_hover = SubResource("AtlasTexture_cskgi")
 stretch_mode = 5
 
-[node name="DebugInfoLabel" type="Label" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
+[node name="SaveBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_38avg")
+texture_pressed = SubResource("AtlasTexture_xpy7x")
+texture_hover = SubResource("AtlasTexture_55a2b")
+stretch_mode = 5
+
+[node name="SettingsBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_hvdjx")
+texture_pressed = SubResource("AtlasTexture_hvdjx")
+texture_hover = SubResource("AtlasTexture_huxxj")
+stretch_mode = 5
+
+[node name="DebugInfoLabel" type="Label" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 texture_filter = 2
 layout_mode = 2
@@ -209,13 +862,13 @@ label_settings = SubResource("LabelSettings_eaaeh")
 horizontal_alignment = 2
 script = ExtResource("8_xhi6p")
 
-[node name="Spacer" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer"]
+[node name="Spacer" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 mouse_default_cursor_shape = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -223,13 +876,13 @@ offset_right = 30.0
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Spacer" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+[node name="Spacer" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
@@ -239,7 +892,8 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 10
 
-[node name="VerticalSlider" type="VSlider" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer"]
+[node name="VerticalSlider" type="VSlider" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 size_flags_vertical = 3
@@ -252,13 +906,135 @@ theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_xhi6p")
 max_value = 1.0
 step = 0.001
 
-[node name="Spacer2" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="InvContainer" type="TabContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer" groups=["InvTabContainer"]]
+[node name="VBoxContainer2" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MoveButtonContainer" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+
+[node name="MoveLeftBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = SubResource("AtlasTexture_uq741")
+texture_pressed = SubResource("AtlasTexture_uq741")
+texture_hover = SubResource("AtlasTexture_2vvvf")
+stretch_mode = 5
+
+[node name="MenuBtns" type="HBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer"]
+z_index = -11
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+alignment = 2
+
+[node name="PaintBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_firr7")
+texture_normal = SubResource("AtlasTexture_cisyn")
+texture_pressed = SubResource("AtlasTexture_8hpd0")
+texture_hover = SubResource("AtlasTexture_20ucg")
+stretch_mode = 5
+
+[node name="LineBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_firr7")
+texture_normal = SubResource("AtlasTexture_1myvr")
+texture_pressed = SubResource("AtlasTexture_d1d7l")
+texture_hover = SubResource("AtlasTexture_fsdrh")
+stretch_mode = 5
+
+[node name="RectBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_firr7")
+texture_normal = SubResource("AtlasTexture_oggos")
+texture_pressed = SubResource("AtlasTexture_hcke1")
+texture_hover = SubResource("AtlasTexture_rk5tv")
+stretch_mode = 5
+
+[node name="FillCellBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_firr7")
+texture_normal = SubResource("AtlasTexture_gnual")
+texture_pressed = SubResource("AtlasTexture_8m5k1")
+texture_hover = SubResource("AtlasTexture_grcib")
+stretch_mode = 5
+
+[node name="FillAutoBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+z_index = 11
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_firr7")
+texture_normal = SubResource("AtlasTexture_ro857")
+texture_pressed = SubResource("AtlasTexture_p0a31")
+texture_hover = SubResource("AtlasTexture_q24mo")
+stretch_mode = 5
+
+[node name="Control2" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+
+[node name="MoveRightBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = SubResource("AtlasTexture_hpyal")
+texture_pressed = SubResource("AtlasTexture_jtsj0")
+texture_hover = SubResource("AtlasTexture_ko1pa")
+stretch_mode = 5
+
+[node name="InvContainer" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer" groups=["InvTabContainer"]]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -268,7 +1044,7 @@ theme = SubResource("Theme_nn3ui")
 current_tab = 0
 deselect_enabled = true
 
-[node name="MaingroundTiles" type="TabContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
+[node name="MaingroundTiles" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -277,8 +1053,7 @@ current_tab = 0
 tabs_position = 1
 metadata/_tab_index = 0
 
-[node name="MaingroundTilesListContainer" type="MarginContainer" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles" groups=["TileTerrainContainer"]]
-unique_name_in_owner = true
+[node name="MaingroundTilesListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles" groups=["TileTerrainContainer"]]
 layout_mode = 2
 mouse_filter = 0
 theme_override_constants/margin_left = 20
@@ -287,7 +1062,7 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 metadata/_tab_index = 0
 
-[node name="MaingroundTilesList" type="ItemList" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer" groups=["List", "TilesList"]]
+[node name="MaingroundTilesList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer" groups=["List", "TilesList"]]
 unique_name_in_owner = true
 layout_mode = 2
 theme = SubResource("Theme_p8nt8")
@@ -295,7 +1070,7 @@ max_columns = 5
 icon_mode = 0
 fixed_icon_size = Vector2i(50, 50)
 
-[node name="MaingroundTerrainList" type="ItemList" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer" groups=["List", "TerrainList"]]
+[node name="MaingroundTerrainList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer" groups=["List", "TerrainList"]]
 unique_name_in_owner = true
 layout_mode = 2
 theme = SubResource("Theme_p8nt8")
@@ -304,11 +1079,11 @@ max_columns = 5
 icon_mode = 0
 fixed_icon_size = Vector2i(50, 50)
 
-[node name="Control" type="Control" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer"]
+[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer/Control" groups=["AutoTileBtns"]]
+[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer/Control" groups=["AutoTileBtns"]]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
@@ -329,7 +1104,113 @@ tooltip_text = "Auto Tiles:"
 theme_override_icons/checked = ExtResource("4_52hkk")
 theme_override_icons/unchecked = ExtResource("5_rtp05")
 
-[connection signal="gui_input" from="BeforeMap/MarginContainer/Control" to="." method="_on_control_gui_input"]
+[node name="BackgroundTiles" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+current_tab = 0
+tabs_position = 1
+metadata/_tab_index = 1
+
+[node name="BackgroundTilesListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles" groups=["TileTerrainContainer"]]
+layout_mode = 2
+mouse_filter = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 0
+
+[node name="BackgroundTilesList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles/BackgroundTilesListContainer" groups=["List", "TilesList"]]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="BackgroundTerrainList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles/BackgroundTilesListContainer" groups=["List", "TerrainList"]]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_p8nt8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rtp05")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles/BackgroundTilesListContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles/BackgroundTilesListContainer/Control" groups=["AutoTileBtns"]]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -29.0
+offset_right = 56.0
+offset_bottom = 29.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+size_flags_horizontal = 8
+size_flags_vertical = 8
+tooltip_text = "Auto Tiles:"
+theme_override_icons/checked = ExtResource("4_52hkk")
+theme_override_icons/unchecked = ExtResource("5_rtp05")
+
+[node name="GreyOut" type="ColorRect" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_behavior_recursive = 1
+mouse_default_cursor_shape = 8
+color = Color(0, 0, 0, 0.63529414)
+
+[connection signal="data_updated" from="." to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_editor_data_updated"]
+[connection signal="data_updated" from="." to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_editor_data_updated"]
+[connection signal="send_save_data" from="." to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_editor_send_save_data"]
+[connection signal="tilemap_changed" from="TileMaps" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed"]
+[connection signal="gui_input" from="BeforeMap/Control" to="." method="_on_control_gui_input"]
+[connection signal="mouse_entered" from="BeforeMap/Control" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_entered"]
+[connection signal="mouse_exited" from="BeforeMap/Control" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_exited"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="." method="_on_ui_selection_changed"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="TileMaps" method="_on_ui_selection_changed"]
-[connection signal="value_changed" from="BeforeMap/UI/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer/VerticalSlider" to="." method="_on_vertical_slider_value_changed"]
+[connection signal="settings_closed" from="BeforeMap/UI" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_ui_settings_closed"]
+[connection signal="name_changed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="." method="_on_save_menu_name_changed"]
+[connection signal="name_changed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed" unbinds=1]
+[connection signal="new_chunk_loaded" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="." method="_on_save_menu_new_chunk_loaded"]
+[connection signal="new_chunk_loaded" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="BeforeMap/UI" method="deselect_selection" unbinds=1]
+[connection signal="request_save_data" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="." method="_on_save_menu_request_save_data"]
+[connection signal="save_status_changed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns" method="_on_save_menu_save_status_changed"]
+[connection signal="file_selected" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/LoadDialog" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_file_dialog_file_selected"]
+[connection signal="focus_exited" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/NameEdit" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_check_line_edit"]
+[connection signal="text_submitted" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/NameEdit" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_check_line_edit" unbinds=1]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer/NewBtn" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_new"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer/LoadBtn" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_load_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu/HBoxContainer/SaveBtn" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_save"]
+[connection signal="settings_changed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" to="." method="_on_settings_settings_changed"]
+[connection signal="settings_changed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed" unbinds=1]
+[connection signal="settings_updated" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" method="_on_settings_settings_updated"]
+[connection signal="value_changed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer/HeightEdit" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_height_edit_value_changed"]
+[connection signal="update_chunks" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_side_chunk_manager_update_chunks"]
+[connection signal="update_chunks" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed" unbinds=3]
+[connection signal="update_exit" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_side_chunk_manager_update_exit"]
+[connection signal="update_exit" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed" unbinds=1]
+[connection signal="value_changed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HSlider" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" method="_update_slider"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HboxContainer/AddBtnLeft" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" method="_on_add_btn_left_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager/HboxContainer/AddBtnRight" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings/HBoxContainer2/Control/MarginContainer/SideChunkManager" method="_on_add_btn_right_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns/SaveBtn" to="BeforeMap/UI" method="_on_save_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/MenuBtns/SettingsBtn" to="BeforeMap/UI" method="_on_settings_btn_pressed"]
+[connection signal="value_changed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer/MarginContainer/VerticalSlider" to="." method="_on_vertical_slider_value_changed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control/MoveLeftBtn" to="." method="_on_move_left_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/PaintBtn" to="." method="_on_paint_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/LineBtn" to="." method="_on_line_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/RectBtn" to="." method="_on_rect_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/FillCellBtn" to="." method="_on_fill_cell_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/FillAutoBtn" to="." method="_on_fill_auto_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control2/MoveRightBtn" to="." method="_on_move_right_btn_pressed"]

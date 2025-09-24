@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bor1ow4b41bcp"
-path="res://.godot/imported/Settings.png-783c2cc550f92149088bcc0d9892a913.ctex"
+uid="uid://4qmvmkrjuhqa"
+path="res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/editor/Settings.png"
-dest_files=["res://.godot/imported/Settings.png-783c2cc550f92149088bcc0d9892a913.ctex"]
+source_file="res://assets/editor/SideChunksBtns.png"
+dest_files=["res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"]
 
 [params]
 

@@ -97,36 +97,31 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	# --- Debug Keyboard Input (for testing on desktop) ---
 	# Ensure these actions are defined in Project Settings -> Input Map (ui_accept, ui_left, etc.)
-	if event.is_action_pressed("ui_accept"): # Spacebar by default
+	if event.is_action_pressed("press"): # Spacebar by default
 		if event.is_pressed() and not event.is_echo(): # Avoid continuous triggers from holding key down
 			# Simulate a quick tap for debugging
 			just_tapped = true 
 			print("DEBUG: SPACEBAR pressed - just_tapped = TRUE (Keyboard Simulation)")
-			get_viewport().set_input_as_handled()
 	
-	if event.is_action_pressed("ui_left"): # 'A' or Left Arrow by default
+	if event.is_action_pressed("left"): # 'A' or Left Arrow by default
 		if event.is_pressed() and not event.is_echo():
 			just_swiped_left = true
 			print("DEBUG: A/LEFT pressed - just_swiped_left = TRUE (Keyboard Simulation)")
-			get_viewport().set_input_as_handled()
 
-	if event.is_action_pressed("ui_right"): # 'D' or Right Arrow by default
+	if event.is_action_pressed("right"): # 'D' or Right Arrow by default
 		if event.is_pressed() and not event.is_echo():
 			just_swiped_right = true
 			print("DEBUG: D/RIGHT pressed - just_swiped_right = TRUE (Keyboard Simulation)")
-			get_viewport().set_input_as_handled()
 
-	if event.is_action_pressed("ui_up"): # 'W' or Up Arrow by default
+	if event.is_action_pressed("up"): # 'W' or Up Arrow by default
 		if event.is_pressed() and not event.is_echo():
 			just_swiped_up = true
 			print("DEBUG: W/UP pressed - just_swiped_up = TRUE (Keyboard Simulation)")
-			get_viewport().set_input_as_handled()
 
-	if event.is_action_pressed("ui_down"): # 'S' or Down Arrow by default
+	if event.is_action_pressed("down"): # 'S' or Down Arrow by default
 		if event.is_pressed() and not event.is_echo():
 			just_swiped_down = true
 			print("DEBUG: S/DOWN pressed - just_swiped_down = TRUE (Keyboard Simulation)")
-			get_viewport().set_input_as_handled()
 
 	# --- ONLY PROCESS TOUCH EVENTS BELOW THIS POINT ---
 	if !(event is InputEventScreenDrag or event is InputEventScreenTouch):

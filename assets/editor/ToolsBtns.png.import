@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8tec46w0offr"
-path="res://.godot/imported/Entrance.png-932df4850140fd6aaf002615919abe48.ctex"
+uid="uid://buytq20f1bbcj"
+path="res://.godot/imported/ToolsBtns.png-7adf3eb12369a4e9591009e847f3a0d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/editor/Entrance.png"
-dest_files=["res://.godot/imported/Entrance.png-932df4850140fd6aaf002615919abe48.ctex"]
+source_file="res://assets/editor/ToolsBtns.png"
+dest_files=["res://.godot/imported/ToolsBtns.png-7adf3eb12369a4e9591009e847f3a0d7.ctex"]
 
 [params]
 

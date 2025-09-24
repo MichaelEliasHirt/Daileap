@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://xxpn1n72cild"]
+
+[ext_resource type="Texture2D" uid="uid://4qmvmkrjuhqa" path="res://assets/editor/SideChunksBtns.png" id="1_6knxu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ygs4s"]
+atlas = ExtResource("1_6knxu")
+region = Rect2(126, 0, 40, 40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nwm10"]
+load_path = "res://.godot/imported/SideChunksBtns.png-84f7583d211d86cc58b26c6bdabeec2c.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42lxw"]
+atlas = SubResource("CompressedTexture2D_nwm10")
+region = Rect2(126, 42, 40, 40)
+
+[node name="BtnRight" type="TextureButton"]
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_ygs4s")
+texture_pressed = SubResource("AtlasTexture_ygs4s")
+texture_hover = SubResource("AtlasTexture_42lxw")

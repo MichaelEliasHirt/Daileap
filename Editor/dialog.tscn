@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cqddaggtbjh1"]
+
+[node name="Dialog" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="FileDialog" type="FileDialog" parent="."]
+gui_embed_subwindows = true
+oversampling_override = 1.0
+position = Vector2i(0, 100)
+size = Vector2i(400, 360)
+visible = true
+borderless = true
+display_mode = 1
+hidden_files_toggle_enabled = false
+file_filter_toggle_enabled = false
+folder_creation_enabled = false
+favorites_enabled = false
+layout_toggle_enabled = false

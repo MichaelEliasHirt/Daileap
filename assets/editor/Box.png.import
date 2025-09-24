@@ -2,22 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3f0ymvctvkqj"
-path="res://.godot/imported/LevelWidthDivider.png-77b3f9ef1aae995ee955d92dcfa7a70b.ctex"
+uid="uid://gwgd5kluxw0h"
+path="res://.godot/imported/Box.png-aa20d1fd29a71eb898facfe1211762c3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/editor/LevelWidthDivider.png"
-dest_files=["res://.godot/imported/LevelWidthDivider.png-77b3f9ef1aae995ee955d92dcfa7a70b.ctex"]
+source_file="res://assets/editor/Box.png"
+dest_files=["res://.godot/imported/Box.png-aa20d1fd29a71eb898facfe1211762c3.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
@@ -25,6 +27,10 @@ mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8tec46w0offr"
-path="res://.godot/imported/Entrance.png-932df4850140fd6aaf002615919abe48.ctex"
+uid="uid://cp0aux1dmm77r"
+path="res://.godot/imported/ArrowBtns.png-c5dd3d83ba52a4263ffd1df03e2f9f96.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/editor/Entrance.png"
-dest_files=["res://.godot/imported/Entrance.png-932df4850140fd6aaf002615919abe48.ctex"]
+source_file="res://assets/editor/ArrowBtns.png"
+dest_files=["res://.godot/imported/ArrowBtns.png-c5dd3d83ba52a4263ffd1df03e2f9f96.ctex"]
 
 [params]
 

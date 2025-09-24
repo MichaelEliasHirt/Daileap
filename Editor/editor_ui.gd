@@ -4,17 +4,30 @@ extends Control
 @export_range(0.1,20) var inv_open_strech_ratio: float = 1.5
 
 @onready var mainground_tiles: TabContainer = %MaingroundTiles
-@onready var mainground_tiles_list_container: MarginContainer = %MaingroundTilesListContainer
+@onready var mainground_tiles_list_container: MarginContainer = %MaingroundTiles/MaingroundTilesListContainer
 @onready var mainground_tiles_list: ItemList = %MaingroundTilesList
 @onready var mainground_terrain_list: ItemList = %MaingroundTerrainList
 
+@onready var background_tiles: TabContainer = %BackgroundTiles
+@onready var background_tiles_list_container: MarginContainer = %BackgroundTiles/BackgroundTilesListContainer
+@onready var background_tiles_list: ItemList = %BackgroundTilesList
+@onready var background_terrain_list: ItemList = %BackgroundTerrainList
+
+
+@onready var vertical_slider: VSlider = %VerticalSlider
+
 @onready var inv_container: TabContainer = %InvContainer
 @onready var auto_tile_btn: CheckButton = %AutoTileBtn
+@onready var settings_container: Control = %SettingsContainer
+@onready var save_menu_container: Control = %SaveMenuContainer
+
 
 @onready var MaingroundTileset: TileSet = $"../..".MaingroundTileset
 @onready var BackgroundTileset: TileSet =  $"../..".BackgroundTileset
 
+
 signal selection_changed(selection:Dictionary)
+signal settings_closed
 
 enum SelectionType {
 	tile, terrain
@@ -22,6 +35,8 @@ enum SelectionType {
 
 var inv_open: bool = false
 var auto_tile_on: bool = false
+var settings_open: bool = false
+var save_menu_open: bool = false
 
 var active_tab_tree: Array[Node]
 var active_selection = {
@@ -44,21 +59,22 @@ func _ready() -> void:
 	
 	_auto_tile_btn_toggled(auto_tile_on)
 	
-	mainground_tiles_list.clear()
-	mainground_terrain_list.clear()
+
 	inv_container.current_tab = -1
 	_close_inv()
 	
 	_populate_item_lists()
 	
 	_connect_methods()
-	
 
 
-
-	
-	
-	
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				vertical_slider.value += 3. / owner.height
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				vertical_slider.value -= 3. / owner.height
 
 
 func _create_tab_tree(start:Node):
@@ -73,6 +89,8 @@ func _create_tab_tree(start:Node):
 
 
 func _populate_item_lists():
+	mainground_tiles_list.clear()
+	mainground_terrain_list.clear()
 	var tileset = MaingroundTileset
 	var i = 0
 	for tileset_source_count in range(tileset.get_source_count()):
@@ -105,7 +123,6 @@ func _populate_item_lists():
 			tiles_list.set_item_metadata(idx,tile)
 		
 		var terrains = list_all_terrains(tileset,src_id,src)
-		print(terrains.size())
 		for terrain in terrains:
 			
 			var icon_texture = terrain.get("icon_tile_texture",null)
@@ -120,7 +137,55 @@ func _populate_item_lists():
 			terrain_list.set_item_tooltip_enabled(idx,true)
 			terrain_list.set_item_tooltip(idx,terrain.get("name","no_name"))
 			terrain_list.set_item_metadata(idx,terrain)
-	
+
+	background_tiles_list.clear()
+	background_terrain_list.clear()
+	tileset = BackgroundTileset
+	i = 0
+	for tileset_source_count in range(tileset.get_source_count()):
+		var src_id = tileset.get_source_id(tileset_source_count)
+		var src : TileSetAtlasSource = tileset.get_source(src_id) as TileSetAtlasSource
+		
+		i += 1
+		
+		var container:MarginContainer
+		if i != 1:
+			container = background_tiles_list_container.duplicate(DUPLICATE_GROUPS)
+			background_tiles.add_child(container)
+		else:
+			container = background_tiles_list_container
+		
+		var tiles_list: ItemList = container.get_children().filter(func(x): return x.is_in_group("TilesList"))[0]
+		var terrain_list: ItemList = container.get_children().filter(func(x): return x.is_in_group("TerrainList"))[0]
+		container.name = str(i)
+		
+		tiles_list.clear()
+		terrain_list.clear()
+		
+		var tiles = list_all_tiles(tileset,src_id,src)
+		
+		for tile in tiles:
+			var idx = tiles_list.add_icon_item(tile.get("texture"))
+			
+			tile.erase("texture")
+			
+			tiles_list.set_item_metadata(idx,tile)
+		
+		var terrains = list_all_terrains(tileset,src_id,src)
+		for terrain in terrains:
+			
+			var icon_texture = terrain.get("icon_tile_texture",null)
+			if icon_texture == null:
+				icon_texture = ImageTexture.create_from_image(load("res://assets/icon.svg"))
+			
+			terrain.erase("icon_tile_texture")
+			terrain.erase("texture")
+			terrain.erase("name")
+				
+			var idx = terrain_list.add_icon_item(icon_texture,true)
+			terrain_list.set_item_tooltip_enabled(idx,true)
+			terrain_list.set_item_tooltip(idx,terrain.get("name","no_name"))
+			terrain_list.set_item_metadata(idx,terrain)
 
 
 func _connect_methods():
@@ -180,7 +245,7 @@ func list_all_tiles(tileset:TileSet,src_id:int,src: TileSetAtlasSource) -> Array
 		if not (src.get_alternative_tiles_count(tile_id)-1):
 			tile_altid = 0
 		else:
-			tile_altid = src.get_alternative_tile_id(tile_id,tiles_idx)
+			tile_altid = src.get_alternative_tile_id(tile_id,0)
 		
 		var tile_texture = AtlasTexture.new()
 		tile_texture.atlas = src.texture
@@ -201,8 +266,10 @@ func list_all_tiles(tileset:TileSet,src_id:int,src: TileSetAtlasSource) -> Array
 func _on_inv_container_tab_changed(_tab: int) -> void:
 	if inv_open and inv_container.current_tab == -1:
 		_close_inv()
+		
 	elif not inv_open:
 		_open_inv()
+		
 
 
 func _on_tab_container_tab_changed(_tab: int) -> void:
@@ -214,6 +281,7 @@ func _on_tab_container_tab_changed(_tab: int) -> void:
 
 func _open_inv():
 	if not inv_open:
+		%MoveButtonContainer.hide()
 		inv_open = true
 		var tween = get_tree().create_tween()
 		tween.tween_property(inv_container,"size_flags_stretch_ratio",inv_open_strech_ratio,0.2)
@@ -225,7 +293,8 @@ func _close_inv():
 		inv_open = false
 		var tween = get_tree().create_tween()
 		tween.tween_property(inv_container,"size_flags_stretch_ratio",0,0.1)
-		await_kill_tween(tween)
+		await await_kill_tween(tween)
+		%MoveButtonContainer.show()
 
 
 
@@ -248,6 +317,14 @@ func _on_item_list_item_selected(index:int,list:ItemList):
 		if _list != list:
 			_list.deselect_all()
 
+
+func deselect_selection():
+	active_selection = {}
+	selection_changed.emit(active_selection)
+	for _list in all_lists:
+		_list.deselect_all()
+
+
 func _tiles_terrain_container_update(container:MarginContainer):
 	if container.is_in_group("TileTerrainContainer"):
 		for list in container.get_children():
@@ -263,3 +340,62 @@ func _tiles_terrain_container_update(container:MarginContainer):
 func await_kill_tween(tween:Tween):
 	await tween.finished
 	tween.kill()
+
+
+func _on_settings_btn_pressed() -> void:
+	if not settings_open:
+		%GreyOut.show()
+		await _close_save_menu()
+		_open_settings()
+	else:
+		_close_settings()
+		%GreyOut.hide()
+		
+
+
+func _open_settings():
+	if not settings_open:
+		settings_open = true
+		settings_container.show()
+		var tween = get_tree().create_tween()
+		tween.tween_property(settings_container,"size_flags_stretch_ratio",0.5,0.1)
+		await_kill_tween(tween)
+
+
+func _close_settings():
+	if settings_open:
+		settings_closed.emit()
+		settings_open = false
+		var tween = get_tree().create_tween()
+		tween.tween_property(settings_container,"size_flags_stretch_ratio",0,0.1)
+		await await_kill_tween(tween)
+		settings_container.hide()
+
+
+func _on_save_btn_pressed() -> void:
+	if not save_menu_open:
+		%GreyOut.show()
+		await _close_settings()
+		_open_save_menu()
+		
+	else:
+		_close_save_menu()
+		%GreyOut.hide()
+
+
+func _open_save_menu():
+	if not save_menu_open:
+		save_menu_open = true
+		save_menu_container.show()
+		var tween = get_tree().create_tween()
+		tween.tween_property(save_menu_container,"size_flags_stretch_ratio",0.5,0.1)
+		await_kill_tween(tween)
+
+
+func _close_save_menu():
+	if save_menu_open:
+		save_menu_open = false
+		var tween = get_tree().create_tween()
+		tween.tween_property(save_menu_container,"size_flags_stretch_ratio",0,0.1)
+		await await_kill_tween(tween)
+		save_menu_container.hide()

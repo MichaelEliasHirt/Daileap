@@ -3,10 +3,10 @@ extends Node
 @export var GameMain: PackedScene
 @export var EditorMain: PackedScene
 
-@export var LaunchinEditor: bool
+@export var Launch_in_editor: bool
 
 func _ready() -> void:
-	if LaunchinEditor:
+	if Launch_in_editor:
 		launch_editor()
 	else:
 		launch_game()
