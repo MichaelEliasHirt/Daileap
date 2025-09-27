@@ -1,9 +1,14 @@
 extends Node2D
 
+@export_dir var level_chunks_path: String
+
 @export var MaingroundTileset: TileSet
 @export var BackgroundTileset: TileSet
 
-@export var start_chunk: LevelChunkRes
+@export var level_length: int = 5
+@export var end_chunk: PackedScene
+@export var test_chunk: LevelChunkRes
+
 @export_subgroup("Settings")
 @export var chunk_width: int = 14
 
@@ -13,47 +18,68 @@ extends Node2D
 
 var level_height: int
 var lastest_level_exit_position: int
+var all_chunks: Array
 
 
 func _ready() -> void:
 	mainground.tile_set = MaingroundTileset
 	background.tile_set = BackgroundTileset
-	
-	load_level(0)
+	_update_dir()
+	load_level(randi())
 
 
 
 func load_level(rand_seed:int):
 	seed(rand_seed)
 	
-	mainground.clear()
-	background.clear()
 	
-	
-	
-	camera_2d.limit_bottom = start_chunk.height * 16 - int(camera_2d.offset.y)
-	level_height = -start_chunk.height
+	camera_2d.limit_bottom = 13 * 16 - int(camera_2d.offset.y)
+	level_height = 0
 	lastest_level_exit_position = 0
 	
-	_add_chunk(start_chunk)
-	_add_chunk(load("uid://cmex37aagcvqo"))
-	_add_chunk(load("uid://cmex37aagcvqo"))
-	_add_chunk(load("uid://cmex37aagcvqo"))
-	_add_chunk(load("uid://cmex37aagcvqo"))
-	_add_chunk(load("uid://clf56qwcumc4a"))
+	if test_chunk:
+		_add_chunk(test_chunk)
+		return
+		
+	var allready_chosen_chunks: Array[LevelChunkRes]
 	
+	for x in range(level_length):
+		var chunk: LevelChunkRes
+		while true:
+			chunk = all_chunks.pick_random()
+			if not chunk in allready_chosen_chunks:
+				allready_chosen_chunks.append(chunk)
+				break
+				
+		_add_chunk(chunk)
 	
+	var ending = end_chunk.instantiate() as Node2D
+	$TileMaps.add_child(ending)
+	ending.position = Vector2i(((lastest_level_exit_position) * (chunk_width - 1) * 16),-(level_height + 11) * 16)
+	ending.regen_btn_pressed.connect(regen_btn_pressed)
+
+
+func regen_btn_pressed():
+	get_tree().reload_current_scene()
+
+
+func _update_dir():
+	all_chunks.clear()
+	for subpath in ResourceLoader.list_directory(level_chunks_path):
+		if ResourceLoader.exists(level_chunks_path + "/" + subpath):
+			var res = ResourceLoader.load(level_chunks_path + "/" + subpath)
+			if res is LevelChunkRes:
+				if res.difficulty >= 1:
+					all_chunks.append(res)
+
 
 func _add_chunk(level_chunk:LevelChunkRes):
 	level_height += level_chunk.height
 	var offset = Vector2i(lastest_level_exit_position * (chunk_width - 1),-level_height)
 	
-	print("current offset:" + str(offset))
 	_merge_tilemaps(mainground,level_chunk.mainground_tile_map_data,offset)
 	_merge_tilemaps(background,level_chunk.background_tile_map_data,offset)
 	
-	
-	print("current height:" + str(level_height))
 	lastest_level_exit_position += (level_chunk.exit_chunk - level_chunk.chunks_left)
 
 

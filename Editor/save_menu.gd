@@ -44,8 +44,9 @@ func _check_line_edit() -> void:
 func _update():
 	all_chunks.clear()
 	for subpath in ResourceLoader.list_directory(directory_path):
-		var res = ResourceLoader.load(directory_path + "/" + subpath, "LevelChunkRes")
-		all_chunks.append(res)
+		if ResourceLoader.exists(directory_path + "/" + subpath):
+			var res = ResourceLoader.load(directory_path + "/" + subpath)
+			all_chunks.append(res)
 
 
 func display_error(error:String):
@@ -82,6 +83,7 @@ func _save():
 
 
 func _on_editor_send_save_data(data: LevelChunkRes) -> void:
+	_update()
 	var chunk_name = data.name
 	if chunk_name.is_empty():
 		display_error("Name can not be emtpy")
@@ -103,7 +105,6 @@ func _on_editor_send_save_data(data: LevelChunkRes) -> void:
 				return
 		display_error("Name already exits")
 	else:
-		data.UID = get_random_UID()
 		var error = ResourceSaver.save(data,directory_path + "/" + chunk_name + ".tres")
 		if error:
 			display_error(error_string(error))

@@ -63,6 +63,9 @@ class_name PlayerController
 ##Animations must be named "latch" all lowercase as the check box says
 @export var falling: bool
 
+signal dash_indicator_on
+signal dash_indicator_off
+
 #Variables determined by the developer set ones.
 
 var move_right := true
@@ -92,7 +95,13 @@ var dashing_down: bool = false
 var dashing_left: bool = false
 var dashing_right: bool = false
 
-var dashCount: int
+var dashCount: int: 
+	set(value):
+		if dashCount != value:
+			if value == 0:
+				dash_indicator_off.emit()
+			else: dash_indicator_on.emit()
+		dashCount = value
 
 var jumped: bool = false
 

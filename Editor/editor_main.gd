@@ -333,20 +333,31 @@ func _on_move_right_btn_pressed() -> void:
 
 
 func _on_paint_btn_pressed() -> void:
+	_reset_tools()
 	current_tool_index = 0
 
 
 func _on_line_btn_pressed() -> void:
+	_reset_tools()
 	current_tool_index = 1
 
 
 func _on_rect_btn_pressed() -> void:
+	_reset_tools()
 	current_tool_index = 2
 
 
 func _on_fill_cell_btn_pressed() -> void:
+	_reset_tools()
 	current_tool_index = 3
 
 
 func _on_fill_auto_btn_pressed() -> void:
+	_reset_tools()
 	current_tool_index = 4
+
+
+func _reset_tools() -> void:
+	tool_start = false
+	erase_tool_start = false
+	tile_maps.clear_temp()
