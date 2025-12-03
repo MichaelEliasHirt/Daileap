@@ -8,3 +8,4 @@
 script = ExtResource("1_wasmj")
 GameMain = ExtResource("2_qtai0")
 EditorMain = ExtResource("3_hv4je")
+Launch_in_editor = true

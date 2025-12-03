@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://k4sqvnfx3m41"
-path="res://.godot/imported/Background.png-6d72d35f07f42b3845e8764c552bb4fb.ctex"
+uid="uid://c4k68c753tixv"
+path="res://.godot/imported/walk_vfx.png-3f22d7a49f775cc1364571cfb51ab3d4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Background.png"
-dest_files=["res://.godot/imported/Background.png-6d72d35f07f42b3845e8764c552bb4fb.ctex"]
+source_file="res://assets/character/walk_vfx.png"
+dest_files=["res://.godot/imported/walk_vfx.png-3f22d7a49f775cc1364571cfb51ab3d4.ctex"]
 
 [params]
 

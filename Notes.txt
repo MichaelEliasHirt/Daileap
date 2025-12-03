@@ -1,0 +1,30 @@
+
+*Tiles
+Terrain / AutoTile
+Walls
+AutoWall
+Fluids
+Decor [Front,Mid,Back]
+
+
+Moving Platforms
+Enemies (Not on Grid)
+Traps
+Specials
+
+
+
+TilemapLayers: 
+FrontDecor
+--Mainground (Tiles,Moving Platforms,Traps,Fluids)
+--Specialground (Specials)
+MidDecor
+BackDecor
+--Background (Walls)
+
+
+Edior Menu:
+Tiles (Autotile)
+Walls (Autowall)
+*Fluids
+*Decor

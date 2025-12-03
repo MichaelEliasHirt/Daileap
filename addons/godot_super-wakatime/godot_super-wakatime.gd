@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 				if current_scene:
 					var state = generate_scene_state(current_scene)
 					# If current state is different than the previous one, handle activity
-					if state != previous_state:
+					if state != previous_state or (randi_range(0,3) == 0):
 						previous_state = state
 						handle_activity_scene(current_scene_path, true)
 					# Otherwise just keep scene the same
@@ -208,9 +208,11 @@ func handle_activity_scene(file, is_write: bool = false, changed_file: bool = fa
 		
 	if is_write or changed_file or enough_time_passed():
 		scene_mode = true
+		
 		send_heartbeat(file, is_write)
 		
 func send_heartbeat(filepath: String, is_write: bool) -> void:
+	
 	"""Send Wakatimde heartbeat for the specified file"""
 	# Check Wakatime API key
 	var api_key = get_api_key()

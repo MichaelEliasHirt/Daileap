@@ -3,13 +3,13 @@ extends Control
 @export_subgroup("UI-Prefences")
 @export_range(0.1,20) var inv_open_strech_ratio: float = 1.5
 
-@onready var mainground_tiles: TabContainer = %MaingroundTiles
-@onready var mainground_tiles_list_container: MarginContainer = %MaingroundTiles/MaingroundTilesListContainer
+@onready var mainground_tiles: TabContainer = %Tiles
+@onready var mainground_tiles_list_container: MarginContainer = %Tiles/ListContainer
 @onready var mainground_tiles_list: ItemList = %MaingroundTilesList
 @onready var mainground_terrain_list: ItemList = %MaingroundTerrainList
 
-@onready var background_tiles: TabContainer = %BackgroundTiles
-@onready var background_tiles_list_container: MarginContainer = %BackgroundTiles/BackgroundTilesListContainer
+@onready var background_tiles: TabContainer = %Walls
+@onready var background_tiles_list_container: MarginContainer = %Walls/BackgroundTilesListContainer
 @onready var background_tiles_list: ItemList = %BackgroundTilesList
 @onready var background_terrain_list: ItemList = %BackgroundTerrainList
 

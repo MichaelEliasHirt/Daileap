@@ -1,7 +1,134 @@
-[gd_scene load_steps=27 format=3 uid="uid://7ybaa4xotguu"]
+[gd_scene load_steps=46 format=3 uid="uid://7ybaa4xotguu"]
 
 [ext_resource type="Script" uid="uid://dpby4nrsub6bc" path="res://Game/player_controller.gd" id="1_c5leg"]
-[ext_resource type="Texture2D" uid="uid://bpsgtfab5k1t0" path="res://assets/Character.png" id="2_h4tjw"]
+[ext_resource type="Texture2D" uid="uid://wf8le818ewga" path="res://assets/character/particle_sprite_test.png" id="2_0c3g1"]
+[ext_resource type="Texture2D" uid="uid://bpsgtfab5k1t0" path="res://assets/character/Character.png" id="2_h4tjw"]
+[ext_resource type="Texture2D" uid="uid://c4k68c753tixv" path="res://assets/character/walk_vfx.png" id="3_xhrf0"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_c5leg"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_xhrf0"]
+offsets = PackedFloat32Array(0.25, 1)
+colors = PackedColorArray(0.67481464, 0.67481464, 0.6748146, 1, 0.9428228, 0.94282264, 0.94282264, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0c3g1"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_c5leg"]
+offsets = PackedFloat32Array(0.25, 1)
+colors = PackedColorArray(0.67481464, 0.67481464, 0.6748146, 1, 0.9428228, 0.94282264, 0.94282264, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_47pij"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(0, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwljm"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dc5xv"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(96, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n07e0"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(144, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p77c3"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(192, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k6jfk"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(240, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qg03y"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wmwp3"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yu7p2"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jd2lv"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1v02h"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8uqo0"]
+atlas = ExtResource("3_xhrf0")
+region = Rect2(240, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h4tjw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_47pij")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vwljm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dc5xv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n07e0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p77c3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k6jfk")
+}],
+"loop": true,
+"name": &"run",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qg03y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wmwp3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yu7p2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jd2lv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1v02h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8uqo0")
+}],
+"loop": false,
+"name": &"run_start",
+"speed": 12.0
+}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dgdgw"]
 atlas = ExtResource("2_h4tjw")
@@ -194,45 +321,106 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4tjw"]
-size = Vector2(14, 29)
+size = Vector2(14, 28)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("PlayerSprite", "PlayerCollider")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_sprite", "player_collider")]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_c5leg")
-PlayerSprite = NodePath("AnimatedSprite2D")
-PlayerCollider = NodePath("CollisionShape2D")
-maxSpeed = 100.0
-jumpHeight = 2.1
-descendingGravityFactor = 1.1
-coyoteTime = 0.1
-wallSliding = 5.0
-dashLength = 2.0
-dashSpeed = 2.0
-jump = true
-idle = true
-walk = true
-slide = true
-falling = true
+player_sprite = NodePath("AnimatedSprite2D")
+player_collider = NodePath("CollisionShape2D")
+metadata/_edit_lock_ = true
+
+[node name="ParticleGenerators" type="Node2D" parent="."]
+position = Vector2(0, -1)
+
+[node name="RunParticleGen" type="CPUParticles2D" parent="ParticleGenerators" groups=["ParticleGenerator"]]
+material = SubResource("CanvasItemMaterial_c5leg")
+emitting = false
+amount = 2
+texture = ExtResource("2_0c3g1")
+lifetime = 0.3
+randomness = 0.2
+emission_shape = 3
+emission_rect_extents = Vector2(10, 1)
+spread = 10.0
+gravity = Vector2(0, -150)
+initial_velocity_max = 30.3
+tangential_accel_min = 1.51
+tangential_accel_max = 22.73
+damping_max = 9.09
+color_initial_ramp = SubResource("Gradient_xhrf0")
+anim_speed_max = 0.8
+anim_offset_max = 0.6
+
+[node name="WallslideParticleGen" type="CPUParticles2D" parent="ParticleGenerators" groups=["ParticleGenerator"]]
+material = SubResource("CanvasItemMaterial_c5leg")
+position = Vector2(9, -6)
+emitting = false
+amount = 10
+texture = ExtResource("2_0c3g1")
+lifetime = 0.4
+randomness = 0.52
+lifetime_randomness = 0.42
+emission_shape = 4
+emission_points = PackedVector2Array(0, -7, 0, 2)
+emission_colors = PackedColorArray()
+direction = Vector2(-1, 0)
+spread = 90.0
+gravity = Vector2(0, 100)
+initial_velocity_max = 40.0
+tangential_accel_max = 22.73
+damping_max = 100.0
+color_initial_ramp = SubResource("Gradient_xhrf0")
+anim_speed_max = 0.8
+anim_offset_max = 0.8
+
+[node name="JumpParticleGen" type="CPUParticles2D" parent="ParticleGenerators" groups=["GlobalParticleGenerator"]]
+material = SubResource("CanvasItemMaterial_0c3g1")
+position = Vector2(-1, 2)
+emitting = false
+amount = 12
+texture = ExtResource("2_0c3g1")
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.6
+emission_shape = 3
+emission_rect_extents = Vector2(25, 2)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 20.0
+color_initial_ramp = SubResource("Gradient_c5leg")
+anim_speed_max = 0.8
+anim_offset_max = 0.4
+
+[node name="ParticlesOnPlayerSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = -3
+position = Vector2(0, -24)
+sprite_frames = SubResource("SpriteFrames_h4tjw")
+animation = &"run"
+autoplay = "default"
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -21.000002)
-scale = Vector2(0.9, 0.9)
+position = Vector2(0, 1)
 sprite_frames = SubResource("SpriteFrames_n07e0")
-animation = &"jump_down"
-frame = 2
-frame_progress = 1.0
+animation = &"jump_up"
+offset = Vector2(0, -24)
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -14.5)
+visible = false
+position = Vector2(0, -14)
 shape = SubResource("RectangleShape2D_h4tjw")
 
 [node name="RayCastRight" type="RayCast2D" parent="."]
+visible = false
 position = Vector2(0, -15)
 target_position = Vector2(16, 0)
 collision_mask = 3
 
 [node name="RayCastLeft" type="RayCast2D" parent="."]
+visible = false
 position = Vector2(0, -15)
 target_position = Vector2(-16, 0)
 collision_mask = 3
