@@ -24,7 +24,7 @@ BackDecor
 
 
 Edior Menu:
-Tiles (Autotile)
-Walls (Autowall)
-*Fluids
-*Decor
+Tiles (Autotile)		Tools: Pencil,Line,Rect,Bucket
+Walls (Autowall)		Tools: Pencil,Line,Rect,Bucket
+*Fluids					Tools: Pencil,Rect,Bucket
+*Decor					Tools: Pencil

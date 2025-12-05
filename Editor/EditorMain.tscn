@@ -1,14 +1,13 @@
 [gd_scene load_steps=117 format=3 uid="uid://ijd8340qnv2b"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://Editor/editor_main.gd" id="1_0by7s"]
-[ext_resource type="TileSet" uid="uid://dqltvs87wbfs5" path="res://Game/mainground_tileset.tres" id="2_byuek"]
 [ext_resource type="Script" uid="uid://dsug7thwo4kis" path="res://Editor/editor_ui.gd" id="2_klsmt"]
 [ext_resource type="TileSet" uid="uid://bpnly4l6tgk65" path="res://Game/background_tileset.tres" id="3_52hkk"]
-[ext_resource type="Texture2D" uid="uid://ba34v2ynk1h80" path="res://assets/editor/Auto_Btn1.png" id="4_52hkk"]
+[ext_resource type="Script" uid="uid://derkv63l2yws0" path="res://Editor/tileset_info.gd" id="3_ggfqn"]
 [ext_resource type="Script" uid="uid://beo7f7dw48ml2" path="res://Editor/fit_to_screen.gd" id="4_eaaeh"]
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://Editor/tile_maps.gd" id="5_nn3ui"]
-[ext_resource type="Texture2D" uid="uid://dm4wfaodwfrpf" path="res://assets/editor/Auto_Btn2.png" id="5_rtp05"]
 [ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://Editor/GridHighlight.gdshader" id="6_2cvn4"]
+[ext_resource type="TileSet" uid="uid://cu3o1w47wkw0n" path="res://Game/tiles_tileset.tres" id="6_firr7"]
 [ext_resource type="Texture2D" uid="uid://dx7b6erj4ulhm" path="res://assets/editor/TempTileset.png" id="6_ggfqn"]
 [ext_resource type="Texture2D" uid="uid://3e78ed4d1f6w" path="res://assets/editor/Slider_Handel.png" id="6_nn3ui"]
 [ext_resource type="Texture2D" uid="uid://da4xfrwaaeibf" path="res://assets/editor/Border.png" id="6_oqyr1"]
@@ -29,6 +28,16 @@
 [ext_resource type="Script" uid="uid://dk4odooa2lbic" path="res://Editor/menu_btns.gd" id="19_hvdjx"]
 [ext_resource type="Texture2D" uid="uid://cp0aux1dmm77r" path="res://assets/editor/ArrowBtns.png" id="24_w1p71"]
 [ext_resource type="Texture2D" uid="uid://buytq20f1bbcj" path="res://assets/editor/ToolsBtns.png" id="27_firr7"]
+
+[sub_resource type="Resource" id="Resource_ggfqn"]
+script = ExtResource("3_ggfqn")
+group_names = Array[String](["Industrial"])
+metadata/_custom_type_script = "uid://derkv63l2yws0"
+
+[sub_resource type="Resource" id="Resource_firr7"]
+script = ExtResource("3_ggfqn")
+group_names = Array[String](["Industrial"])
+metadata/_custom_type_script = "uid://derkv63l2yws0"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_firr7"]
 texture = ExtResource("6_ggfqn")
@@ -386,17 +395,12 @@ ItemList/constants/h_separation = 20
 ItemList/constants/icon_margin = 0
 ItemList/constants/v_separation = 20
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rtp05"]
-bg_color = Color(0.6, 0.6, 0.6, 0.301961)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [node name="Editor" type="Node2D"]
 script = ExtResource("1_0by7s")
-MaingroundTileset = ExtResource("2_byuek")
-BackgroundTileset = ExtResource("3_52hkk")
+tiles_tileset = ExtResource("6_firr7")
+tiles_tileset_info = SubResource("Resource_ggfqn")
+walls_tileset = ExtResource("3_52hkk")
+walls_tileset_info = SubResource("Resource_firr7")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(1.9, 1.9)
@@ -424,7 +428,6 @@ navigation_enabled = false
 
 [node name="Mainground" type="TileMapLayer" parent="TileMaps"]
 unique_name_in_owner = true
-tile_set = ExtResource("2_byuek")
 occlusion_enabled = false
 
 [node name="PrevTilemap" type="TileMapLayer" parent="TileMaps"]
@@ -1007,7 +1010,8 @@ texture_pressed = SubResource("AtlasTexture_8m5k1")
 texture_hover = SubResource("AtlasTexture_grcib")
 stretch_mode = 5
 
-[node name="FillAutoBtn" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+[node name="_FillAutoBtn_" type="TextureButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns"]
+visible = false
 z_index = 11
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -1072,40 +1076,6 @@ max_columns = 5
 icon_mode = 0
 fixed_icon_size = Vector2i(50, 50)
 
-[node name="MaingroundTerrainList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Tiles/ListContainer" groups=["List", "TerrainList"]]
-unique_name_in_owner = true
-layout_mode = 2
-theme = SubResource("Theme_p8nt8")
-theme_override_styles/panel = SubResource("StyleBoxFlat_rtp05")
-max_columns = 5
-icon_mode = 0
-fixed_icon_size = Vector2i(50, 50)
-
-[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Tiles/ListContainer"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Tiles/ListContainer/Control" groups=["AutoTileBtns"]]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -56.0
-offset_top = -29.0
-offset_right = 56.0
-offset_bottom = 29.0
-grow_horizontal = 0
-grow_vertical = 0
-scale = Vector2(0.5, 0.5)
-size_flags_horizontal = 8
-size_flags_vertical = 8
-tooltip_text = "Auto Tiles:"
-theme_override_icons/checked = ExtResource("4_52hkk")
-theme_override_icons/unchecked = ExtResource("5_rtp05")
-
 [node name="Walls" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
 unique_name_in_owner = true
 visible = false
@@ -1116,7 +1086,7 @@ current_tab = 0
 tabs_position = 1
 metadata/_tab_index = 1
 
-[node name="BackgroundTilesListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls" groups=["TileTerrainContainer"]]
+[node name="ListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls" groups=["TileTerrainContainer"]]
 layout_mode = 2
 mouse_filter = 0
 theme_override_constants/margin_left = 20
@@ -1125,104 +1095,13 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 metadata/_tab_index = 0
 
-[node name="BackgroundTilesList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls/BackgroundTilesListContainer" groups=["List", "TilesList"]]
+[node name="WallsList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls/ListContainer" groups=["List", "TilesList"]]
 unique_name_in_owner = true
 layout_mode = 2
 theme = SubResource("Theme_p8nt8")
 max_columns = 5
 icon_mode = 0
 fixed_icon_size = Vector2i(50, 50)
-
-[node name="BackgroundTerrainList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls/BackgroundTilesListContainer" groups=["List", "TerrainList"]]
-unique_name_in_owner = true
-layout_mode = 2
-theme = SubResource("Theme_p8nt8")
-theme_override_styles/panel = SubResource("StyleBoxFlat_rtp05")
-max_columns = 5
-icon_mode = 0
-fixed_icon_size = Vector2i(50, 50)
-
-[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls/BackgroundTilesListContainer"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Walls/BackgroundTilesListContainer/Control" groups=["AutoTileBtns"]]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -56.0
-offset_top = -29.0
-offset_right = 56.0
-offset_bottom = 29.0
-grow_horizontal = 0
-grow_vertical = 0
-scale = Vector2(0.5, 0.5)
-size_flags_horizontal = 8
-size_flags_vertical = 8
-tooltip_text = "Auto Tiles:"
-theme_override_icons/checked = ExtResource("4_52hkk")
-theme_override_icons/unchecked = ExtResource("5_rtp05")
-
-[node name="BackgroundTiles2" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 0
-current_tab = 0
-tabs_position = 1
-metadata/_tab_index = 2
-
-[node name="BackgroundTilesListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles2" groups=["TileTerrainContainer"]]
-layout_mode = 2
-mouse_filter = 0
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-metadata/_tab_index = 0
-
-[node name="BackgroundTilesList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles2/BackgroundTilesListContainer" groups=["List", "TilesList"]]
-layout_mode = 2
-theme = SubResource("Theme_p8nt8")
-max_columns = 5
-icon_mode = 0
-fixed_icon_size = Vector2i(50, 50)
-
-[node name="BackgroundTerrainList" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles2/BackgroundTilesListContainer" groups=["List", "TerrainList"]]
-layout_mode = 2
-theme = SubResource("Theme_p8nt8")
-theme_override_styles/panel = SubResource("StyleBoxFlat_rtp05")
-max_columns = 5
-icon_mode = 0
-fixed_icon_size = Vector2i(50, 50)
-
-[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles2/BackgroundTilesListContainer"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="AutoTileBtn" type="CheckButton" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/BackgroundTiles2/BackgroundTilesListContainer/Control" groups=["AutoTileBtns"]]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -56.0
-offset_top = -29.0
-offset_right = 56.0
-offset_bottom = 29.0
-grow_horizontal = 0
-grow_vertical = 0
-scale = Vector2(0.5, 0.5)
-size_flags_horizontal = 8
-size_flags_vertical = 8
-tooltip_text = "Auto Tiles:"
-theme_override_icons/checked = ExtResource("4_52hkk")
-theme_override_icons/unchecked = ExtResource("5_rtp05")
 
 [node name="GreyOut" type="ColorRect" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer"]
 unique_name_in_owner = true
@@ -1272,5 +1151,5 @@ color = Color(0, 0, 0, 0.63529414)
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/LineBtn" to="." method="_on_line_btn_pressed"]
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/RectBtn" to="." method="_on_rect_btn_pressed"]
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/FillCellBtn" to="." method="_on_fill_cell_btn_pressed"]
-[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/FillAutoBtn" to="." method="_on_fill_auto_btn_pressed"]
+[connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/_FillAutoBtn_" to="." method="_on_fill_auto_btn_pressed"]
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control2/MoveRightBtn" to="." method="_on_move_right_btn_pressed"]

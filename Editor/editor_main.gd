@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var tile_maps: Node2D = %TileMaps
+@onready var tile_maps: TileMapManager = %TileMaps
 @onready var camera: Camera2D = $Camera2D
 
 @onready var UI: Control = %UI
@@ -11,8 +11,10 @@ extends Node2D
 @onready var exit_arrow: Node2D = %ExitArrow
 
 
-@export var MaingroundTileset: TileSet
-@export var BackgroundTileset: TileSet
+@export var tiles_tileset: TileSet
+@export var tiles_tileset_info: TileSetInfo
+@export var walls_tileset: TileSet
+@export var walls_tileset_info: TileSetInfo
 
 @export_subgroup("Settings")
 @export var chunk_width: int = 14
@@ -49,10 +51,10 @@ var exit_chunk:int = 0
 func _ready() -> void:
 	get_viewport().size_changed.connect(fit_to_screen)
 	fit_to_screen()
-	fix_all_terrains(MaingroundTileset)
-	fix_all_terrains(BackgroundTileset)
-	mainground.tile_set = MaingroundTileset
-	background.tile_set = BackgroundTileset
+	#fix_all_terrains(tiles_tileset)
+	#fix_all_terrains(walls_tileset)
+	mainground.tile_set = tiles_tileset
+	background.tile_set = walls_tileset
 	
 	_on_vertical_slider_value_changed(0)
 
@@ -72,13 +74,13 @@ func _on_control_gui_input(event: InputEvent) -> void:
 					if event is InputEventMouseMotion:
 						if abs(event.screen_relative.x) > 16 or abs(event.screen_relative.x) > 16:
 							if event.button_mask == 1:
-								tile_maps.place_mouse_coords(get_global_mouse_position() - (event.screen_relative/2))
+								tile_maps.place(get_global_mouse_position() - (event.screen_relative/2))
 							elif event.button_mask == 2:
-								tile_maps.erase_mouse_coords(get_global_mouse_position() - (event.screen_relative/2))
+								tile_maps.place(get_global_mouse_position() - (event.screen_relative/2),true)
 					if event.button_mask == 1:
-						tile_maps.place_mouse_coords(get_global_mouse_position())
+						tile_maps.place(get_global_mouse_position())
 					elif event.button_mask == 2:
-						tile_maps.erase_mouse_coords(get_global_mouse_position())
+						tile_maps.place(get_global_mouse_position(),true)
 				1:
 					if event is InputEventMouseButton:
 						if not event.is_echo():
@@ -91,21 +93,21 @@ func _on_control_gui_input(event: InputEvent) -> void:
 								
 					if tool_start:
 						if event.button_mask == 1:
-							tile_maps.line_mouse_coords(tool_first_coord,get_global_mouse_position(),true)
+							tile_maps.line(tool_first_coord,get_global_mouse_position(),false,true)
 							
 						elif event.is_released():
 							tool_start = false
 							tile_maps.clear_temp()
-							tile_maps.line_mouse_coords(tool_first_coord,get_global_mouse_position())
+							tile_maps.line(tool_first_coord,get_global_mouse_position())
 						
 					if erase_tool_start:
 						if event.button_mask == 2:
-							tile_maps.erase_line_mouse_coords(erase_tool_first_coord,get_global_mouse_position(),true)
+							tile_maps.line(erase_tool_first_coord,get_global_mouse_position(),true,true)
 							
 						elif event.is_released():
 							erase_tool_start = false
 							tile_maps.clear_temp()
-							tile_maps.erase_line_mouse_coords(erase_tool_first_coord,get_global_mouse_position())
+							tile_maps.line(erase_tool_first_coord,get_global_mouse_position(),true)
 				2:
 					if event is InputEventMouseButton:
 						if not event.is_echo():
@@ -118,21 +120,43 @@ func _on_control_gui_input(event: InputEvent) -> void:
 								
 					if tool_start:
 						if event.button_mask == 1:
-							tile_maps.rect_mouse_coords(tool_first_coord,get_global_mouse_position(),true)
+							tile_maps.rect(tool_first_coord,get_global_mouse_position(),false,true)
 							
 						elif event.is_released():
 							tool_start = false
 							tile_maps.clear_temp()
-							tile_maps.rect_mouse_coords(tool_first_coord,get_global_mouse_position())
+							tile_maps.rect(tool_first_coord,get_global_mouse_position())
 						
 					if erase_tool_start:
 						if event.button_mask == 2:
-							tile_maps.erase_rect_mouse_coords(erase_tool_first_coord,get_global_mouse_position(),true)
+							tile_maps.rect(erase_tool_first_coord,get_global_mouse_position(),true,true)
 							
 						elif event.is_released():
 							erase_tool_start = false
 							tile_maps.clear_temp()
-							tile_maps.erase_rect_mouse_coords(erase_tool_first_coord,get_global_mouse_position())
+							tile_maps.rect(erase_tool_first_coord,get_global_mouse_position(),true)
+				#3:
+					#if event is InputEventMouseButton:
+						#if not event.is_echo():
+							#if event.button_mask == 1:
+								#if tool_start:
+									#tool_start = false
+									#if tile_maps.is_hovering_temp(get_global_mouse_position()):
+										#tile_maps.fill_by_tile(get_global_mouse_position())
+									#tile_maps.clear_temp()
+								#else:
+									#tool_start = true
+									#tile_maps.fill_by_tile(get_global_mouse_position(),true)
+								#
+							#elif event.button_mask == 2:
+								#if erase_tool_start:
+									#erase_tool_start = false
+									#if tile_maps.is_hovering_temp(get_global_mouse_position()):
+										#tile_maps.erase_fill_by_tile(get_global_mouse_position())
+									#tile_maps.clear_temp()
+								#else:
+									#erase_tool_start = true
+									#tile_maps.erase_fill_by_tile(get_global_mouse_position(),true)
 				3:
 					if event is InputEventMouseButton:
 						if not event.is_echo():
@@ -140,32 +164,10 @@ func _on_control_gui_input(event: InputEvent) -> void:
 								if tool_start:
 									tool_start = false
 									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.fill_by_tile_mouse_coords(get_global_mouse_position())
+										tile_maps.fill(get_global_mouse_position())
 									tile_maps.clear_temp()
 								else:
-									tool_start = true
-									tile_maps.fill_by_tile_mouse_coords(get_global_mouse_position(),true)
-								
-							elif event.button_mask == 2:
-								if erase_tool_start:
-									erase_tool_start = false
-									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.erase_fill_by_tile_mouse_coords(get_global_mouse_position())
-									tile_maps.clear_temp()
-								else:
-									erase_tool_start = true
-									tile_maps.erase_fill_by_tile_mouse_coords(get_global_mouse_position(),true)
-				4:
-					if event is InputEventMouseButton:
-						if not event.is_echo():
-							if event.button_mask == 1:
-								if tool_start:
-									tool_start = false
-									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.fill_by_terrain_mouse_coords(get_global_mouse_position())
-									tile_maps.clear_temp()
-								else:
-									var success = tile_maps.fill_by_terrain_mouse_coords(get_global_mouse_position(),true)
+									var success = tile_maps.fill(get_global_mouse_position(),false,true)
 									if success:
 										tool_start = true
 									else: tool_start = false
@@ -174,10 +176,10 @@ func _on_control_gui_input(event: InputEvent) -> void:
 								if erase_tool_start:
 									erase_tool_start = false
 									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.erase_fill_by_terrain_mouse_coords(get_global_mouse_position())
+										tile_maps.fill(get_global_mouse_position(),true)
 									tile_maps.clear_temp()
 								else:
-									var success = tile_maps.erase_fill_by_terrain_mouse_coords(get_global_mouse_position(),true)
+									var success = tile_maps.fill(get_global_mouse_position(),true,true)
 									if success:
 										erase_tool_start = true
 									else: erase_tool_start = false
@@ -186,42 +188,42 @@ func _on_control_gui_input(event: InputEvent) -> void:
 func _on_ui_selection_changed(_selection: Dictionary) -> void:
 	pass # Replace with function body.
 
-
-func fix_all_terrains(tileset:TileSet):
-	var terrains: Array
-	
-	for terrain_sets_idx in range(tileset.get_terrain_sets_count()):
-		var terrains_ := []
-		for terrain_idx in range(tileset.get_terrains_count(terrain_sets_idx)):
-			terrains_.append([])
-		terrains.append(terrains_)
-			
-			
-	for src_idx in tileset.get_source_count():
-		var src := tileset.get_source(tileset.get_source_id(src_idx))
-		
-		for tiles_idx in range(src.get_tiles_count()):
-			var tile_id := src.get_tile_id(tiles_idx)
-			var tiledata = src.get_tile_data(tile_id, 0)
-			
-			if tiledata.terrain_set != -1 and tiledata.terrain != -1:
-				for bit in range(15):
-					if tiledata.is_valid_terrain_peering_bit(bit):
-						if tiledata.get_terrain_peering_bit(bit) != -1:
-							tiledata.set_meta("has_perring_bit_source",src)
-							break
-							
-				terrains[tiledata.terrain_set][tiledata.terrain].append(tiledata)
-				
-	for terrains_ in terrains:
-		for terrain in terrains_:
-			if terrain.all(func(x): return x.has_meta("has_perring_bit_source")):
-				var src = terrain[terrain.find_custom(func(x): return x.has_meta("has_perring_bit_source"))].get_meta("has_perring_bit_source") as TileSetAtlasSource
-				var altid = src.create_alternative_tile(Vector2i(0,0))
-				var alt_tiledata = src.get_tile_data(Vector2i(0,0),altid) as TileData
-				alt_tiledata.terrain_set = terrain.front().terrain_set
-				alt_tiledata.terrain = terrain.front().terrain
-
+#
+#func fix_all_terrains(tileset:TileSet):
+	#var terrains: Array
+	#pass
+	##for terrain_sets_idx in range(tileset.get_terrain_sets_count()):
+		##var terrains_ := []
+		##for terrain_idx in range(tileset.get_terrains_count(terrain_sets_idx)):
+			##terrains_.append([])
+		##terrains.append(terrains_)
+			##
+			##
+	##for src_idx in tileset.get_source_count():
+		##var src := tileset.get_source(tileset.get_source_id(src_idx))
+		##
+		##for tiles_idx in range(src.get_tiles_count()):
+			##var tile_id := src.get_tile_id(tiles_idx)
+			##var tiledata = src.get_tile_data(tile_id, 0)
+			##
+			##if tiledata.terrain_set != -1 and tiledata.terrain != -1:
+				##for bit in range(15):
+					##if tiledata.is_valid_terrain_peering_bit(bit):
+						##if tiledata.get_terrain_peering_bit(bit) != -1:
+							##tiledata.set_meta("has_perring_bit_source",src)
+							##break
+							##
+				##terrains[tiledata.terrain_set][tiledata.terrain].append(tiledata)
+				##
+	##for terrains_ in terrains:
+		##for terrain in terrains_:
+			##if terrain.all(func(x): return x.has_meta("has_perring_bit_source")):
+				##var src = terrain[terrain.find_custom(func(x): return x.has_meta("has_perring_bit_source"))].get_meta("has_perring_bit_source") as TileSetAtlasSource
+				##var altid = src.create_alternative_tile(Vector2i(0,0))
+				##var alt_tiledata = src.get_tile_data(Vector2i(0,0),altid) as TileData
+				##alt_tiledata.terrain_set = terrain.front().terrain_set
+				##alt_tiledata.terrain = terrain.front().terrain
+#
 
 func _on_vertical_slider_value_changed(value: float) -> void:
 	last_vslider_value = value -1

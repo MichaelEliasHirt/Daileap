@@ -1,4 +1,4 @@
-extends Node2D
+class_name TileMapManager extends Node2D
 
 @onready var debug_info_label: Label = %DebugInfoLabel
 @onready var grid: ColorRect = %HighlightGrid
@@ -32,137 +32,73 @@ func _process(_delta: float) -> void:
 	grid.material.set_shader_parameter("mouse_position", grid.get_global_mouse_position())
 
 
-func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
-	if active_tilemap_layer:
-		active_tilemap_layer.set_cell(at,source,tilecoords,tilealtid)
+#func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
+	#if active_tilemap_layer:
+		#active_tilemap_layer.set_cell(at,source,tilecoords,tilealtid)
 
 
 func _place_terrain(ats:Array[Vector2i], terrainset:int, terrainid:int):
 	if active_tilemap_layer:
 		active_tilemap_layer.set_cells_terrain_connect(ats,terrainset,terrainid)
 
-
-func place(at: Vector2i, temp = false):
-	if active_selection:
-		if is_placeable_location(at):
-			if temp:
-				%PrevTilemap.set_cell(at,0,Vector2i(0,0),0)
-				return
-			tilemap_changed.emit()
-			match selection_type:
-				SelectionType.tile:
-					_place_tile(at, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				SelectionType.terrain:
-					_place_terrain([at], selection_terrainset, selection_terrainid)
-
-
-func erase(at: Vector2i, temp = false):
-	if active_selection:
-		if is_placeable_location(at):
-			if active_tilemap_layer:
-				if temp:
-					%PrevTilemap.set_cell(at,0,Vector2i(1,0),0)
-					return
-				tilemap_changed.emit()
-				active_tilemap_layer.erase_cell(at)
-
-
-func erase_mouse_coords(at: Vector2, temp = false):
-	erase(%Mainground.local_to_map(to_local(at)),temp)
-
-
-func place_mouse_coords(at: Vector2, temp = false):
-	place(%Mainground.local_to_map(to_local(at)),temp)
-
-
 func clear_temp():
 	%PrevTilemap.clear()
 
-
-func is_hovering_temp(at:Vector2) -> bool:
+func is_hovering_temp(at: Vector2) -> bool:
 	return %PrevTilemap.get_cell_source_id(%PrevTilemap.local_to_map(to_local(at))) != -1
 
 
-func fill_by_tile_mouse_coords(at: Vector2, temp = false):
+func place(at: Vector2, erase := false, temp := false):
 	if active_selection:
-		var local_at = %PrevTilemap.to_local(at)
-		if is_placeable_location(%PrevTilemap.local_to_map(local_at)):
-			var cell_coords := get_fill_cells_by_cell(%PrevTilemap.local_to_map(local_at))
-
+		var local_at = %Mainground.local_to_map(to_local(at))
+		if is_placeable_location(local_at):
 			if temp:
-				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
+				%PrevTilemap.set_cell(local_at,0,Vector2i(0,0),0)
 				return
-			
 			tilemap_changed.emit()
-			match selection_type:
-				SelectionType.tile:
-					for coords in cell_coords:
-						_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				SelectionType.terrain:
-					_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+			#match selection_type:
+				#SelectionType.tile:
+					#_place_tile(at, selection_tilesrc, selection_tilecoords,selection_tilealtid)
+				#SelectionType.terrain:
+			if erase:
+				active_tilemap_layer.erase_cell(local_at)
+			else:
+				_place_terrain([local_at], selection_terrainset, selection_terrainid)
 
 
-func erase_fill_by_tile_mouse_coords(at: Vector2, temp = false):
-	if active_selection:
-		var local_at = %PrevTilemap.to_local(at)
-		if is_placeable_location(%PrevTilemap.local_to_map(local_at)):
-			var cell_coords := get_fill_cells_by_cell(%PrevTilemap.local_to_map(local_at))
-
-			if temp:
-				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
-				return
-			
-			tilemap_changed.emit()
-			for coords in cell_coords:
-				active_tilemap_layer.erase_cell(coords)
-
-
-func fill_by_terrain_mouse_coords(at: Vector2, temp = false) -> bool:
+func fill(at: Vector2,erase := false, temp := false) -> bool:
 	if active_selection:
 		var local_at = %PrevTilemap.to_local(at)
 		if is_placeable_location(%PrevTilemap.local_to_map(local_at)):
 			var cell_coords := get_fill_cells_by_terrain(%PrevTilemap.local_to_map(local_at))
 			if cell_coords.is_empty():
-				return false
+				cell_coords = get_fill_cells_by_cell(%PrevTilemap.local_to_map(local_at))
+				
 			if temp:
 				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
-				return true
-			
-			tilemap_changed.emit()
-			match selection_type:
-				SelectionType.tile:
+				if erase:
 					for coords in cell_coords:
-						_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				SelectionType.terrain:
-					_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
-	return true
-
-func erase_fill_by_terrain_mouse_coords(at: Vector2, temp = false) -> bool:
-	if active_selection:
-		var local_at = %PrevTilemap.to_local(at)
-		if is_placeable_location(%PrevTilemap.local_to_map(local_at)):
-			var cell_coords := get_fill_cells_by_terrain(%PrevTilemap.local_to_map(local_at))
-			if cell_coords.is_empty():
-				return false
-			if temp:
-				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+				else:
+					for coords in cell_coords:
+						%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
 				return true
 			
 			tilemap_changed.emit()
-			for coords in cell_coords:
-				active_tilemap_layer.erase_cell(coords)
+			#match selection_type:
+				#SelectionType.tile:
+					#for coords in cell_coords:
+						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
+				#SelectionType.terrain:
+			if not erase:
+				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+			else:
+				for coords in cell_coords:
+					active_tilemap_layer.erase_cell(coords)
 	return true
 
 
-func rect_mouse_coords(at: Vector2, to: Vector2, temp = false):
+func rect(at: Vector2, to: Vector2, erase := false, temp := false):
 	if active_selection:
 		var local_at = %PrevTilemap.to_local(at)
 		var local_to = %PrevTilemap.to_local(to)
@@ -171,38 +107,28 @@ func rect_mouse_coords(at: Vector2, to: Vector2, temp = false):
 
 			if temp:
 				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
-				return
-			
-			tilemap_changed.emit()
-			match selection_type:
-				SelectionType.tile:
+				if erase:
 					for coords in cell_coords:
-						_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				SelectionType.terrain:
-					_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
-
-
-func erase_rect_mouse_coords(at: Vector2, to: Vector2, temp = false):
-	if active_selection:
-		var local_at = %PrevTilemap.to_local(at)
-		var local_to = %PrevTilemap.to_local(to)
-		if is_placeable_location(%PrevTilemap.local_to_map(local_at)) and is_placeable_location(%PrevTilemap.local_to_map(local_to)):
-			var cell_coords := get_rect_cells(%PrevTilemap.local_to_map(local_at), %PrevTilemap.local_to_map(local_to))
-
-			if temp:
-				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+				else:
+					for coords in cell_coords:
+						%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
 				return
 			
 			tilemap_changed.emit()
-			for coords in cell_coords:
-				active_tilemap_layer.erase_cell(coords)
+			if erase:
+				for coords in cell_coords:
+					active_tilemap_layer.erase_cell(coords)
+			else:
+				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+			#match selection_type:
+				#SelectionType.tile:
+					#for coords in cell_coords:
+						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
+				#SelectionType.terrain:
 
 
-func line_mouse_coords(at: Vector2, to: Vector2, temp = false):
+func line(at: Vector2, to: Vector2, erase := false, temp := false):
 	if active_selection:
 		var local_at = %PrevTilemap.to_local(at)
 		var local_to = %PrevTilemap.to_local(to)
@@ -212,36 +138,27 @@ func line_mouse_coords(at: Vector2, to: Vector2, temp = false):
 
 			if temp:
 				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
-				return
-			
-			tilemap_changed.emit()
-			match selection_type:
-				SelectionType.tile:
+				if erase:
 					for coords in cell_coords:
-						_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				SelectionType.terrain:
-					_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
-
-
-func erase_line_mouse_coords(at: Vector2, to: Vector2, temp = false):
-	if active_selection:
-		var local_at = %PrevTilemap.to_local(at)
-		var local_to = %PrevTilemap.to_local(to)
-		if is_placeable_location(%PrevTilemap.local_to_map(local_at)) and is_placeable_location(%PrevTilemap.local_to_map(local_to)):
-
-			var cell_coords := get_intersecting_cells(local_at,local_to)
-
-			if temp:
-				clear_temp()
-				for coords in cell_coords:
-					%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
+				else:
+					for coords in cell_coords:
+						%PrevTilemap.set_cell(coords,0,Vector2i(0,0),0)
 				return
 			
 			tilemap_changed.emit()
-			for coords in cell_coords:
-				active_tilemap_layer.erase_cell(coords)
+			
+			if erase:
+				for coords in cell_coords:
+					active_tilemap_layer.erase_cell(coords)
+			else:
+				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+			#match selection_type:
+				#SelectionType.tile:
+					#for coords in cell_coords:
+						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
+				#SelectionType.terrain:
+
 
 
 func get_fill_cells_by_cell(at: Vector2) -> Array[Vector2i]:
@@ -400,25 +317,14 @@ func is_placeable_location(at:Vector2i):
 func _on_ui_selection_changed(selection: Dictionary) -> void:
 	active_selection = selection
 	if active_selection:
-		selection_type = active_selection.get("type")
-		match selection_type:
-			SelectionType.tile:
-				selection_tileset = active_selection.get("tileset")
-				selection_tilesrc = active_selection.get("tilesrc")
-				selection_tilecoords = active_selection.get("tilecoords")
-				selection_tilealtid = active_selection.get("tilealtid")
-				
-			SelectionType.terrain:
-				selection_tileset = active_selection.get("tileset")
-				selection_terrainset = active_selection.get("terrainset")
-				selection_terrainid = active_selection.get("terrainid")
-			_:
-				print("tf")
-
-	
+		
+		selection_tileset = active_selection.get("tileset")
+		selection_terrainset = active_selection.get("terrainset")
+		selection_terrainid = active_selection.get("terrainid")
+		
+		
 		for tilemap in get_children():
 			if tilemap is TileMapLayer:
 				if tilemap.tile_set == selection.get("tileset"):
 					active_tilemap_layer = tilemap
-					print(active_tilemap_layer)
 					break
