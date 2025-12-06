@@ -2,25 +2,25 @@ class_name TileMapManager extends Node2D
 
 @onready var debug_info_label: Label = %DebugInfoLabel
 @onready var grid: ColorRect = %HighlightGrid
+@onready var control: Control = $"../BeforeMap/InputControl"
+
 
 signal tilemap_changed
 
-enum SelectionType {
-	tile, terrain
-}
 
-var active_selection : Dictionary
-var selection_type : SelectionType
-var selection_tileset : TileSet
-var selection_tilesrc : int
-var selection_tilecoords : Vector2i
-var selection_tilealtid: int
-var selection_terrainset: int
-var selection_terrainid: int
+
+var active_selection : SelectionRes
+
 
 var active_tilemap_layer: TileMapLayer
 
 var last_coords: Vector2i
+var current_tool: int = 0
+
+var tool_start: bool
+var tool_first_coord: Vector2
+var erase_tool_start: bool
+var erase_tool_first_coord: Vector2
 
 
 func _process(_delta: float) -> void:
@@ -30,19 +30,127 @@ func _process(_delta: float) -> void:
 		debug_info_label.update_info(coords)
 	
 	grid.material.set_shader_parameter("mouse_position", grid.get_global_mouse_position())
+	
+
+func _on_input_control_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouse:
+		if control.get_rect().has_point(control.get_local_mouse_position()):
+			if not active_selection:
+				return
+			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
+				match current_tool:
+					0:
+						if event is InputEventMouseMotion:
+							if abs(event.screen_relative.x) > 16 or abs(event.screen_relative.x) > 16:
+								if event.button_mask == 1:
+									place(get_global_mouse_position() - (event.screen_relative/2))
+								elif event.button_mask == 2:
+									place(get_global_mouse_position() - (event.screen_relative/2),true)
+						if event.button_mask == 1:
+							place(get_global_mouse_position())
+						elif event.button_mask == 2:
+							place(get_global_mouse_position(),true)
+					1:
+						if event is InputEventMouseButton:
+							if not event.is_echo():
+								if event.button_mask == 1:
+									tool_start = true
+									tool_first_coord = get_global_mouse_position()
+								if event.button_mask == 2:
+									erase_tool_start = true
+									erase_tool_first_coord = get_global_mouse_position()
+									
+						if tool_start:
+							if event.button_mask == 1:
+								line(tool_first_coord,get_global_mouse_position(),false,true)
+								
+							elif event.is_released():
+								tool_start = false
+								clear_temp()
+								line(tool_first_coord,get_global_mouse_position())
+							
+						if erase_tool_start:
+							if event.button_mask == 2:
+								line(erase_tool_first_coord,get_global_mouse_position(),true,true)
+								
+							elif event.is_released():
+								erase_tool_start = false
+								clear_temp()
+								line(erase_tool_first_coord,get_global_mouse_position(),true)
+					2:
+						if event is InputEventMouseButton:
+							if not event.is_echo():
+								if event.button_mask == 1:
+									tool_start = true
+									tool_first_coord = get_global_mouse_position()
+								if event.button_mask == 2:
+									erase_tool_start = true
+									erase_tool_first_coord = get_global_mouse_position()
+									
+						if tool_start:
+							if event.button_mask == 1:
+								rect(tool_first_coord,get_global_mouse_position(),false,true)
+								
+							elif event.is_released():
+								tool_start = false
+								clear_temp()
+								rect(tool_first_coord,get_global_mouse_position())
+							
+						if erase_tool_start:
+							if event.button_mask == 2:
+								rect(erase_tool_first_coord,get_global_mouse_position(),true,true)
+								
+							elif event.is_released():
+								erase_tool_start = false
+								clear_temp()
+								rect(erase_tool_first_coord,get_global_mouse_position(),true)
+					3:
+						if event is InputEventMouseButton:
+							if not event.is_echo():
+								if event.button_mask == 1:
+									if tool_start:
+										tool_start = false
+										if is_hovering_temp(get_global_mouse_position()):
+											fill(get_global_mouse_position())
+										clear_temp()
+									else:
+										var success = fill(get_global_mouse_position(),false,true)
+										if success:
+											tool_start = true
+										else: tool_start = false
+
+								elif event.button_mask == 2:
+									if erase_tool_start:
+										erase_tool_start = false
+										if is_hovering_temp(get_global_mouse_position()):
+											fill(get_global_mouse_position(),true)
+										clear_temp()
+									else:
+										var success = fill(get_global_mouse_position(),true,true)
+										if success:
+											erase_tool_start = true
+										else: erase_tool_start = false
+			
+			elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+				if event.button_mask == 1:
+					place(get_global_mouse_position())
+				elif event.button_mask == 2:
+					place(get_global_mouse_position(),true)
 
 
-#func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
-	#if active_tilemap_layer:
-		#active_tilemap_layer.set_cell(at,source,tilecoords,tilealtid)
+func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
+	if active_tilemap_layer:
+		active_tilemap_layer.set_cell(at,source,tilecoords,tilealtid)
 
 
 func _place_terrain(ats:Array[Vector2i], terrainset:int, terrainid:int):
 	if active_tilemap_layer:
 		active_tilemap_layer.set_cells_terrain_connect(ats,terrainset,terrainid)
 
+
 func clear_temp():
 	%PrevTilemap.clear()
+
 
 func is_hovering_temp(at: Vector2) -> bool:
 	return %PrevTilemap.get_cell_source_id(%PrevTilemap.local_to_map(to_local(at))) != -1
@@ -63,8 +171,10 @@ func place(at: Vector2, erase := false, temp := false):
 			if erase:
 				active_tilemap_layer.erase_cell(local_at)
 			else:
-				_place_terrain([local_at], selection_terrainset, selection_terrainid)
-
+				if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
+					_place_terrain([local_at], active_selection.terrainset, active_selection.terrainid)
+				elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
 
 func fill(at: Vector2,erase := false, temp := false) -> bool:
 	if active_selection:
@@ -91,7 +201,7 @@ func fill(at: Vector2,erase := false, temp := false) -> bool:
 						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
 				#SelectionType.terrain:
 			if not erase:
-				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
 			else:
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
@@ -120,7 +230,7 @@ func rect(at: Vector2, to: Vector2, erase := false, temp := false):
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
 			else:
-				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
 			#match selection_type:
 				#SelectionType.tile:
 					#for coords in cell_coords:
@@ -152,7 +262,7 @@ func line(at: Vector2, to: Vector2, erase := false, temp := false):
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
 			else:
-				_place_terrain(cell_coords, selection_terrainset, selection_terrainid)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
 			#match selection_type:
 				#SelectionType.tile:
 					#for coords in cell_coords:
@@ -314,17 +424,18 @@ func is_placeable_location(at:Vector2i):
 	return placeable_rect.has_point(at)
 
 
-func _on_ui_selection_changed(selection: Dictionary) -> void:
+func _on_ui_selection_changed(selection: SelectionRes) -> void:
 	active_selection = selection
 	if active_selection:
 		
-		selection_tileset = active_selection.get("tileset")
-		selection_terrainset = active_selection.get("terrainset")
-		selection_terrainid = active_selection.get("terrainid")
-		
-		
 		for tilemap in get_children():
 			if tilemap is TileMapLayer:
-				if tilemap.tile_set == selection.get("tileset"):
+				if tilemap.tile_set == active_selection.tileset:
 					active_tilemap_layer = tilemap
 					break
+
+
+func _on_editor_tool_changed(new_current_tool: int) -> void:
+	current_tool = new_current_tool
+	tool_start = false
+	erase_tool_start = false

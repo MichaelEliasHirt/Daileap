@@ -6,7 +6,8 @@ extends Node2D
 @onready var UI: Control = %UI
 @onready var mainground: TileMapLayer = %Mainground
 @onready var background: TileMapLayer = %Background
-@onready var control: Control = $BeforeMap/Control
+@onready var decor_1_layer: TileMapLayer = %Decor1Layer
+
 @onready var entrance_arrow: Node2D = %EntranceArrow
 @onready var exit_arrow: Node2D = %ExitArrow
 
@@ -15,6 +16,8 @@ extends Node2D
 @export var tiles_tileset_info: TileSetInfo
 @export var walls_tileset: TileSet
 @export var walls_tileset_info: TileSetInfo
+@export var decor1_tileset: TileSet
+@export var decor1_tileset_info: TileSetInfo
 
 @export_subgroup("Settings")
 @export var chunk_width: int = 14
@@ -24,16 +27,15 @@ extends Node2D
 signal send_save_data(data: LevelChunkRes)
 signal data_updated(data: LevelChunkRes)
 
+signal tool_changed(current_tool:int)
+
 @export var camera_pos = Vector2()
 var last_vslider_value: float
 var current_side_chunk_index: int
 
 var current_tool_index: int = 0
 
-var tool_start: bool
-var tool_first_coord: Vector2
-var erase_tool_start: bool
-var erase_tool_first_coord: Vector2
+
 
 
 var chunk_name: String = ""
@@ -55,6 +57,7 @@ func _ready() -> void:
 	#fix_all_terrains(walls_tileset)
 	mainground.tile_set = tiles_tileset
 	background.tile_set = walls_tileset
+	decor_1_layer.tile_set = decor1_tileset
 	
 	_on_vertical_slider_value_changed(0)
 
@@ -66,126 +69,7 @@ func fit_to_screen() -> void:
 	update_valid_build_region()
 
 
-func _on_control_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouse:
-		if control.get_rect().has_point(control.get_local_mouse_position()):
-			match current_tool_index:
-				0:
-					if event is InputEventMouseMotion:
-						if abs(event.screen_relative.x) > 16 or abs(event.screen_relative.x) > 16:
-							if event.button_mask == 1:
-								tile_maps.place(get_global_mouse_position() - (event.screen_relative/2))
-							elif event.button_mask == 2:
-								tile_maps.place(get_global_mouse_position() - (event.screen_relative/2),true)
-					if event.button_mask == 1:
-						tile_maps.place(get_global_mouse_position())
-					elif event.button_mask == 2:
-						tile_maps.place(get_global_mouse_position(),true)
-				1:
-					if event is InputEventMouseButton:
-						if not event.is_echo():
-							if event.button_mask == 1:
-								tool_start = true
-								tool_first_coord = get_global_mouse_position()
-							if event.button_mask == 2:
-								erase_tool_start = true
-								erase_tool_first_coord = get_global_mouse_position()
-								
-					if tool_start:
-						if event.button_mask == 1:
-							tile_maps.line(tool_first_coord,get_global_mouse_position(),false,true)
-							
-						elif event.is_released():
-							tool_start = false
-							tile_maps.clear_temp()
-							tile_maps.line(tool_first_coord,get_global_mouse_position())
-						
-					if erase_tool_start:
-						if event.button_mask == 2:
-							tile_maps.line(erase_tool_first_coord,get_global_mouse_position(),true,true)
-							
-						elif event.is_released():
-							erase_tool_start = false
-							tile_maps.clear_temp()
-							tile_maps.line(erase_tool_first_coord,get_global_mouse_position(),true)
-				2:
-					if event is InputEventMouseButton:
-						if not event.is_echo():
-							if event.button_mask == 1:
-								tool_start = true
-								tool_first_coord = get_global_mouse_position()
-							if event.button_mask == 2:
-								erase_tool_start = true
-								erase_tool_first_coord = get_global_mouse_position()
-								
-					if tool_start:
-						if event.button_mask == 1:
-							tile_maps.rect(tool_first_coord,get_global_mouse_position(),false,true)
-							
-						elif event.is_released():
-							tool_start = false
-							tile_maps.clear_temp()
-							tile_maps.rect(tool_first_coord,get_global_mouse_position())
-						
-					if erase_tool_start:
-						if event.button_mask == 2:
-							tile_maps.rect(erase_tool_first_coord,get_global_mouse_position(),true,true)
-							
-						elif event.is_released():
-							erase_tool_start = false
-							tile_maps.clear_temp()
-							tile_maps.rect(erase_tool_first_coord,get_global_mouse_position(),true)
-				#3:
-					#if event is InputEventMouseButton:
-						#if not event.is_echo():
-							#if event.button_mask == 1:
-								#if tool_start:
-									#tool_start = false
-									#if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										#tile_maps.fill_by_tile(get_global_mouse_position())
-									#tile_maps.clear_temp()
-								#else:
-									#tool_start = true
-									#tile_maps.fill_by_tile(get_global_mouse_position(),true)
-								#
-							#elif event.button_mask == 2:
-								#if erase_tool_start:
-									#erase_tool_start = false
-									#if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										#tile_maps.erase_fill_by_tile(get_global_mouse_position())
-									#tile_maps.clear_temp()
-								#else:
-									#erase_tool_start = true
-									#tile_maps.erase_fill_by_tile(get_global_mouse_position(),true)
-				3:
-					if event is InputEventMouseButton:
-						if not event.is_echo():
-							if event.button_mask == 1:
-								if tool_start:
-									tool_start = false
-									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.fill(get_global_mouse_position())
-									tile_maps.clear_temp()
-								else:
-									var success = tile_maps.fill(get_global_mouse_position(),false,true)
-									if success:
-										tool_start = true
-									else: tool_start = false
-
-							elif event.button_mask == 2:
-								if erase_tool_start:
-									erase_tool_start = false
-									if tile_maps.is_hovering_temp(get_global_mouse_position()):
-										tile_maps.fill(get_global_mouse_position(),true)
-									tile_maps.clear_temp()
-								else:
-									var success = tile_maps.fill(get_global_mouse_position(),true,true)
-									if success:
-										erase_tool_start = true
-									else: erase_tool_start = false
-
-
-func _on_ui_selection_changed(_selection: Dictionary) -> void:
+func _on_ui_selection_changed(_selection: SelectionRes) -> void:
 	pass # Replace with function body.
 
 #
@@ -337,29 +221,32 @@ func _on_move_right_btn_pressed() -> void:
 func _on_paint_btn_pressed() -> void:
 	_reset_tools()
 	current_tool_index = 0
+	tool_changed.emit(current_tool_index)
 
 
 func _on_line_btn_pressed() -> void:
 	_reset_tools()
 	current_tool_index = 1
+	tool_changed.emit(current_tool_index)
 
 
 func _on_rect_btn_pressed() -> void:
 	_reset_tools()
 	current_tool_index = 2
+	tool_changed.emit(current_tool_index)
 
 
 func _on_fill_cell_btn_pressed() -> void:
 	_reset_tools()
 	current_tool_index = 3
+	tool_changed.emit(current_tool_index)
 
 
 func _on_fill_auto_btn_pressed() -> void:
 	_reset_tools()
 	current_tool_index = 4
+	tool_changed.emit(current_tool_index)
 
 
 func _reset_tools() -> void:
-	tool_start = false
-	erase_tool_start = false
 	tile_maps.clear_temp()

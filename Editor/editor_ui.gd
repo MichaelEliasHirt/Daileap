@@ -11,6 +11,12 @@ class_name EditorUIManager extends Control
 @onready var walls_list_container: MarginContainer = %Walls/ListContainer
 @onready var walls_list: ItemList = %WallsList
 
+@onready var decor_control: TabContainer = %Decor
+@onready var decor_list_container: MarginContainer = %Decor/ListContainer
+@onready var decor_1_list: ItemList = %Decor1List
+@onready var decor_2_list: ItemList = %Decor2List
+@onready var decor_3_list: ItemList = %Decor3List
+
 
 @onready var vertical_slider: VSlider = %VerticalSlider
 
@@ -22,13 +28,13 @@ class_name EditorUIManager extends Control
 @onready var walls_tileset: TileSet =  owner.walls_tileset
 @onready var tiles_tileset_info: TileSetInfo = owner.tiles_tileset_info
 @onready var walls_tileset_info: TileSetInfo = owner.walls_tileset_info
-
-enum SelectionType {
-	terrain, wall,decor1, decor2, decor3
-}
+@onready var decor1_tileset: TileSet = owner.decor1_tileset
+@onready var decor1_tileset_info: TileSetInfo = owner.decor1_tileset_info
 
 
-signal selection_changed(selection:Dictionary)
+
+
+signal selection_changed(selection:SelectionRes)
 signal settings_closed
 
 var inv_open: bool = false
@@ -36,25 +42,17 @@ var settings_open: bool = false
 var save_menu_open: bool = false
 
 var active_tab_tree: Array[Node]
-var active_selection = {
-	"list": -1,
-	"list_idx": -1,
-	"type":null,
-	"tileset": null,
-	"tilesrc": null,
-	"tilecoords": null,
-	"tilealtid":null,
-	"terrainset":null,
-	"terrainid":null,
-}
+
 var all_lists: Array[ItemList]
+
+var active_selection: SelectionRes
 
 
 func _ready() -> void:
 	active_tab_tree.clear()
 	_create_tab_tree(inv_container)
 	
-
+	%GreyOut.show()
 	inv_container.current_tab = -1
 	_close_inv()
 	
@@ -84,15 +82,10 @@ func _create_tab_tree(start:Node):
 
 
 func _populate_item_lists():
+	## Populate the "Tiles" Tab
 	tiles_list.clear()
-	
-	var tileset = tiles_tileset
-	var all_autotiles: Array[Dictionary]
-	for tileset_source_count in range(tileset.get_source_count()):
-		var src_id = tileset.get_source_id(tileset_source_count)
-		
-		var autotiles = list_all_terrains(tileset,src_id,SelectionType.terrain)
-		all_autotiles.append_array(autotiles)
+
+	var all_autotiles = _list_all_terrains_from_tileset(tiles_tileset,SelectionRes.SelectionType.terrain)
 	
 	var tiles_containers: Dictionary[String,MarginContainer]
 	var first := true
@@ -101,13 +94,13 @@ func _populate_item_lists():
 		var container: MarginContainer
 		if not tiles_containers.is_empty():
 			for group_name in tiles_containers.keys():
-				if autotile.get("name","no_name").begins_with(group_name):
+				if autotile.name.begins_with(group_name):
 					auto_tile_group_name = group_name
 					container = tiles_containers.get(group_name)
 					break
 		if auto_tile_group_name.is_empty():
 			for group_name in tiles_tileset_info.group_names:
-				if autotile.get("name","no_name").begins_with(group_name):
+				if autotile.name.begins_with(group_name):
 					auto_tile_group_name = group_name
 					break
 		
@@ -131,21 +124,15 @@ func _populate_item_lists():
 			container.name = auto_tile_group_name
 		else:
 			tiles_list_ = container.get_child(0)
-		 
-			
 		
-		var icon_texture = autotile.get("icon_tile_texture",null)
+		var icon_texture = autotile.texture
 		if icon_texture == null:
 			icon_texture = ImageTexture.create_from_image(load("res://assets/icon.svg"))
 			
 		var idx = tiles_list_.add_icon_item(icon_texture,true)
 		tiles_list_.set_item_tooltip_enabled(idx,true)
-		tiles_list_.set_item_tooltip(idx,autotile.get("name","no_name"))
+		tiles_list_.set_item_tooltip(idx,autotile.name)
 		tiles_list_.set_item_metadata(idx,autotile)
-		
-		autotile.erase("icon_tile_texture")
-		autotile.erase("texture")
-		autotile.erase("name")
 
 	#background_tiles_list.clear()
 	#background_terrain_list.clear()
@@ -196,15 +183,11 @@ func _populate_item_lists():
 			#terrain_list.set_item_tooltip(idx,terrain.get("name","no_name"))
 			#terrain_list.set_item_metadata(idx,terrain)
 
+
+	## Populate the "Walls" tab
 	walls_list.clear()
 	
-	tileset = walls_tileset
-	var all_walls: Array[Dictionary]
-	for tileset_source_count in range(tileset.get_source_count()):
-		var src_id = tileset.get_source_id(tileset_source_count)
-		
-		var wall = list_all_terrains(tileset,src_id,SelectionType.wall)
-		all_walls.append_array(wall)
+	var all_walls = _list_all_terrains_from_tileset(walls_tileset,SelectionRes.SelectionType.wall)
 	
 	var walls_containers: Dictionary[String,MarginContainer]
 	first = true
@@ -213,13 +196,13 @@ func _populate_item_lists():
 		var container: MarginContainer
 		if not tiles_containers.is_empty():
 			for group_name in walls_containers.keys():
-				if wall.get("name","no_name").begins_with(group_name):
+				if wall.name.begins_with(group_name):
 					walls_group_name = group_name
 					container = tiles_containers.get(group_name)
 					break
 		if walls_group_name.is_empty():
 			for group_name in walls_tileset_info.group_names:
-				if wall.get("name","no_name").begins_with(group_name):
+				if wall.name.begins_with(group_name):
 					walls_group_name = group_name
 					break
 		
@@ -245,35 +228,101 @@ func _populate_item_lists():
 		else:
 			walls_list_ = container.get_child(0)
 		 
-		var icon_texture = wall.get("icon_tile_texture",null)
+		var icon_texture = wall.texture
 		if icon_texture == null:
 			icon_texture = ImageTexture.create_from_image(load("res://assets/icon.svg"))
 			
 		var idx = walls_list_.add_icon_item(icon_texture,true)
 		walls_list_.set_item_tooltip_enabled(idx,true)
-		walls_list_.set_item_tooltip(idx,wall.get("name","no_name"))
+		walls_list_.set_item_tooltip(idx,wall.name)
 		walls_list_.set_item_metadata(idx,wall)
+	
+	
+	##Populate the "Decor" Tab
+	decor_1_list.clear()
+	decor_2_list.clear()
+	decor_3_list.clear()
+	
+	var all_decor1tiles = _list_all_tiles_from_tileset(decor1_tileset,SelectionRes.SelectionType.decor1)
+	
+	var decortiles_containers: Dictionary[String,MarginContainer]
+	first = true
+	for decortile in all_decor1tiles:
+		var tile_group_name := ""
+		var container: MarginContainer
+		if not decortiles_containers.is_empty():
+			for group_name in decortiles_containers.keys():
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					container = decortiles_containers.get(group_name)
+					break
+		if tile_group_name.is_empty():
+			for group_name in decor1_tileset_info.group_names:
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					break
 		
-		wall.erase("icon_tile_texture")
-		wall.erase("texture")
-		wall.erase("name")
+		if tile_group_name.is_empty():
+			tile_group_name = "other"
+			if decortiles_containers.has(tile_group_name):
+				container = decortiles_containers.get(tile_group_name)
+		var tiles_list_: ItemList
+		if not container:
+			if first:
+				first = false
+				container = decor_list_container
+				tiles_list_ = container.decor_1_list
+			else:
+				container = decor_list_container.duplicate()
+				decor_control.add_child(container)
+				tiles_list_ = container.decor_1_list
+				tiles_list_.clear()
+			
+			decortiles_containers.set(tile_group_name,container)
+			container.name = tile_group_name
+		else:
+			tiles_list_ = container.decor_1_list
+		
+		var icon_texture = decortile.texture
+		if icon_texture == null:
+			icon_texture = ImageTexture.create_from_image(load("uid://clmxr0gm1perm"))
+			
+		var idx = tiles_list_.add_icon_item(icon_texture,true)
+		tiles_list_.set_item_tooltip_enabled(idx,true)
+		tiles_list_.set_item_tooltip(idx,decortile.name)
+		tiles_list_.set_item_metadata(idx,decortile)
 
+
+func _list_all_terrains_from_tileset(tileset:TileSet,assign_type:SelectionRes.SelectionType) -> Array[SelectionRes]:
+	var all_terrains: Array[SelectionRes]
+	for tileset_source_count in range(tileset.get_source_count()):
+		var src_id = tileset.get_source_id(tileset_source_count)
+		
+		var terrains = list_all_terrains(tileset,src_id,assign_type)
+		all_terrains.append_array(terrains)
+	return all_terrains
+	
+func _list_all_tiles_from_tileset(tileset:TileSet,assign_type:SelectionRes.SelectionType) -> Array[SelectionRes]:
+	var all_tiles: Array[SelectionRes]
+	for tileset_source_count in range(tileset.get_source_count()):
+		var src_id = tileset.get_source_id(tileset_source_count)
+		
+		var tiles = list_all_tiles(tileset,src_id,assign_type)
+		all_tiles.append_array(tiles)
+	return all_tiles
 
 func _connect_methods():
 	inv_container.tab_changed.connect(_on_inv_container_tab_changed)
 		
-	for tab_container:TabContainer in get_tree().get_nodes_in_group("InvTabContainer"):
-		tab_container.tab_changed.connect(_on_tab_container_tab_changed)
-	
 	for list: ItemList in get_tree().get_nodes_in_group("List"):
 		all_lists.append(list)
 		var callable = Callable(self, "_on_item_list_item_selected").bind(list)
 		list.item_selected.connect(callable)
 
 
-func list_all_terrains(tileset:TileSet,_src_id:int,type = SelectionType) -> Array[Dictionary]:
+func list_all_terrains(tileset:TileSet,_src_id:int,type: SelectionRes.SelectionType) -> Array[SelectionRes]:
 	var src : TileSetAtlasSource = tileset.get_source(_src_id) as TileSetAtlasSource
-	var terrains: Array[Dictionary] = []
+	var terrains: Array[SelectionRes] = []
 	
 	for terrain_sets_idx in range(tileset.get_terrain_sets_count()):
 		for terrain_idx in range(tileset.get_terrains_count(terrain_sets_idx)):
@@ -293,43 +342,47 @@ func list_all_terrains(tileset:TileSet,_src_id:int,type = SelectionType) -> Arra
 					break
 			
 			if icon_tile_texture:
-				terrains.append({
-					"tileset":tileset,
-					"terrainset": terrain_sets_idx,
-					"terrainid": terrain_idx,
-					"name": terrain_name,
-					"icon_tile_texture": icon_tile_texture,
-					"type": type
-				})
+				var terrain = SelectionRes.new()
+				terrain.tileset = tileset
+				terrain.terrainset = terrain_sets_idx
+				terrain.terrainid = terrain_idx
+				terrain.name = terrain_name
+				terrain.texture = icon_tile_texture
+				terrain.type = type
+				terrains.append(terrain)
 			
 	return terrains
 
 
-#func list_all_tiles(tileset:TileSet,src_id:int,src: TileSetAtlasSource) -> Array[Dictionary]:
-	#var tiles: Array[Dictionary] = []
-#
-	#for tiles_idx in range(src.get_tiles_count()):
-		#var tile_id := src.get_tile_id(tiles_idx)
-		#var tile_altid:int
-		#if not (src.get_alternative_tiles_count(tile_id)-1):
-			#tile_altid = 0
-		#else:
-			#tile_altid = src.get_alternative_tile_id(tile_id,0)
-		#
-		#var tile_texture = AtlasTexture.new()
-		#tile_texture.atlas = src.texture
-		#tile_texture.region = src.get_tile_texture_region(tile_id,0)
-		#
-		#tiles.append({
-			#"tileset":tileset,
-			#"tilesrc": src_id,
-			#"tilecoords": tile_id,
-			#"tilealtid": tile_altid,
-			#"texture": tile_texture,
-			#"type": SelectionType.tile
-		#})
-	#
-	#return tiles
+func list_all_tiles(tileset:TileSet,src_id:int, type: SelectionRes.SelectionType) -> Array[SelectionRes]:
+	var src : TileSetAtlasSource = tileset.get_source(src_id) as TileSetAtlasSource
+	var tiles: Array[SelectionRes] = []
+	var tileset_name = src.resource_name
+
+	for tiles_idx in range(src.get_tiles_count()):
+		var tile_id := src.get_tile_id(tiles_idx)
+		var tile_altid:int
+		if not (src.get_alternative_tiles_count(tile_id)-1):
+			tile_altid = 0
+		else:
+			tile_altid = src.get_alternative_tile_id(tile_id,0)
+		
+		var tile_texture = AtlasTexture.new()
+		tile_texture.atlas = src.texture
+		tile_texture.region = src.get_tile_texture_region(tile_id,0)
+		
+		var tile = SelectionRes.new()
+		tile.tileset = tileset
+		tile.tilesrc = src_id
+		tile.tilecoords = tile_id
+		tile.tilealtid = tile_altid
+		tile.texture = tile_texture
+		tile.type = type
+		tile.name = "_".join([tileset_name,str(tiles_idx)])  
+		
+		tiles.append(tile)
+	
+	return tiles
 
 
 func _on_inv_container_tab_changed(_tab: int) -> void:
@@ -340,12 +393,6 @@ func _on_inv_container_tab_changed(_tab: int) -> void:
 		_open_inv()
 		
 
-
-func _on_tab_container_tab_changed(_tab: int) -> void:
-
-	_create_tab_tree(inv_container)
-	if active_tab_tree.back().is_in_group("TileTerrainContainer"):
-		_tiles_terrain_container_update(active_tab_tree.back())
 
 
 func _open_inv():
@@ -367,11 +414,11 @@ func _close_inv():
 
 
 func _on_item_list_item_selected(index:int,list:ItemList):
-	active_selection = list.get_item_metadata(index).duplicate(true)
+	active_selection = list.get_item_metadata(index)
 	
 	selection_changed.emit(active_selection)
-	
-	active_selection.merge({"list":list,"list_idx": index})
+	active_selection.list = list
+	active_selection.list_index = index
 	
 	
 	for _list in all_lists:
@@ -380,23 +427,10 @@ func _on_item_list_item_selected(index:int,list:ItemList):
 
 
 func deselect_selection():
-	active_selection = {}
+	active_selection = SelectionRes.new()
 	selection_changed.emit(active_selection)
 	for _list in all_lists:
 		_list.deselect_all()
-
-
-func _tiles_terrain_container_update(container:MarginContainer):
-	pass
-	#if container.is_in_group("TileTerrainContainer"):
-		#for list in container.get_children():
-			#if list.is_in_group("TilesList"):
-				#list.visible = not auto_tile_on
-			#elif list.is_in_group("TerrainList"):
-				#list.visible = auto_tile_on
-			#elif list.name == "Control":
-				#list.get_child(0).button_pressed = auto_tile_on
-
 
 
 func await_kill_tween(tween:Tween):

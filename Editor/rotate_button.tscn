@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmqdxj6kulw0n"]
+
+[sub_resource type="GDScript" id="GDScript_rl45b"]
+script/source = "class_name RotateButton extends TextureButton
+
+@export var normal_textures: Array[Texture2D]
+@export var hover_textures: Array[Texture2D]
+@export var starting_index: int
+
+signal pressed_index(index:int)
+
+var active_position: int = 0
+
+func _ready() -> void:
+	_set_texture(starting_index)
+	active_position = starting_index
+
+
+func _pressed() -> void:
+	active_position = wrapi(active_position+1,0,normal_textures.size())
+	_set_texture(active_position)
+	pressed_index.emit(active_position)
+
+
+func _set_texture(index:int):
+	texture_normal = normal_textures[index]
+	texture_hover = hover_textures[index]
+"
+
+[node name="RotateButton" type="TextureButton"]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -416.0
+offset_bottom = -700.0
+grow_horizontal = 2
+grow_vertical = 2
+ignore_texture_size = true
+stretch_mode = 3
+script = SubResource("GDScript_rl45b")

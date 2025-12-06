@@ -1,10 +1,11 @@
-[gd_scene load_steps=117 format=3 uid="uid://ijd8340qnv2b"]
+[gd_scene load_steps=136 format=3 uid="uid://ijd8340qnv2b"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://Editor/editor_main.gd" id="1_0by7s"]
 [ext_resource type="Script" uid="uid://dsug7thwo4kis" path="res://Editor/editor_ui.gd" id="2_klsmt"]
 [ext_resource type="TileSet" uid="uid://bpnly4l6tgk65" path="res://Game/background_tileset.tres" id="3_52hkk"]
 [ext_resource type="Script" uid="uid://derkv63l2yws0" path="res://Editor/tileset_info.gd" id="3_ggfqn"]
 [ext_resource type="Script" uid="uid://beo7f7dw48ml2" path="res://Editor/fit_to_screen.gd" id="4_eaaeh"]
+[ext_resource type="Texture2D" uid="uid://h6ugg04ex5mc" path="res://assets/Decor/On Tiles(1)/All.png" id="5_2vxet"]
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://Editor/tile_maps.gd" id="5_nn3ui"]
 [ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://Editor/GridHighlight.gdshader" id="6_2cvn4"]
 [ext_resource type="TileSet" uid="uid://cu3o1w47wkw0n" path="res://Game/tiles_tileset.tres" id="6_firr7"]
@@ -28,6 +29,8 @@
 [ext_resource type="Script" uid="uid://dk4odooa2lbic" path="res://Editor/menu_btns.gd" id="19_hvdjx"]
 [ext_resource type="Texture2D" uid="uid://cp0aux1dmm77r" path="res://assets/editor/ArrowBtns.png" id="24_w1p71"]
 [ext_resource type="Texture2D" uid="uid://buytq20f1bbcj" path="res://assets/editor/ToolsBtns.png" id="27_firr7"]
+[ext_resource type="PackedScene" uid="uid://dmqdxj6kulw0n" path="res://Editor/rotate_button.tscn" id="30_2vxet"]
+[ext_resource type="Texture2D" uid="uid://b76i7uha8qgq" path="res://assets/editor/LayerSelectorBtn.png" id="31_cskgi"]
 
 [sub_resource type="Resource" id="Resource_ggfqn"]
 script = ExtResource("3_ggfqn")
@@ -37,6 +40,36 @@ metadata/_custom_type_script = "uid://derkv63l2yws0"
 [sub_resource type="Resource" id="Resource_firr7"]
 script = ExtResource("3_ggfqn")
 group_names = Array[String](["Industrial"])
+metadata/_custom_type_script = "uid://derkv63l2yws0"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cskgi"]
+resource_name = "Graffiti"
+texture = ExtResource("5_2vxet")
+0:0/size_in_atlas = Vector2i(4, 3)
+0:0/0 = 0
+4:0/size_in_atlas = Vector2i(5, 2)
+4:0/0 = 0
+9:0/size_in_atlas = Vector2i(5, 4)
+9:0/0 = 0
+14:0/size_in_atlas = Vector2i(6, 3)
+14:0/0 = 0
+20:0/size_in_atlas = Vector2i(4, 3)
+20:0/0 = 0
+24:0/size_in_atlas = Vector2i(5, 5)
+24:0/0 = 0
+29:0/size_in_atlas = Vector2i(4, 3)
+29:0/0 = 0
+0:5/size_in_atlas = Vector2i(6, 3)
+0:5/0 = 0
+6:5/size_in_atlas = Vector2i(4, 2)
+6:5/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ggfqn"]
+sources/10 = SubResource("TileSetAtlasSource_cskgi")
+
+[sub_resource type="Resource" id="Resource_2vxet"]
+script = ExtResource("3_ggfqn")
+group_names = Array[String](["Graffiti", "Industrial"])
 metadata/_custom_type_script = "uid://derkv63l2yws0"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_firr7"]
@@ -395,12 +428,92 @@ ItemList/constants/h_separation = 20
 ItemList/constants/icon_margin = 0
 ItemList/constants/v_separation = 20
 
+[sub_resource type="GDScript" id="GDScript_cskgi"]
+script/source = "extends TabContainer
+
+var layer_index = 0
+var active_tab:int
+
+
+
+func _on_layer_btn_pressed_index(index: int) -> void:
+	layer_index = index
+	get_child(active_tab).update_layer_index(layer_index)
+
+
+func _on_tab_changed(tab: int) -> void:
+	active_tab = tab
+	get_child(tab).update_layer_index(layer_index)
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_2vxet"]
+script/source = "extends MarginContainer
+
+@onready var decor_1_list: ItemList = $VBoxContainer/Control/Decor1List
+@onready var decor_2_list: ItemList = $VBoxContainer/Control/Decor2List
+@onready var decor_3_list: ItemList = $VBoxContainer/Control/Decor3List
+
+@onready var layer_btn = $VBoxContainer/LayerBtn
+
+@onready var layers = [decor_1_list,decor_2_list,decor_3_list]
+
+func _ready() -> void:
+	update_layer_index(0)
+
+func update_layer_index(index:int):
+	for layer in layers:
+		layer.hide()
+	layers[index].show()
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_el5kl"]
+atlas = ExtResource("31_cskgi")
+region = Rect2(0, 0, 20, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_38avg"]
+load_path = "res://.godot/imported/LayerSelectorBtn.png-115c903e33895acfccc8469d936e1cd1.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ml6kc"]
+atlas = SubResource("CompressedTexture2D_38avg")
+region = Rect2(22, 0, 20, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bb7fu"]
+load_path = "res://.godot/imported/LayerSelectorBtn.png-115c903e33895acfccc8469d936e1cd1.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mh5xm"]
+atlas = SubResource("CompressedTexture2D_bb7fu")
+region = Rect2(44, 0, 20, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wfgnc"]
+load_path = "res://.godot/imported/LayerSelectorBtn.png-115c903e33895acfccc8469d936e1cd1.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_or2m4"]
+atlas = SubResource("CompressedTexture2D_wfgnc")
+region = Rect2(0, 22, 20, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dr5ve"]
+load_path = "res://.godot/imported/LayerSelectorBtn.png-115c903e33895acfccc8469d936e1cd1.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qisgl"]
+atlas = SubResource("CompressedTexture2D_dr5ve")
+region = Rect2(22, 22, 20, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nlfgp"]
+load_path = "res://.godot/imported/LayerSelectorBtn.png-115c903e33895acfccc8469d936e1cd1.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wcdgb"]
+atlas = SubResource("CompressedTexture2D_nlfgp")
+region = Rect2(44, 22, 20, 20)
+
 [node name="Editor" type="Node2D"]
 script = ExtResource("1_0by7s")
 tiles_tileset = ExtResource("6_firr7")
 tiles_tileset_info = SubResource("Resource_ggfqn")
 walls_tileset = ExtResource("3_52hkk")
 walls_tileset_info = SubResource("Resource_firr7")
+decor1_tileset = SubResource("TileSet_ggfqn")
+decor1_tileset_info = SubResource("Resource_2vxet")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(1.9, 1.9)
@@ -436,6 +549,9 @@ tile_set = SubResource("TileSet_3sevu")
 occlusion_enabled = false
 navigation_enabled = false
 
+[node name="Decor1Layer" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+
 [node name="HighlightGrid" type="ColorRect" parent="TileMaps"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_2cvn4")
@@ -467,7 +583,7 @@ texture = ExtResource("7_huxxj")
 [node name="BeforeMap" type="CanvasLayer" parent="."]
 layer = 0
 
-[node name="Control" type="Control" parent="BeforeMap"]
+[node name="InputControl" type="Control" parent="BeforeMap"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1047,11 +1163,12 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.0
 mouse_filter = 0
 theme = SubResource("Theme_nn3ui")
-current_tab = 0
+current_tab = 2
 deselect_enabled = true
 
 [node name="Tiles" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 0
@@ -1103,6 +1220,80 @@ max_columns = 5
 icon_mode = 0
 fixed_icon_size = Vector2i(50, 50)
 
+[node name="Decor" type="TabContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+current_tab = 0
+tabs_position = 1
+script = SubResource("GDScript_cskgi")
+metadata/_tab_index = 2
+
+[node name="ListContainer" type="MarginContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor"]
+layout_mode = 2
+mouse_filter = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+script = SubResource("GDScript_2vxet")
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer"]
+layout_mode = 2
+
+[node name="LayerBtn" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer" instance=ExtResource("30_2vxet")]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+stretch_mode = 5
+normal_textures = Array[Texture2D]([SubResource("AtlasTexture_el5kl"), SubResource("AtlasTexture_ml6kc"), SubResource("AtlasTexture_mh5xm")])
+hover_textures = Array[Texture2D]([SubResource("AtlasTexture_or2m4"), SubResource("AtlasTexture_qisgl"), SubResource("AtlasTexture_wcdgb")])
+
+[node name="Control" type="Control" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Decor1List" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer/Control" groups=["List"]]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="Decor2List" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer/Control" groups=["List"]]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="Decor3List" type="ItemList" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer/Control" groups=["List"]]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
 [node name="GreyOut" type="ColorRect" parent="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -1113,10 +1304,11 @@ color = Color(0, 0, 0, 0.63529414)
 [connection signal="data_updated" from="." to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_editor_data_updated"]
 [connection signal="data_updated" from="." to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_editor_data_updated"]
 [connection signal="send_save_data" from="." to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_on_editor_send_save_data"]
+[connection signal="tool_changed" from="." to="TileMaps" method="_on_editor_tool_changed"]
 [connection signal="tilemap_changed" from="TileMaps" to="BeforeMap/UI/VBoxContainer/SaveMenuContainer/MarginContainer/NinePatchRect/MarginContainer/SaveMenu" method="_something_changed"]
-[connection signal="gui_input" from="BeforeMap/Control" to="." method="_on_control_gui_input"]
-[connection signal="mouse_entered" from="BeforeMap/Control" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_entered"]
-[connection signal="mouse_exited" from="BeforeMap/Control" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_exited"]
+[connection signal="gui_input" from="BeforeMap/InputControl" to="TileMaps" method="_on_input_control_gui_input"]
+[connection signal="mouse_entered" from="BeforeMap/InputControl" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_entered"]
+[connection signal="mouse_exited" from="BeforeMap/InputControl" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/DebugInfoLabel" method="_on_control_mouse_exited"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="." method="_on_ui_selection_changed"]
 [connection signal="selection_changed" from="BeforeMap/UI" to="TileMaps" method="_on_ui_selection_changed"]
 [connection signal="settings_closed" from="BeforeMap/UI" to="BeforeMap/UI/VBoxContainer/SettingsContainer/MarginContainer/NinePatchRect/MarginContainer/Settings" method="_on_ui_settings_closed"]
@@ -1153,3 +1345,5 @@ color = Color(0, 0, 0, 0.63529414)
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/FillCellBtn" to="." method="_on_fill_cell_btn_pressed"]
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/MenuBtns/_FillAutoBtn_" to="." method="_on_fill_auto_btn_pressed"]
 [connection signal="pressed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/Spacer/VBoxContainer2/CenterContainer/MoveButtonContainer/Control2/MoveRightBtn" to="." method="_on_move_right_btn_pressed"]
+[connection signal="tab_changed" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor" method="_on_tab_changed"]
+[connection signal="pressed_index" from="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor/ListContainer/VBoxContainer/LayerBtn" to="BeforeMap/UI/VBoxContainer/GameBorder/MarginContainer/VBoxContainer/InvContainer/Decor" method="_on_layer_btn_pressed_index"]
