@@ -3,33 +3,44 @@ class_name TileMapManager extends Node2D
 @onready var debug_info_label: Label = %DebugInfoLabel
 @onready var grid: ColorRect = %HighlightGrid
 @onready var control: Control = $"../BeforeMap/InputControl"
+@onready var decor_erase_prev_tilemap: TileMapLayer = %DecorErasePrevTilemap
 
+@onready var preview_sprite: Sprite2D = %PreviewSprite
 
 signal tilemap_changed
 
-
-
 var active_selection : SelectionRes
-
-
 var active_tilemap_layer: TileMapLayer
 
 var last_coords: Vector2i
 var current_tool: int = 0
-
 var tool_start: bool
 var tool_first_coord: Vector2
 var erase_tool_start: bool
 var erase_tool_first_coord: Vector2
 
+var preview := true
+var decor_erase_prev := false
+
 
 func _process(_delta: float) -> void:
+	_hide_decor_erase_prev()
 	var coords = %Mainground.local_to_map(get_local_mouse_position())
 	if coords != last_coords:
 		last_coords = coords
 		debug_info_label.update_info(coords)
 	
 	grid.material.set_shader_parameter("mouse_position", grid.get_global_mouse_position())
+	
+	if preview:
+		if active_selection and active_selection.list:
+			if control.get_rect().has_point(control.get_local_mouse_position()):
+				var at = get_global_mouse_position()
+				var local_at = active_tilemap_layer.local_to_map(to_local(at))
+				var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
+				if is_placeable_location(standerdized_local_at):
+					preview_sprite.texture = active_selection.texture
+					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.preview_offset
 	
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
@@ -49,6 +60,7 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 						if event.button_mask == 1:
 							place(get_global_mouse_position())
 						elif event.button_mask == 2:
+							_show_decor_erase_prev()
 							place(get_global_mouse_position(),true)
 					1:
 						if event is InputEventMouseButton:
@@ -157,11 +169,12 @@ func is_hovering_temp(at: Vector2) -> bool:
 
 
 func place(at: Vector2, erase := false, temp := false):
-	if active_selection:
-		var local_at = %Mainground.local_to_map(to_local(at))
-		if is_placeable_location(local_at):
+	if active_selection and active_selection.list:
+		var local_at = active_tilemap_layer.local_to_map(to_local(at))
+		var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
+		if is_placeable_location(standerdized_local_at):
 			if temp:
-				%PrevTilemap.set_cell(local_at,0,Vector2i(0,0),0)
+				%PrevTilemap.set_cell(standerdized_local_at,0,Vector2i(0,0),0)
 				return
 			tilemap_changed.emit()
 			#match selection_type:
@@ -170,10 +183,16 @@ func place(at: Vector2, erase := false, temp := false):
 				#SelectionType.terrain:
 			if erase:
 				active_tilemap_layer.erase_cell(local_at)
+				##Only Decor
+				if active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+					_update_decor_erase_tilemap(local_at,true)
+					
 			else:
 				if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 					_place_terrain([local_at], active_selection.terrainset, active_selection.terrainid)
+				##Only Decor
 				elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+					_update_decor_erase_tilemap(local_at)
 					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
 
 func fill(at: Vector2,erase := false, temp := false) -> bool:
@@ -351,6 +370,24 @@ func get_fill_cells_by_terrain(at: Vector2) -> Array[Vector2i]:
 	return cells_hit
 
 
+func _show_decor_erase_prev():
+	decor_erase_prev_tilemap.show()
+	decor_erase_prev = true
+
+
+func _update_decor_erase_tilemap(coords:Vector2i, erase := false):
+	if erase:
+		decor_erase_prev_tilemap.erase_cell(coords)
+	else: 
+		decor_erase_prev_tilemap.set_cell(coords,0,Vector2i(0,0),0)
+
+
+func _hide_decor_erase_prev():
+	decor_erase_prev_tilemap.hide()
+	decor_erase_prev = false
+
+
+
 func get_rect_cells(start_pos: Vector2i, end_pos: Vector2i) -> Array[Vector2i]:
 	var cells_hit: Array[Vector2i] = []
 	
@@ -417,8 +454,8 @@ func get_intersecting_cells(start_pos: Vector2, end_pos: Vector2) -> Array[Vecto
 	return cells_hit
 
 
-func is_placeable_location(at:Vector2i):
-	var placeable_rect = Rect2i(-abs(owner.chunks_left * (owner.chunk_width-1)),0,
+func is_placeable_location(at:Vector2):
+	var placeable_rect = Rect2(-abs(owner.chunks_left * (owner.chunk_width-1)),0,
 		abs(((owner.chunks_right + owner.chunks_left) * (owner.chunk_width-1)) + owner.chunk_width),owner.height)
 
 	return placeable_rect.has_point(at)

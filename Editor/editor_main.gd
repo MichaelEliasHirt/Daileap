@@ -7,6 +7,7 @@ extends Node2D
 @onready var mainground: TileMapLayer = %Mainground
 @onready var background: TileMapLayer = %Background
 @onready var decor_1_layer: TileMapLayer = %Decor1Layer
+@onready var decor_2_layer: TileMapLayer = %Decor2Layer
 
 @onready var entrance_arrow: Node2D = %EntranceArrow
 @onready var exit_arrow: Node2D = %ExitArrow
@@ -18,6 +19,8 @@ extends Node2D
 @export var walls_tileset_info: TileSetInfo
 @export var decor1_tileset: TileSet
 @export var decor1_tileset_info: TileSetInfo
+@export var decor2_tileset: TileSet
+@export var decor2_tileset_info: TileSetInfo
 
 @export_subgroup("Settings")
 @export var chunk_width: int = 14
@@ -34,8 +37,6 @@ var last_vslider_value: float
 var current_side_chunk_index: int
 
 var current_tool_index: int = 0
-
-
 
 
 var chunk_name: String = ""
@@ -58,6 +59,7 @@ func _ready() -> void:
 	mainground.tile_set = tiles_tileset
 	background.tile_set = walls_tileset
 	decor_1_layer.tile_set = decor1_tileset
+	decor_2_layer.tile_set = decor2_tileset
 	
 	_on_vertical_slider_value_changed(0)
 

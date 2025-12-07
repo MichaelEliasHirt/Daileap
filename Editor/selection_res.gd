@@ -12,6 +12,7 @@ var tileset: TileSet
 var texture: Texture2D
 var name: String
 
+var preview_offset: Vector2i
 var tilesrc: int
 var tilecoords: Vector2i
 var tilealtid: int

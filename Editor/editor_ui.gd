@@ -30,9 +30,15 @@ class_name EditorUIManager extends Control
 @onready var walls_tileset_info: TileSetInfo = owner.walls_tileset_info
 @onready var decor1_tileset: TileSet = owner.decor1_tileset
 @onready var decor1_tileset_info: TileSetInfo = owner.decor1_tileset_info
+@onready var decor2_tileset: TileSet = owner.decor2_tileset
+@onready var decor2_tileset_info: TileSetInfo = owner.decor2_tileset_info
 
+@onready var paint_btn: TextureButton = %PaintBtn
+@onready var line_btn: TextureButton = %LineBtn
+@onready var rect_btn: TextureButton = %RectBtn
+@onready var fill_cell_btn: TextureButton = %FillCellBtn
 
-
+@onready var terrain_tool_btns = [paint_btn,line_btn,rect_btn,fill_cell_btn]
 
 signal selection_changed(selection:SelectionRes)
 signal settings_closed
@@ -244,6 +250,7 @@ func _populate_item_lists():
 	decor_3_list.clear()
 	
 	var all_decor1tiles = _list_all_tiles_from_tileset(decor1_tileset,SelectionRes.SelectionType.decor1)
+	var all_decor2tiles = _list_all_tiles_from_tileset(decor2_tileset,SelectionRes.SelectionType.decor2)
 	
 	var decortiles_containers: Dictionary[String,MarginContainer]
 	first = true
@@ -282,6 +289,51 @@ func _populate_item_lists():
 			container.name = tile_group_name
 		else:
 			tiles_list_ = container.decor_1_list
+		
+		var icon_texture = decortile.texture
+		if icon_texture == null:
+			icon_texture = ImageTexture.create_from_image(load("uid://clmxr0gm1perm"))
+			
+		var idx = tiles_list_.add_icon_item(icon_texture,true)
+		tiles_list_.set_item_tooltip_enabled(idx,true)
+		tiles_list_.set_item_tooltip(idx,decortile.name)
+		tiles_list_.set_item_metadata(idx,decortile)
+	
+	for decortile in all_decor2tiles:
+		var tile_group_name := ""
+		var container: MarginContainer
+		if not decortiles_containers.is_empty():
+			for group_name in decortiles_containers.keys():
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					container = decortiles_containers.get(group_name)
+					break
+		if tile_group_name.is_empty():
+			for group_name in decor2_tileset_info.group_names:
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					break
+		
+		if tile_group_name.is_empty():
+			tile_group_name = "other"
+			if decortiles_containers.has(tile_group_name):
+				container = decortiles_containers.get(tile_group_name)
+		var tiles_list_: ItemList
+		if not container:
+			if first:
+				first = false
+				container = decor_list_container
+				tiles_list_ = container.decor_2_list
+			else:
+				container = decor_list_container.duplicate()
+				decor_control.add_child(container)
+				tiles_list_ = container.decor_2_list
+				tiles_list_.clear()
+			
+			decortiles_containers.set(tile_group_name,container)
+			container.name = tile_group_name
+		else:
+			tiles_list_ = container.decor_2_list
 		
 		var icon_texture = decortile.texture
 		if icon_texture == null:
@@ -339,6 +391,7 @@ func list_all_terrains(tileset:TileSet,_src_id:int,type: SelectionRes.SelectionT
 					icon_tile_texture.atlas = src.texture
 					icon_tile_texture.region = src.get_tile_texture_region(tile_id,0)
 					
+					
 					break
 			
 			if icon_tile_texture:
@@ -379,6 +432,7 @@ func list_all_tiles(tileset:TileSet,src_id:int, type: SelectionRes.SelectionType
 		tile.texture = tile_texture
 		tile.type = type
 		tile.name = "_".join([tileset_name,str(tiles_idx)])  
+		tile.preview_offset = src.get_tile_data(tile_id,tile_altid).texture_origin
 		
 		tiles.append(tile)
 	
@@ -413,6 +467,7 @@ func _close_inv():
 		%MoveButtonContainer.show()
 
 
+
 func _on_item_list_item_selected(index:int,list:ItemList):
 	active_selection = list.get_item_metadata(index)
 	
@@ -431,6 +486,16 @@ func deselect_selection():
 	selection_changed.emit(active_selection)
 	for _list in all_lists:
 		_list.deselect_all()
+
+
+func _update_tool_buttons():
+	if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
+		for btn in terrain_tool_btns:
+			btn.show()
+	elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+		for btn in terrain_tool_btns:
+			btn.hide()
+		
 
 
 func await_kill_tween(tween:Tween):
