@@ -23,6 +23,7 @@ func _pressed() -> void:
 
 
 func _set_texture(index:int):
+	active_position = index
 	texture_normal = normal_textures[index]
 	texture_hover = hover_textures[index]
 "

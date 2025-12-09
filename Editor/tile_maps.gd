@@ -24,7 +24,6 @@ var decor_erase_prev := false
 
 
 func _process(_delta: float) -> void:
-	_hide_decor_erase_prev()
 	var coords = %Mainground.local_to_map(get_local_mouse_position())
 	if coords != last_coords:
 		last_coords = coords
@@ -32,6 +31,7 @@ func _process(_delta: float) -> void:
 	
 	grid.material.set_shader_parameter("mouse_position", grid.get_global_mouse_position())
 	
+	preview_sprite.hide()
 	if preview:
 		if active_selection and active_selection.list:
 			if control.get_rect().has_point(control.get_local_mouse_position()):
@@ -39,15 +39,18 @@ func _process(_delta: float) -> void:
 				var local_at = active_tilemap_layer.local_to_map(to_local(at))
 				var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
 				if is_placeable_location(standerdized_local_at):
+					preview_sprite.show()
 					preview_sprite.texture = active_selection.texture
 					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.preview_offset
 	
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
+		_hide_decor_erase_prev()
 		if control.get_rect().has_point(control.get_local_mouse_position()):
 			if not active_selection:
 				return
+			_show_preview()
 			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 				match current_tool:
 					0:
@@ -60,7 +63,7 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 						if event.button_mask == 1:
 							place(get_global_mouse_position())
 						elif event.button_mask == 2:
-							_show_decor_erase_prev()
+							_hide_preview()
 							place(get_global_mouse_position(),true)
 					1:
 						if event is InputEventMouseButton:
@@ -83,11 +86,13 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 							
 						if erase_tool_start:
 							if event.button_mask == 2:
+								_hide_preview()
 								line(erase_tool_first_coord,get_global_mouse_position(),true,true)
 								
 							elif event.is_released():
 								erase_tool_start = false
 								clear_temp()
+								_hide_preview()
 								line(erase_tool_first_coord,get_global_mouse_position(),true)
 					2:
 						if event is InputEventMouseButton:
@@ -110,13 +115,16 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 							
 						if erase_tool_start:
 							if event.button_mask == 2:
+								_hide_preview()
 								rect(erase_tool_first_coord,get_global_mouse_position(),true,true)
 								
 							elif event.is_released():
 								erase_tool_start = false
 								clear_temp()
+								_hide_preview()
 								rect(erase_tool_first_coord,get_global_mouse_position(),true)
 					3:
+						_hide_preview()
 						if event is InputEventMouseButton:
 							if not event.is_echo():
 								if event.button_mask == 1:
@@ -147,6 +155,8 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 				if event.button_mask == 1:
 					place(get_global_mouse_position())
 				elif event.button_mask == 2:
+					_show_decor_erase_prev()
+					_hide_preview()
 					place(get_global_mouse_position(),true)
 
 
@@ -369,7 +379,14 @@ func get_fill_cells_by_terrain(at: Vector2) -> Array[Vector2i]:
 	
 	return cells_hit
 
+func _hide_preview():
+	preview = false
 
+
+func _show_preview():
+	preview = true
+	
+	
 func _show_decor_erase_prev():
 	decor_erase_prev_tilemap.show()
 	decor_erase_prev = true
@@ -377,9 +394,22 @@ func _show_decor_erase_prev():
 
 func _update_decor_erase_tilemap(coords:Vector2i, erase := false):
 	if erase:
-		decor_erase_prev_tilemap.erase_cell(coords)
+		var has_another_tile = false
+		for layer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("decorlayer")):
+			if layer.get_cell_tile_data(coords):
+				has_another_tile = true
+				break
+		if not has_another_tile:
+			decor_erase_prev_tilemap.erase_cell(coords)
 	else: 
 		decor_erase_prev_tilemap.set_cell(coords,0,Vector2i(0,0),0)
+
+
+func _create_decor_erase_tilemap():
+	decor_erase_prev_tilemap.clear()
+	for layer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("decorlayer")):
+		for cell in layer.get_used_cells():
+			_update_decor_erase_tilemap(cell)
 
 
 func _hide_decor_erase_prev():
@@ -476,3 +506,10 @@ func _on_editor_tool_changed(new_current_tool: int) -> void:
 	current_tool = new_current_tool
 	tool_start = false
 	erase_tool_start = false
+
+
+func _on_save_menu_new_chunk_loaded(_data: LevelChunkRes) -> void:
+	_hide_preview()
+	_hide_decor_erase_prev()
+	await get_tree().process_frame
+	_create_decor_erase_tilemap()

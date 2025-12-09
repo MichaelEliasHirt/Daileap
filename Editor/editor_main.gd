@@ -153,6 +153,8 @@ func _on_save_menu_request_save_data() -> void:
 	data.difficulty = difficulty
 	data.mainground_tile_map_data = mainground.tile_map_data
 	data.background_tile_map_data = background.tile_map_data
+	data.decor1_tile_map_data = decor_1_layer.tile_map_data
+	data.decor2_tile_map_data = decor_2_layer.tile_map_data
 	data.chunks_left = chunks_left
 	data.chunks_right = chunks_right
 	data.exit_chunk = exit_chunk
@@ -181,6 +183,8 @@ func _on_save_menu_new_chunk_loaded(data: LevelChunkRes) -> void:
 	difficulty = data.difficulty
 	mainground.tile_map_data = data.mainground_tile_map_data
 	background.tile_map_data = data.background_tile_map_data
+	decor_1_layer.tile_map_data = data.decor1_tile_map_data
+	decor_2_layer.tile_map_data = data.decor2_tile_map_data
 	chunks_left = data.chunks_left
 	chunks_right = data.chunks_right
 	exit_chunk = data.exit_chunk
