@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bomcoguo3okdm"
-path="res://.godot/imported/Numbers.png-8632a979fa0706bb5ce098bc34ebb0e1.ctex"
+uid="uid://rposcpwqpiny"
+path="res://.godot/imported/Numbers.png-5daf0400e4bfd2a43fc1764e25c92968.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Decor/On Tiles(1)/Numbers.png"
-dest_files=["res://.godot/imported/Numbers.png-8632a979fa0706bb5ce098bc34ebb0e1.ctex"]
+source_file="res://assets/Decor/On Walls(3)/Numbers.png"
+dest_files=["res://.godot/imported/Numbers.png-5daf0400e4bfd2a43fc1764e25c92968.ctex"]
 
 [params]
 

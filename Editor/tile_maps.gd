@@ -24,13 +24,16 @@ var decor_erase_prev := false
 
 
 func _process(_delta: float) -> void:
+	## update the label at the top right
 	var coords = %Mainground.local_to_map(get_local_mouse_position())
 	if coords != last_coords:
 		last_coords = coords
 		debug_info_label.update_info(coords)
 	
+	## for the grid highlight
 	grid.material.set_shader_parameter("mouse_position", grid.get_global_mouse_position())
 	
+	## Move the preview sprite when its active, it snappes to the grid
 	preview_sprite.hide()
 	if preview:
 		if active_selection and active_selection.list:
@@ -46,14 +49,18 @@ func _process(_delta: float) -> void:
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
+		## the decor_erase_prev get hidden but mostly gets shown again a little down the execution
 		_hide_decor_erase_prev()
 		if control.get_rect().has_point(control.get_local_mouse_position()):
 			if not active_selection:
 				return
+			## similar to decor_erase_prev, but the other way round
 			_show_preview()
-			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
+			## for now that when the only types that use buttons at all, but maybe I will add buttons for other types 
+			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.noterrain,SelectionRes.SelectionType.wall]:
 				match current_tool:
-					0:
+					0: ## pencil tool 
+						## when you move the mouse quick there will be holes in the "line", this prevents this to some extent
 						if event is InputEventMouseMotion:
 							if abs(event.screen_relative.x) > 16 or abs(event.screen_relative.x) > 16:
 								if event.button_mask == 1:
@@ -65,7 +72,8 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 						elif event.button_mask == 2:
 							_hide_preview()
 							place(get_global_mouse_position(),true)
-					1:
+					1: ## line tool
+						## when you first press the start of the line is gettign marked
 						if event is InputEventMouseButton:
 							if not event.is_echo():
 								if event.button_mask == 1:
@@ -74,16 +82,19 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 								if event.button_mask == 2:
 									erase_tool_start = true
 									erase_tool_first_coord = get_global_mouse_position()
-									
+						## only if the line has started already
 						if tool_start:
+							## preview line gets updated as long as pressed
 							if event.button_mask == 1:
 								line(tool_first_coord,get_global_mouse_position(),false,true)
 								
+							## when released the actual line is placed
 							elif event.is_released():
 								tool_start = false
 								clear_temp()
 								line(tool_first_coord,get_global_mouse_position())
-							
+						
+						## same for erase line
 						if erase_tool_start:
 							if event.button_mask == 2:
 								_hide_preview()
@@ -94,7 +105,9 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 								clear_temp()
 								_hide_preview()
 								line(erase_tool_first_coord,get_global_mouse_position(),true)
-					2:
+					2: ## rect tool
+						
+						## similar to line tool but the changed tiles are different
 						if event is InputEventMouseButton:
 							if not event.is_echo():
 								if event.button_mask == 1:
@@ -123,22 +136,27 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 								clear_temp()
 								_hide_preview()
 								rect(erase_tool_first_coord,get_global_mouse_position(),true)
-					3:
+					3: ## fill tool
 						_hide_preview()
+						
 						if event is InputEventMouseButton:
 							if not event.is_echo():
 								if event.button_mask == 1:
 									if tool_start:
 										tool_start = false
+										## if you click again on the preview, then actually set the tiles
+										## if you would click outside the tool just resets
 										if is_hovering_temp(get_global_mouse_position()):
 											fill(get_global_mouse_position())
 										clear_temp()
 									else:
+										## set the preview fill
 										var success = fill(get_global_mouse_position(),false,true)
 										if success:
 											tool_start = true
 										else: tool_start = false
-
+								
+								## same for erase
 								elif event.button_mask == 2:
 									if erase_tool_start:
 										erase_tool_start = false
@@ -151,10 +169,12 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 											erase_tool_start = true
 										else: erase_tool_start = false
 			
+			## for now this is everything that just gets placed, nothing fancy
 			elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
 				if event.button_mask == 1:
 					place(get_global_mouse_position())
 				elif event.button_mask == 2:
+					## shows little hitboxed to make it easier to hit them
 					_show_decor_erase_prev()
 					_hide_preview()
 					place(get_global_mouse_position(),true)
@@ -200,6 +220,9 @@ func place(at: Vector2, erase := false, temp := false):
 			else:
 				if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 					_place_terrain([local_at], active_selection.terrainset, active_selection.terrainid)
+				
+				elif active_selection.type == SelectionRes.SelectionType.noterrain:
+					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
 				##Only Decor
 				elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
 					_update_decor_erase_tilemap(local_at)

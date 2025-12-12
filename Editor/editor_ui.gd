@@ -32,6 +32,8 @@ class_name EditorUIManager extends Control
 @onready var decor1_tileset_info: TileSetInfo = owner.decor1_tileset_info
 @onready var decor2_tileset: TileSet = owner.decor2_tileset
 @onready var decor2_tileset_info: TileSetInfo = owner.decor2_tileset_info
+@onready var decor3_tileset: TileSet = owner.decor3_tileset
+@onready var decor3_tileset_info: TileSetInfo = owner.decor3_tileset_info
 
 @onready var paint_btn: TextureButton = %PaintBtn
 @onready var line_btn: TextureButton = %LineBtn
@@ -149,6 +151,7 @@ func _populate_item_lists():
 		tiles_list_.set_item_tooltip_enabled(idx,true)
 		tiles_list_.set_item_tooltip(idx,autotile.name)
 		tiles_list_.set_item_metadata(idx,autotile)
+	_sort_children_by_list(tiles_control,tiles_tileset_info.group_names)
 
 	#background_tiles_list.clear()
 	#background_terrain_list.clear()
@@ -253,11 +256,12 @@ func _populate_item_lists():
 		walls_list_.set_item_tooltip_enabled(idx,true)
 		walls_list_.set_item_tooltip(idx,wall.name)
 		walls_list_.set_item_metadata(idx,wall)
+	_sort_children_by_list(walls_control,walls_tileset_info.group_names)
 	
 	
 	##Populate the "Decor" Tab
 	
-	## basicly the same again, but this time the container is a little more complex
+	## basicly the same again, but this time the container is a little more complex, because of "layers"
 	
 	decor_1_list.clear()
 	decor_2_list.clear()
@@ -265,6 +269,7 @@ func _populate_item_lists():
 	
 	var all_decor1tiles = _list_all_tiles_from_tileset(decor1_tileset,SelectionRes.SelectionType.decor1)
 	var all_decor2tiles = _list_all_tiles_from_tileset(decor2_tileset,SelectionRes.SelectionType.decor2)
+	var all_decor3tiles = _list_all_tiles_from_tileset(decor3_tileset,SelectionRes.SelectionType.decor3)
 	
 	var decortiles_containers: Dictionary[String,MarginContainer]
 	first = true
@@ -364,6 +369,79 @@ func _populate_item_lists():
 		tiles_list_.set_item_tooltip_enabled(idx,true)
 		tiles_list_.set_item_tooltip(idx,decortile.name)
 		tiles_list_.set_item_metadata(idx,decortile)
+	
+	for decortile in all_decor3tiles:
+		var tile_group_name := ""
+		var container: MarginContainer
+		if not decortiles_containers.is_empty():
+			for group_name in decortiles_containers.keys():
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					container = decortiles_containers.get(group_name)
+					break
+		if tile_group_name.is_empty():
+			for group_name in decor3_tileset_info.group_names:
+				if decortile.name.begins_with(group_name):
+					tile_group_name = group_name
+					break
+		
+		if tile_group_name.is_empty():
+			tile_group_name = "other"
+			if decortiles_containers.has(tile_group_name):
+				container = decortiles_containers.get(tile_group_name)
+		var tiles_list_: ItemList
+		if not container:
+			if first:
+				first = false
+				container = decor_list_container
+				tiles_list_ = container.decor_3_list
+			else:
+				## make sure too clear out ALL the item lists
+				container = decor_list_container.duplicate()
+				decor_control.add_child(container)
+				tiles_list_ = container.decor_3_list
+				tiles_list_.clear()
+				container.decor_1_list.clear()
+				container.decor_2_list.clear()
+				tiles_list_.clear()
+			
+			decortiles_containers.set(tile_group_name,container)
+			container.name = tile_group_name
+		else:
+			tiles_list_ = container.decor_3_list
+		
+		var icon_texture = decortile.texture
+		if icon_texture == null:
+			icon_texture = ImageTexture.create_from_image(load("uid://clmxr0gm1perm"))
+			
+		var idx = tiles_list_.add_icon_item(icon_texture,true)
+		tiles_list_.set_item_tooltip_enabled(idx,true)
+		tiles_list_.set_item_tooltip(idx,decortile.name)
+		tiles_list_.set_item_metadata(idx,decortile)
+	
+	var combinded_sorting_list = _combine_arrays(decor1_tileset_info.group_names,_combine_arrays(decor2_tileset_info.group_names,decor3_tileset_info.group_names))
+	_sort_children_by_list(decor_control,combinded_sorting_list)
+
+
+## combine two arrays into one, without duplicates
+func _combine_arrays(array1: Array, array2: Array) -> Array:
+	for x in array1:
+		if x in array2:
+			array2.erase(x)
+	return array1 + array2
+
+
+## sort the children by according to a list with their names
+func _sort_children_by_list(node:Node, sorting_list:Array[String]):
+	var children = node.get_children()
+	var index = 0
+	for sorted_name in sorting_list:
+		var group_container_idx = children.find_custom(func(x): return x.name == sorted_name)
+		if group_container_idx != -1:
+			var group_container = children.pop_at(group_container_idx)
+			node.move_child(group_container,index)
+			index += 1
+			
 
 ##get all the terrains from a tileset and packs it in a SelectionRes Resource
 func _list_all_terrains_from_tileset(tileset:TileSet,assign_type:SelectionRes.SelectionType) -> Array[SelectionRes]:
@@ -467,8 +545,6 @@ func _on_inv_container_tab_changed(_tab: int) -> void:
 		
 	elif not inv_open:
 		_open_inv()
-		
-
 
 
 func _open_inv():

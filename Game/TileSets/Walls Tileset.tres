@@ -1,10 +1,10 @@
-[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://bpnly4l6tgk65"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://csxk0sp8lxo0u"]
 
-[ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="1_ytky5"]
-[ext_resource type="Texture2D" uid="uid://ddh42d22wawny" path="res://assets/Walls/Industrial1.png" id="2_dekia"]
+[ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="1_lwmmu"]
+[ext_resource type="Texture2D" uid="uid://ddh42d22wawny" path="res://assets/Walls/Industrial1.png" id="2_dv535"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ps1nv"]
-texture = ExtResource("1_ytky5")
+texture = ExtResource("1_lwmmu")
 0:0/0 = 0
 1:0/0 = 0
 1:0/0/probability = 0.5
@@ -37,7 +37,7 @@ texture = ExtResource("1_ytky5")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1p5se"]
 resource_name = "IndustrialWall1"
-texture = ExtResource("2_dekia")
+texture = ExtResource("2_dv535")
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
@@ -120,7 +120,6 @@ texture = ExtResource("2_dekia")
 3:0/0/terrains_peering_bit/left_side = 0
 
 [resource]
-resource_name = "walls_tileset"
 terrain_set_0/mode = 2
 terrain_set_0/terrain_0/name = "IndustrialWall"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)

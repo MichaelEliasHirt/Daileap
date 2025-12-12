@@ -8,6 +8,7 @@ extends Node2D
 @onready var background: TileMapLayer = %Background
 @onready var decor_1_layer: TileMapLayer = %Decor1Layer
 @onready var decor_2_layer: TileMapLayer = %Decor2Layer
+@onready var decor_3_layer: TileMapLayer = %Decor3Layer
 
 @onready var entrance_arrow: Node2D = %EntranceArrow
 @onready var exit_arrow: Node2D = %ExitArrow
@@ -21,6 +22,8 @@ extends Node2D
 @export var decor1_tileset_info: TileSetInfo
 @export var decor2_tileset: TileSet
 @export var decor2_tileset_info: TileSetInfo
+@export var decor3_tileset: TileSet
+@export var decor3_tileset_info: TileSetInfo
 
 @export_subgroup("Settings")
 @export var chunk_width: int = 14
@@ -60,6 +63,7 @@ func _ready() -> void:
 	background.tile_set = walls_tileset
 	decor_1_layer.tile_set = decor1_tileset
 	decor_2_layer.tile_set = decor2_tileset
+	decor_3_layer.tile_set = decor3_tileset
 	
 	_on_vertical_slider_value_changed(0)
 
@@ -74,7 +78,6 @@ func fit_to_screen() -> void:
 func _on_ui_selection_changed(_selection: SelectionRes) -> void:
 	pass # Replace with function body.
 
-#
 #func fix_all_terrains(tileset:TileSet):
 	#var terrains: Array
 	#pass
@@ -144,9 +147,8 @@ func update_valid_build_region():
 	%HighlightGrid.position = placeable_rect.position * 16
 	%HighlightGrid.size = placeable_rect.size * 16
 
-
+## creates a new LevelChunkRes to emit with send_save_data
 func _on_save_menu_request_save_data() -> void:
-	
 	var data = LevelChunkRes.new()
 	data.name = chunk_name
 	data.valid = valid
@@ -155,6 +157,7 @@ func _on_save_menu_request_save_data() -> void:
 	data.background_tile_map_data = background.tile_map_data
 	data.decor1_tile_map_data = decor_1_layer.tile_map_data
 	data.decor2_tile_map_data = decor_2_layer.tile_map_data
+	data.decor3_tile_map_data = decor_3_layer.tile_map_data
 	data.chunks_left = chunks_left
 	data.chunks_right = chunks_right
 	data.exit_chunk = exit_chunk
@@ -163,7 +166,7 @@ func _on_save_menu_request_save_data() -> void:
 	
 	send_save_data.emit(data)
 
-
+## sets the settings
 func _on_settings_settings_changed(settings: ChunkSettings) -> void:
 	height = settings.height
 	chunks_left = settings.chunks_left
@@ -175,7 +178,7 @@ func _on_settings_settings_changed(settings: ChunkSettings) -> void:
 func _on_save_menu_name_changed(_name: String) -> void:
 	chunk_name = _name
 
-
+## sets the level data
 func _on_save_menu_new_chunk_loaded(data: LevelChunkRes) -> void:
 	UID = data.UID
 	chunk_name = data.name
@@ -185,6 +188,7 @@ func _on_save_menu_new_chunk_loaded(data: LevelChunkRes) -> void:
 	background.tile_map_data = data.background_tile_map_data
 	decor_1_layer.tile_map_data = data.decor1_tile_map_data
 	decor_2_layer.tile_map_data = data.decor2_tile_map_data
+	decor_3_layer.tile_map_data = data.decor3_tile_map_data
 	chunks_left = data.chunks_left
 	chunks_right = data.chunks_right
 	exit_chunk = data.exit_chunk

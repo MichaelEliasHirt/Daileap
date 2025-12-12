@@ -1,9 +1,14 @@
 extends Node2D
 
+const PLAYER = preload("uid://7ybaa4xotguu")
+
 @export_dir var level_chunks_path: String
 
 @export var MaingroundTileset: TileSet
 @export var BackgroundTileset: TileSet
+@export var Decor1LayerTileset: TileSet
+@export var Decor2LayerTileset: TileSet
+@export var Decor3LayerTileset: TileSet
 
 @export var level_length: int = 5
 @export var end_chunk: PackedScene
@@ -14,19 +19,51 @@ extends Node2D
 
 @onready var mainground: TileMapLayer = %Mainground
 @onready var background: TileMapLayer = %Background
+@onready var decor_1_layer: TileMapLayer = %Decor1Layer
+@onready var decor_2_layer: TileMapLayer = %Decor2Layer
+@onready var decor_3_layer: TileMapLayer = %Decor3Layer
+
 @onready var camera_2d: Camera2D = %Camera2D
+@onready var player_spawn_location: Node2D = %PlayerSpawnLocation
+
 
 var level_height: int
 var lastest_level_exit_position: int
 var all_chunks: Array
 
+var current_player: PlayerController
 
 func _ready() -> void:
 	mainground.tile_set = MaingroundTileset
 	background.tile_set = BackgroundTileset
+	background.tile_set = BackgroundTileset
+	decor_1_layer.tile_set = Decor1LayerTileset
+	decor_2_layer.tile_set = Decor2LayerTileset
+	decor_3_layer.tile_set = Decor3LayerTileset
 	_update_dir()
 	load_level(randi())
+	_spawn_player()
+	
 
+func _respawn_player():
+	_free_player()
+	_spawn_player()
+
+
+func _spawn_player():
+	var player: PlayerController = PLAYER.instantiate() 
+	add_child(player,true)
+	player.position = player_spawn_location.position
+	player.world_position_particle_generators = %WorldPositionParticleGenerators
+	camera_2d.follow_player = player
+	current_player = player
+	player.died.connect(_respawn_player)
+
+
+func _free_player():
+	if current_player:
+		current_player.queue_free()
+		remove_child(current_player)
 
 
 func load_level(rand_seed:int):
@@ -79,6 +116,9 @@ func _add_chunk(level_chunk:LevelChunkRes):
 	
 	_merge_tilemaps(mainground,level_chunk.mainground_tile_map_data,offset)
 	_merge_tilemaps(background,level_chunk.background_tile_map_data,offset)
+	_merge_tilemaps(decor_1_layer,level_chunk.decor1_tile_map_data,offset*2) # smaller tiles so *2
+	_merge_tilemaps(decor_2_layer,level_chunk.decor2_tile_map_data,offset*2)
+	_merge_tilemaps(decor_3_layer,level_chunk.decor3_tile_map_data,offset*2)
 	
 	lastest_level_exit_position += (level_chunk.exit_chunk - level_chunk.chunks_left)
 

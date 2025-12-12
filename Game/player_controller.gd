@@ -1,6 +1,11 @@
 extends CharacterBody2D
 class_name PlayerController
 
+
+@export var DIE: bool:
+	set(value): 
+		die()
+
 @onready var ray_cast_right: RayCast2D = $RayCastRight
 @onready var ray_cast_left: RayCast2D = $RayCastLeft
 @onready var particles_on_player_sprite: AnimatedSprite2D = $ParticlesOnPlayerSprite
@@ -8,7 +13,7 @@ class_name PlayerController
 @onready var run_particle_gen: CPUParticles2D = $ParticleGenerators/RunParticleGen
 @onready var wallslide_particle_gen: CPUParticles2D = $ParticleGenerators/WallslideParticleGen
 @onready var jump_particle_gen: CPUParticles2D = $ParticleGenerators/JumpParticleGen
-@onready var world_position_particle_generators: Node2D = %WorldPositionParticleGenerators
+@onready var world_position_particle_generators: Node2D
 
 # --- EXPORTED MOVEMENT & PHYSICS PARAMETERS ---
 
@@ -65,6 +70,8 @@ class_name PlayerController
 
 signal dash_indicator_on
 signal dash_indicator_off
+
+signal died
 
 #Variables determined by the developer set ones.
 
@@ -295,8 +302,11 @@ func _physics_process(delta):
 	if is_walking:	
 		drop_straight = false
 		if not is_on_floor():
+			if is_on_wall():
+				is_wall_sliding = true
+			else:
+				is_falling = true
 			is_walking = false
-			is_falling = true	
 		else:
 			if is_on_wall():
 				change_direction(null)
@@ -499,7 +509,6 @@ func _physics_process(delta):
 
 
 func _drop_through():
-
 	dropping_through = true
 	set_collision_layer_value(2,false)
 	set_collision_mask_value(2,false)
@@ -510,9 +519,7 @@ func _drop_through():
 
 
 func _dash(direction: Vector2i):
-
 	var d_time = 0.0625 * dash_length
-
 	_dashing_time(d_time)
 	_pause_gravity(d_time)
 	velocity.x = dash_magnitude * direction.x
@@ -521,13 +528,11 @@ func _dash(direction: Vector2i):
 
 
 func _reset_dash():
-
 	is_dashing = false
 	is_falling = true
 
 
 func change_direction(to_right):
-
 	if to_right != null:
 		move_right = to_right
 	else:
@@ -539,13 +544,11 @@ func change_direction(to_right):
 
 
 func _coyote_time():
-
 	await get_tree().create_timer(coyote_time).timeout
 	coyote_active = false
 
 
 func _decelerate(delta, vertical):
-
 	if !vertical:
 		if velocity.x > 0:
 			velocity.x += deceleration * delta
@@ -556,20 +559,21 @@ func _decelerate(delta, vertical):
 
 
 func _input_pause_reset(time):
-
 	await get_tree().create_timer(time).timeout
 	movement_input_monitoring = Vector2(true, true)
 
 
 func _pause_gravity(time):
-
 	gravity_active = false
 	await get_tree().create_timer(time).timeout
 	gravity_active = true
 
 
 func _dashing_time(time):
-
 	is_dashing = true
 	await get_tree().create_timer(time).timeout
 	_reset_dash()
+
+
+func die():
+	died.emit()

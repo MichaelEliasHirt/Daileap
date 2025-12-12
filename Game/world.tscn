@@ -1,15 +1,15 @@
-[gd_scene load_steps=19 format=4 uid="uid://d3ddj48byegn3"]
+[gd_scene load_steps=17 format=4 uid="uid://d3ddj48byegn3"]
 
-[ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="1_3kekb"]
 [ext_resource type="Script" uid="uid://ck3xkkg4capic" path="res://Game/world.gd" id="1_ho6sb"]
-[ext_resource type="PackedScene" uid="uid://7ybaa4xotguu" path="res://Game/player.tscn" id="2_jwkme"]
-[ext_resource type="TileSet" uid="uid://dqltvs87wbfs5" path="res://Game/mainground_tileset.tres" id="2_pecy7"]
-[ext_resource type="TileSet" uid="uid://bpnly4l6tgk65" path="res://Game/background_tileset.tres" id="3_hvno2"]
+[ext_resource type="TileSet" uid="uid://ctejcc51qojqo" path="res://Game/TileSets/Tiles Tileset.tres" id="2_r7jf0"]
+[ext_resource type="TileSet" uid="uid://csxk0sp8lxo0u" path="res://Game/TileSets/Walls Tileset.tres" id="3_16ps5"]
 [ext_resource type="Script" uid="uid://21tfruwnnvmv" path="res://Game/camera_2d.gd" id="3_jwkme"]
 [ext_resource type="PackedScene" uid="uid://cjphucl6wy0av" path="res://Game/LevelChunks/Specials/end_chunk.tscn" id="4_hvno2"]
 [ext_resource type="Texture2D" uid="uid://dxyrhha5r4kfu" path="res://assets/2 Background/Far_Background.png" id="4_ps1nv"]
-[ext_resource type="Resource" uid="uid://26kwew6d4jaf" path="res://Game/LevelChunks/TestLevel1.tres" id="5_16ps5"]
-[ext_resource type="TileSet" uid="uid://cu3o1w47wkw0n" path="res://Game/tiles_tileset.tres" id="7_g2b07"]
+[ext_resource type="Resource" uid="uid://ljqaq5xt0oa8" path="res://Game/LevelChunks/TestLevel1.tres" id="5_16ps5"]
+[ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://Game/TileSets/Decor 3 Tileset.tres" id="6_71s8c"]
+[ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://Game/TileSets/Decor 2 Tileset.tres" id="7_qvtff"]
+[ext_resource type="TileSet" uid="uid://iaamg7861d4s" path="res://Game/TileSets/Decor 1 Tileset.tres" id="8_1rdhq"]
 [ext_resource type="Texture2D" uid="uid://c1r13osfbs6mn" path="res://assets/DashIndicator.png" id="9_r7jf0"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jwkme"]
@@ -19,62 +19,6 @@ distance = 8.0
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3kekb"]
 normal = Vector2(-1, 0)
 distance = -200.0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ps1nv"]
-texture = ExtResource("1_3kekb")
-0:0/0 = 0
-0:0/0/terrain_set = 0
-0:0/0/terrain = 0
-0:0/0/terrains_peering_bit/bottom_side = 0
-0:0/0/terrains_peering_bit/top_side = 0
-1:0/0 = 0
-1:0/0/probability = 0.5
-2:0/0 = 0
-2:0/0/probability = 10.0
-0:1/0 = 0
-0:1/0/terrain_set = 0
-0:1/0/terrains_peering_bit/bottom_side = 0
-1:1/0 = 0
-2:1/0 = 0
-0:2/0 = 0
-0:2/0/terrain_set = 0
-0:2/0/terrain = 0
-0:2/0/terrains_peering_bit/bottom_side = 0
-0:2/0/terrains_peering_bit/top_side = 0
-1:2/0 = 0
-1:2/0/terrain_set = 0
-1:2/0/terrain = 0
-1:2/0/terrains_peering_bit/right_side = 0
-1:2/0/terrains_peering_bit/left_side = 0
-2:2/0 = 0
-0:3/0 = 0
-0:3/0/terrain_set = 0
-0:3/0/terrains_peering_bit/top_side = 0
-1:3/0 = 0
-1:3/0/terrain_set = 0
-1:3/0/terrain = 0
-1:3/0/terrains_peering_bit/right_side = 0
-1:3/0/terrains_peering_bit/left_side = 0
-2:3/0 = 0
-2:3/0/terrain_set = 0
-2:3/0/terrains_peering_bit/left_side = 0
-0:4/0 = 0
-0:4/0/terrain_set = 0
-0:4/0/terrain = 0
-1:4/0 = 0
-1:4/0/terrain_set = 0
-1:4/0/terrains_peering_bit/right_side = 0
-2:4/0 = 0
-2:4/0/terrain_set = 0
-0:5/0 = 0
-1:5/0 = 0
-2:5/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_ho6sb"]
-terrain_set_0/mode = 2
-terrain_set_0/terrain_0/name = "Terrain 0"
-terrain_set_0/terrain_0/color = Color(0.597206, 0.0906949, 0.659445, 1)
-sources/0 = SubResource("TileSetAtlasSource_ps1nv")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3kekb"]
 load_path = "res://.godot/imported/BackgroundLayers.png-fc121278dac40d758750a2dfb2e458ca.ctex"
@@ -90,8 +34,11 @@ region = Rect2(104, 0, 104, 0)
 [node name="World" type="Node2D"]
 script = ExtResource("1_ho6sb")
 level_chunks_path = "res://Game/LevelChunks"
-MaingroundTileset = ExtResource("2_pecy7")
-BackgroundTileset = ExtResource("3_hvno2")
+MaingroundTileset = ExtResource("2_r7jf0")
+BackgroundTileset = ExtResource("3_16ps5")
+Decor1LayerTileset = ExtResource("8_1rdhq")
+Decor2LayerTileset = ExtResource("7_qvtff")
+Decor3LayerTileset = ExtResource("6_71s8c")
 end_chunk = ExtResource("4_hvno2")
 test_chunk = ExtResource("5_16ps5")
 
@@ -110,23 +57,49 @@ position = Vector2(-8, 0)
 
 [node name="Background" type="TileMapLayer" parent="TileMaps"]
 unique_name_in_owner = true
-z_index = -3
+z_index = -20
 tile_map_data = PackedByteArray("AAABAAUAAAACAAAAAAABAAYAAAACAAAAAAABAAcAAAACAAAAAAABAAgAAAACAAAAAAABAAkAAAACAAEAAAABAAoAAAACAAAAAAACAAUAAAACAAEAAAACAAYAAAACAAAAAAACAAcAAAACAAAAAAACAAgAAAACAAAAAAACAAkAAAABAAAAAAACAAoAAAACAAAAAAADAAUAAAACAAAAAAADAAYAAAACAAAAAAADAAcAAAACAAAAAAADAAgAAAACAAAAAAADAAkAAAABAAEAAAADAAoAAAACAAAAAAAEAAUAAAACAAAAAAAEAAYAAAACAAAAAAAEAAcAAAACAAIAAAAEAAgAAAACAAAAAAAEAAkAAAACAAAAAAAEAAoAAAACAAIAAAAFAAUAAAACAAAAAAAFAAYAAAACAAAAAAAFAAcAAAACAAAAAAAFAAgAAAACAAAAAAAFAAkAAAABAAEAAAAFAAoAAAACAAAAAAAGAAUAAAACAAIAAAAGAAYAAAACAAAAAAAGAAcAAAABAAAAAAAGAAgAAAACAAEAAAAGAAkAAAACAAAAAAAGAAoAAAACAAAAAAAHAAUAAAACAAIAAAAHAAYAAAACAAAAAAAHAAcAAAACAAAAAAAHAAgAAAACAAEAAAAHAAkAAAACAAAAAAAHAAoAAAABAAAAAAAIAAUAAAACAAIAAAAIAAYAAAACAAAAAAAIAAcAAAACAAAAAAAIAAgAAAACAAAAAAAIAAkAAAACAAAAAAAIAAoAAAACAAEAAAAJAAUAAAACAAIAAAAJAAYAAAACAAAAAAAJAAcAAAABAAEAAAAJAAgAAAACAAAAAAAJAAkAAAACAAAAAAAJAAoAAAACAAAAAAAKAAUAAAACAAIAAAAKAAYAAAACAAAAAAAKAAcAAAACAAIAAAAKAAgAAAACAAAAAAAKAAkAAAACAAAAAAAKAAoAAAABAAEAAAALAAUAAAACAAIAAAALAAYAAAACAAAAAAALAAcAAAACAAAAAAALAAgAAAACAAAAAAALAAkAAAACAAIAAAALAAoAAAACAAAAAAAMAAUAAAACAAIAAAAMAAYAAAACAAIAAAAMAAcAAAABAAEAAAAMAAgAAAACAAAAAAAMAAkAAAACAAEAAAAMAAoAAAACAAAAAAA=")
-tile_set = SubResource("TileSet_ho6sb")
+tile_set = ExtResource("3_16ps5")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Decor3Layer" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+z_index = -15
+tile_set = ExtResource("6_71s8c")
+collision_enabled = false
+navigation_enabled = false
 
 [node name="Mainground" type="TileMapLayer" parent="TileMaps"]
 unique_name_in_owner = true
+z_index = -10
 tile_map_data = PackedByteArray("AAAAAAsAAAAEAAEAAAABAAsAAAAKAAAAAAACAAsAAAAKAAAAAAADAAsAAAAKAAAAAAADAAwAAAAJAAMAAAAEAAwAAAAJAAMAAAAFAAwAAAAJAAMAAAAGAAwAAAAJAAMAAAAHAAwAAAAJAAMAAAAIAAwAAAAJAAMAAAAJAAwAAAAJAAMAAAAKAAwAAAAJAAMAAAALAAwAAAAJAAMAAAAMAAwAAAAJAAMAAAANAAwAAAALAAMAAAANAAsAAAAHAAEAAAAMAAsAAAAKAAAAAAALAAsAAAAKAAAAAAAKAAsAAAAKAAAAAAAJAAsAAAAKAAAAAAAIAAsAAAAKAAAAAAAHAAsAAAAKAAAAAAAGAAsAAAAKAAAAAAAFAAsAAAAKAAAAAAAEAAsAAAAKAAAAAAABAAwAAAAJAAMAAAAAAAwAAAAIAAMAAAACAAwAAAAJAAMAAAAAAAoAAAAAAAEAAAAAAAkAAAAAAAEAAAAAAAgAAAAAAAEAAAAAAAcAAAAAAAEAAAAAAAYAAAAAAAEAAAAAAAUAAAAAAAEAAAAAAAQAAAAAAAEAAAAAAAMAAAAAAAEAAAAAAAIAAAAAAAEAAAAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAANAAoAAAAAAAEAAAANAAkAAAAAAAEAAAANAAgAAAAAAAEAAAANAAcAAAAAAAEAAAANAAYAAAAAAAEAAAANAAUAAAAAAAEAAAANAAQAAAAAAAEAAAANAAMAAAAAAAEAAAABAAUAAQAEAAgAAAACAAUAAQAFAAgAAAADAAUAAQAFAAgAAAAEAAUAAQAFAAgAAAAFAAUAAQAFAAgAAAAGAAUAAQAFAAgAAAAHAAUAAQAFAAgAAAAIAAUAAQAFAAgAAAAJAAUAAQAFAAgAAAAKAAUAAQAFAAgAAAAMAAUAAQAGAAgAAAALAAUAAQAFAAgAAAABAAgAAQAHAAgAAAACAAgAAQAIAAcAAAAMAAgAAQAIAAcAAAALAAgAAQAHAAgAAAANAAIAAAAAAAEAAAANAAEAAAAAAAEAAAANAAAAAAAAAAAAAAA=")
-tile_set = ExtResource("7_g2b07")
+tile_set = ExtResource("2_r7jf0")
 navigation_enabled = false
+
+[node name="Decor2Layer" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+z_index = -10
+tile_map_data = PackedByteArray("AAADABUAAAAAAAAAAAAEAA4ACAAAAAAAAAAXAA4ACAAAAAAAAAA=")
+tile_set = ExtResource("7_qvtff")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Decor1Layer" type="TileMapLayer" parent="TileMaps"]
+unique_name_in_owner = true
+z_index = 10
+tile_set = ExtResource("8_1rdhq")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="PlayerSpawnLocation" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(95, 175)
 
 [node name="WorldPositionParticleGenerators" type="Node2D" parent="."]
 unique_name_in_owner = true
 
-[node name="Player" parent="." instance=ExtResource("2_jwkme")]
-position = Vector2(95, 175)
-
-[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("follow_player")]
+[node name="Camera2D" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(51, 189)
 offset = Vector2(0, -50)
@@ -136,7 +109,6 @@ limit_right = 208
 limit_bottom = 193
 position_smoothing_speed = 3.0
 script = ExtResource("3_jwkme")
-follow_player = NodePath("../Player")
 smoothing_enabled = true
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -206,6 +178,3 @@ mouse_filter = 2
 scale = Vector2(5, 5)
 texture = ExtResource("9_r7jf0")
 hframes = 2
-
-[connection signal="dash_indicator_off" from="Player" to="CanvasLayer/Control/MarginContainer/CenterContainer/CanvasLayer/DashIndicator" method="set_frame" binds= [1]]
-[connection signal="dash_indicator_on" from="Player" to="CanvasLayer/Control/MarginContainer/CenterContainer/CanvasLayer/DashIndicator" method="set_frame" binds= [0]]

@@ -1,15 +1,15 @@
-[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://cu3o1w47wkw0n"]
+[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://ctejcc51qojqo"]
 
-[ext_resource type="Texture2D" uid="uid://ctvgex0ynaynu" path="res://assets/Tiles/IndustrialTile.png" id="1_hdfes"]
-[ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="2_h3w0n"]
-[ext_resource type="Texture2D" uid="uid://e8ppgn24ma45" path="res://assets/Tiles/IndustrialTile2.png" id="3_kvb7k"]
-[ext_resource type="Texture2D" uid="uid://4vmvio74k2bc" path="res://assets/Tiles/IndustrialSlab.png" id="4_h3w0n"]
-[ext_resource type="Texture2D" uid="uid://dcj2xe4iplfaq" path="res://assets/Tiles/IndustrialSlab2.png" id="5_itk2j"]
-[ext_resource type="Texture2D" uid="uid://defnd0dm5in5n" path="res://assets/Tiles/IndustrialSlab3.png" id="6_3utf6"]
+[ext_resource type="Texture2D" uid="uid://ctvgex0ynaynu" path="res://assets/Tiles/IndustrialTile.png" id="1_jbbhc"]
+[ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="2_yqe26"]
+[ext_resource type="Texture2D" uid="uid://e8ppgn24ma45" path="res://assets/Tiles/IndustrialTile2.png" id="3_iyyy2"]
+[ext_resource type="Texture2D" uid="uid://4vmvio74k2bc" path="res://assets/Tiles/IndustrialSlab.png" id="4_q7prj"]
+[ext_resource type="Texture2D" uid="uid://dcj2xe4iplfaq" path="res://assets/Tiles/IndustrialSlab2.png" id="5_7fcmg"]
+[ext_resource type="Texture2D" uid="uid://defnd0dm5in5n" path="res://assets/Tiles/IndustrialSlab3.png" id="6_tsmuh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_71s8c"]
 resource_name = "IndustrialTile"
-texture = ExtResource("1_hdfes")
+texture = ExtResource("1_jbbhc")
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
@@ -388,7 +388,7 @@ texture = ExtResource("1_hdfes")
 11:3/0/terrains_peering_bit/top_side = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ncwh"]
-texture = ExtResource("2_h3w0n")
+texture = ExtResource("2_yqe26")
 0:6/0 = 0
 0:6/0/terrain_set = 0
 0:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -602,7 +602,7 @@ texture = ExtResource("2_h3w0n")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qvtff"]
 resource_name = "IndustrialTile2"
-texture = ExtResource("3_kvb7k")
+texture = ExtResource("3_iyyy2")
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 1
@@ -982,7 +982,7 @@ texture = ExtResource("3_kvb7k")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kvb7k"]
 resource_name = "IndustrialSlab"
-texture = ExtResource("4_h3w0n")
+texture = ExtResource("4_q7prj")
 0:0/0 = 0
 0:0/0/terrain_set = 1
 0:0/0/terrain = 1
@@ -1013,7 +1013,7 @@ texture = ExtResource("4_h3w0n")
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7vt0t"]
-texture = ExtResource("5_itk2j")
+texture = ExtResource("5_7fcmg")
 0:0/0 = 0
 0:0/0/terrain_set = 1
 0:0/0/terrain = 2
@@ -1044,7 +1044,7 @@ texture = ExtResource("5_itk2j")
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tlaqt"]
-texture = ExtResource("6_3utf6")
+texture = ExtResource("6_tsmuh")
 0:0/0 = 0
 0:0/0/terrain_set = 1
 0:0/0/terrain = 3

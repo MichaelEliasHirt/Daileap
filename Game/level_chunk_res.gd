@@ -10,6 +10,7 @@ class_name LevelChunkRes extends Resource
 @export var background_tile_map_data : PackedByteArray = PackedByteArray()
 @export var decor1_tile_map_data : PackedByteArray = PackedByteArray()
 @export var decor2_tile_map_data : PackedByteArray = PackedByteArray()
+@export var decor3_tile_map_data : PackedByteArray = PackedByteArray()
 
 @export var height: int
 @export var chunks_left: int

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://e2u84hrcroto"
-path="res://.godot/imported/IndustrialWallLines.png-d1005f50de76114a81995cf3a6024415.ctex"
+uid="uid://hxyopld3eyv"
+path="res://.godot/imported/Spikes.png-160d33ffbdbe1cebbd6c67cf4e6fb9ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Decor/On Tiles(1)/IndustrialWallLines.png"
-dest_files=["res://.godot/imported/IndustrialWallLines.png-d1005f50de76114a81995cf3a6024415.ctex"]
+source_file="res://assets/Traps/Spikes.png"
+dest_files=["res://.godot/imported/Spikes.png-160d33ffbdbe1cebbd6c67cf4e6fb9ef.ctex"]
 
 [params]
 

@@ -28,3 +28,9 @@ Tiles (Autotile)		Tools: Pencil,Line,Rect,Bucket
 Walls (Autowall)		Tools: Pencil,Line,Rect,Bucket
 *Fluids					Tools: Pencil,Rect,Bucket
 *Decor					Tools: Pencil
+
+
+next to do:
+	make decor visible in actual game
+	add death
+	add damage

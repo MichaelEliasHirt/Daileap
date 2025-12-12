@@ -1,7 +1,7 @@
 class_name SelectionRes extends Resource
 
 enum SelectionType {
-	terrain, wall, decor1, decor2, decor3
+	terrain, noterrain, wall, decor1, decor2, decor3
 }
 
 var type: SelectionType

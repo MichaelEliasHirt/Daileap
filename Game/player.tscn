@@ -321,7 +321,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4tjw"]
-size = Vector2(14, 28)
+size = Vector2(12, 28)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_sprite", "player_collider")]
 collision_layer = 3
