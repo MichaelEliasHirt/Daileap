@@ -81,6 +81,7 @@ save={
 
 2d_physics/layer_1="Solid"
 2d_physics/layer_2="Drop_Through"
+2d_physics/layer_8="Hurt"
 
 [rendering]
 

@@ -17,6 +17,11 @@ class_name EditorUIManager extends Control
 @onready var decor_2_list: ItemList = %Decor2List
 @onready var decor_3_list: ItemList = %Decor3List
 
+@onready var traps_control: TabContainer = %Traps
+@onready var trap_list_container: MarginContainer = %Traps/ListContainer
+@onready var traps_list: ItemList = %TrapsList
+
+
 
 @onready var vertical_slider: VSlider = %VerticalSlider
 
@@ -27,6 +32,7 @@ class_name EditorUIManager extends Control
 @onready var tiles_tileset: TileSet = owner.tiles_tileset
 @onready var walls_tileset: TileSet =  owner.walls_tileset
 @onready var tiles_tileset_info: TileSetInfo = owner.tiles_tileset_info
+@onready var traps_tileset_info: TileSetInfo = owner.traps_tileset_info
 @onready var walls_tileset_info: TileSetInfo = owner.walls_tileset_info
 @onready var decor1_tileset: TileSet = owner.decor1_tileset
 @onready var decor1_tileset_info: TileSetInfo = owner.decor1_tileset_info
@@ -39,8 +45,15 @@ class_name EditorUIManager extends Control
 @onready var line_btn: TextureButton = %LineBtn
 @onready var rect_btn: TextureButton = %RectBtn
 @onready var fill_cell_btn: TextureButton = %FillCellBtn
-
 @onready var terrain_tool_btns = [paint_btn,line_btn,rect_btn,fill_cell_btn]
+
+@onready var rotate_left_btn: TextureButton = %RotateLeftBtn
+@onready var rotate_right_btn: TextureButton = %RotateRightBtn
+@onready var transform_btns = [rotate_left_btn,rotate_right_btn]
+
+@onready var all_btns = terrain_tool_btns + transform_btns
+
+
 
 signal selection_changed(selection:SelectionRes)
 signal settings_closed
@@ -214,11 +227,11 @@ func _populate_item_lists():
 	for wall in all_walls:
 		var walls_group_name := ""
 		var container: MarginContainer
-		if not tiles_containers.is_empty():
+		if not walls_containers.is_empty():
 			for group_name in walls_containers.keys():
 				if wall.name.begins_with(group_name):
 					walls_group_name = group_name
-					container = tiles_containers.get(group_name)
+					container = walls_containers.get(group_name)
 					break
 		if walls_group_name.is_empty():
 			for group_name in walls_tileset_info.group_names:
@@ -421,6 +434,63 @@ func _populate_item_lists():
 	
 	var combinded_sorting_list = _combine_arrays(decor1_tileset_info.group_names,_combine_arrays(decor2_tileset_info.group_names,decor3_tileset_info.group_names))
 	_sort_children_by_list(decor_control,combinded_sorting_list)
+	
+	
+	## Populate the "Traps" tab
+	traps_list.clear()
+	
+	var all_traps = _list_all_tiles_from_tileset(tiles_tileset,SelectionRes.SelectionType.NA)
+	all_traps = all_traps.filter(func(x): return x.type == SelectionRes.SelectionType.trap)
+	
+	var trap_containers: Dictionary[String,MarginContainer]
+	first = true
+	for trap in all_traps:
+		var trap_group_name := ""
+		var container: MarginContainer
+		if not trap_containers.is_empty():
+			for group_name in trap_containers.keys():
+				if trap.name.begins_with(group_name):
+					trap_group_name = group_name
+					container = trap_containers.get(group_name)
+					break
+		if trap_group_name.is_empty():
+			for group_name in traps_tileset_info.group_names:
+				if trap.name.begins_with(group_name):
+					trap_group_name = group_name
+					break
+		
+		if trap_group_name.is_empty():
+			trap_group_name = "other"
+			if trap_containers.has(trap_group_name):
+				container = trap_containers.get(trap_group_name)
+		
+		var trap_list_: ItemList
+		if not container:
+			if first:
+				first = false
+				container = trap_list_container
+				trap_list_ = container.get_child(0)
+			else:
+				container = trap_list_container.duplicate(DUPLICATE_GROUPS)
+				traps_control.add_child(container)
+				trap_list_ = container.get_child(0)
+				trap_list_.clear()
+			
+			trap_containers.set(trap_group_name,container)
+			container.name = trap_group_name
+		else:
+			trap_list_ = container.get_child(0)
+		 
+		var icon_texture = trap.texture
+		if icon_texture == null:
+			icon_texture = ImageTexture.create_from_image(load("res://assets/icon.svg"))
+			
+		var idx = trap_list_.add_icon_item(icon_texture,true)
+		trap_list_.set_item_tooltip_enabled(idx,true)
+		trap_list_.set_item_tooltip(idx,trap.name)
+		trap_list_.set_item_metadata(idx,trap)
+	_sort_children_by_list(traps_control,traps_tileset_info.group_names)
+
 
 
 ## combine two arrays into one, without duplicates
@@ -441,7 +511,7 @@ func _sort_children_by_list(node:Node, sorting_list:Array[String]):
 			var group_container = children.pop_at(group_container_idx)
 			node.move_child(group_container,index)
 			index += 1
-			
+
 
 ##get all the terrains from a tileset and packs it in a SelectionRes Resource
 func _list_all_terrains_from_tileset(tileset:TileSet,assign_type:SelectionRes.SelectionType) -> Array[SelectionRes]:
@@ -453,6 +523,7 @@ func _list_all_terrains_from_tileset(tileset:TileSet,assign_type:SelectionRes.Se
 		all_terrains.append_array(terrains)
 	return all_terrains
 
+
 ##get all the tiles from a tileset and packs it in a SelectionRes Resource
 func _list_all_tiles_from_tileset(tileset:TileSet,assign_type:SelectionRes.SelectionType) -> Array[SelectionRes]:
 	var all_tiles: Array[SelectionRes]
@@ -462,6 +533,7 @@ func _list_all_tiles_from_tileset(tileset:TileSet,assign_type:SelectionRes.Selec
 		var tiles = _list_all_tiles(tileset,src_id,assign_type)
 		all_tiles.append_array(tiles)
 	return all_tiles
+
 
 func _connect_methods():
 	inv_container.tab_changed.connect(_on_inv_container_tab_changed)
@@ -524,14 +596,24 @@ func _list_all_tiles(tileset:TileSet,src_id:int, type: SelectionRes.SelectionTyp
 		tile_texture.atlas = src.texture
 		tile_texture.region = src.get_tile_texture_region(tile_id,0)
 		
+		var tilegroup = tileset_name.get_slice("_",0)
+		var type_ = type
+		tileset_name = tileset_name.get_slice("_",1)
+		if tilegroup == tileset_name:
+			tilegroup = ""
+		else:
+			match tilegroup:
+				"D": type_ = SelectionRes.SelectionType.trap
+				"T": type_ = SelectionRes.SelectionType.terrain
+		
 		var tile = SelectionRes.new()
 		tile.tileset = tileset
 		tile.tilesrc = src_id
 		tile.tilecoords = tile_id
 		tile.tilealtid = tile_altid
 		tile.texture = tile_texture
-		tile.type = type
-		tile.name = "_".join([tileset_name,str(tiles_idx)])  
+		tile.type = type_
+		tile.name = "_".join([tileset_name,str(tiles_idx)])
 		tile.preview_offset = src.get_tile_data(tile_id,tile_altid).texture_origin
 		
 		tiles.append(tile)
@@ -568,9 +650,9 @@ func _close_inv():
 func _on_item_list_item_selected(index:int,list:ItemList):
 	active_selection = list.get_item_metadata(index)
 	_update_tool_buttons()
-	selection_changed.emit(active_selection)
 	active_selection.list = list
 	active_selection.list_index = index
+	selection_changed.emit(active_selection)
 	
 	for _list in all_lists:
 		if _list != list:
@@ -585,17 +667,19 @@ func deselect_selection():
 
 
 func _update_tool_buttons():
+	for btn in all_btns:
+		btn.hide()
 	if active_selection:
 		if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 			for btn in terrain_tool_btns:
 				btn.show()
+				
 		elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
-			for btn in terrain_tool_btns:
-				btn.hide()
-	else:
-		for btn in terrain_tool_btns:
-			btn.hide()
-		
+			pass
+			
+		elif active_selection.type in [SelectionRes.SelectionType.trap]:
+			for btn in transform_btns:
+				btn.show()
 
 
 func await_kill_tween(tween:Tween):

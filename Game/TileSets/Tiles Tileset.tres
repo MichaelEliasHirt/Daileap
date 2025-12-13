@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://ctejcc51qojqo"]
+[gd_resource type="TileSet" load_steps=15 format=3 uid="uid://ctejcc51qojqo"]
 
 [ext_resource type="Texture2D" uid="uid://ctvgex0ynaynu" path="res://assets/Tiles/IndustrialTile.png" id="1_jbbhc"]
 [ext_resource type="Texture2D" uid="uid://ddvg1vbe3phu" path="res://assets/Tiles.png" id="2_yqe26"]
@@ -6,9 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://4vmvio74k2bc" path="res://assets/Tiles/IndustrialSlab.png" id="4_q7prj"]
 [ext_resource type="Texture2D" uid="uid://dcj2xe4iplfaq" path="res://assets/Tiles/IndustrialSlab2.png" id="5_7fcmg"]
 [ext_resource type="Texture2D" uid="uid://defnd0dm5in5n" path="res://assets/Tiles/IndustrialSlab3.png" id="6_tsmuh"]
+[ext_resource type="Texture2D" uid="uid://hxyopld3eyv" path="res://assets/Traps/Spikes.png" id="7_yqe26"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_71s8c"]
-resource_name = "IndustrialTile"
+resource_name = "T_IndustrialTile"
 texture = ExtResource("1_jbbhc")
 0:0/0 = 0
 0:0/0/terrain_set = 0
@@ -386,6 +387,7 @@ texture = ExtResource("1_jbbhc")
 11:3/0/terrains_peering_bit/left_side = 0
 11:3/0/terrains_peering_bit/top_left_corner = 0
 11:3/0/terrains_peering_bit/top_side = 0
+10:1/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ncwh"]
 texture = ExtResource("2_yqe26")
@@ -601,7 +603,7 @@ texture = ExtResource("2_yqe26")
 8:8/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qvtff"]
-resource_name = "IndustrialTile2"
+resource_name = "T_IndustrialTile2"
 texture = ExtResource("3_iyyy2")
 0:0/0 = 0
 0:0/0/terrain_set = 0
@@ -981,7 +983,7 @@ texture = ExtResource("3_iyyy2")
 11:3/0/terrains_peering_bit/top_side = 1
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kvb7k"]
-resource_name = "IndustrialSlab"
+resource_name = "T_IndustrialSlab"
 texture = ExtResource("4_q7prj")
 0:0/0 = 0
 0:0/0/terrain_set = 1
@@ -1013,6 +1015,7 @@ texture = ExtResource("4_q7prj")
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7vt0t"]
+resource_name = "S_IndustrialSlab"
 texture = ExtResource("5_7fcmg")
 0:0/0 = 0
 0:0/0/terrain_set = 1
@@ -1044,6 +1047,7 @@ texture = ExtResource("5_7fcmg")
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tlaqt"]
+resource_name = "S_IndustrialSlab2"
 texture = ExtResource("6_tsmuh")
 0:0/0 = 0
 0:0/0/terrain_set = 1
@@ -1074,10 +1078,19 @@ texture = ExtResource("6_tsmuh")
 1:1/0/physics_layer_1/polygon_0/one_way = true
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iyyy2"]
+resource_name = "D_Spike"
+texture = ExtResource("7_yqe26")
+0:0/0 = 0
+0:0/0/physics_layer_2/polygon_0/points = PackedVector2Array(0, -8, 0, -8, 8, 8, -8, 8)
+
 [resource]
 physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 2
 physics_layer_1/collision_mask = 2
+physics_layer_2/collision_layer = 128
+physics_layer_2/collision_mask = 128
+physics_layer_2/collision_priority = 0.8
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "IndustrialTile"
 terrain_set_0/terrain_0/color = Color(0.46875, 0.5, 0.25, 1)
@@ -1098,3 +1111,4 @@ sources/2 = SubResource("TileSetAtlasSource_qvtff")
 sources/3 = SubResource("TileSetAtlasSource_kvb7k")
 sources/4 = SubResource("TileSetAtlasSource_7vt0t")
 sources/5 = SubResource("TileSetAtlasSource_tlaqt")
+sources/6 = SubResource("TileSetAtlasSource_iyyy2")

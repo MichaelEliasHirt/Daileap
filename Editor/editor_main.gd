@@ -16,6 +16,8 @@ extends Node2D
 
 @export var tiles_tileset: TileSet
 @export var tiles_tileset_info: TileSetInfo
+@export var traps_tileset_info: TileSetInfo
+
 @export var walls_tileset: TileSet
 @export var walls_tileset_info: TileSetInfo
 @export var decor1_tileset: TileSet
@@ -260,3 +262,11 @@ func _on_fill_auto_btn_pressed() -> void:
 
 func _reset_tools() -> void:
 	tile_maps.clear_temp()
+
+
+func _on_rotate_left_btn_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_rotate_right_btn_pressed() -> void:
+	pass # Replace with function body.

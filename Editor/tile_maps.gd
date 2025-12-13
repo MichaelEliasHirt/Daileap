@@ -57,7 +57,7 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 			## similar to decor_erase_prev, but the other way round
 			_show_preview()
 			## for now that when the only types that use buttons at all, but maybe I will add buttons for other types 
-			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.noterrain,SelectionRes.SelectionType.wall]:
+			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 				match current_tool:
 					0: ## pencil tool 
 						## when you move the mouse quick there will be holes in the "line", this prevents this to some extent
@@ -178,6 +178,12 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 					_show_decor_erase_prev()
 					_hide_preview()
 					place(get_global_mouse_position(),true)
+					
+			elif active_selection.type in [SelectionRes.SelectionType.trap]:
+				if event.button_mask == 1:
+					place(get_global_mouse_position())
+				elif event.button_mask == 2:
+					place(get_global_mouse_position(),true)
 
 
 func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
@@ -221,7 +227,7 @@ func place(at: Vector2, erase := false, temp := false):
 				if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
 					_place_terrain([local_at], active_selection.terrainset, active_selection.terrainid)
 				
-				elif active_selection.type == SelectionRes.SelectionType.noterrain:
+				elif active_selection.type == SelectionRes.SelectionType.trap:
 					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
 				##Only Decor
 				elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
@@ -515,14 +521,15 @@ func is_placeable_location(at:Vector2):
 
 
 func _on_ui_selection_changed(selection: SelectionRes) -> void:
-	active_selection = selection
-	if active_selection:
-		
+	if selection:
+		active_selection = selection.custom_duplicate()
 		for tilemap in get_children():
 			if tilemap is TileMapLayer:
 				if tilemap.tile_set == active_selection.tileset:
 					active_tilemap_layer = tilemap
 					break
+	else:
+		active_selection = null
 
 
 func _on_editor_tool_changed(new_current_tool: int) -> void:
@@ -536,3 +543,35 @@ func _on_save_menu_new_chunk_loaded(_data: LevelChunkRes) -> void:
 	_hide_decor_erase_prev()
 	await get_tree().process_frame
 	_create_decor_erase_tilemap()
+
+
+func _on_rotate_left_btn_pressed() -> void:
+	if active_selection.type in [SelectionRes.SelectionType.trap]:
+		if not active_selection.direction:
+			active_selection.direction = 0
+			
+		active_selection.direction = wrapi(active_selection.direction - 90,0,360)
+		active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
+
+
+func _on_rotate_right_btn_pressed() -> void:
+	if active_selection.type in [SelectionRes.SelectionType.trap]:
+		if active_selection.direction == null:
+			active_selection.direction = 0
+			
+		active_selection.direction = wrapi(active_selection.direction + 90,0,360)
+		active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
+
+
+func _get_tile_rotation_alt(direction:int):
+	var tile_alt: int = 0
+	match direction:
+		270: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_V
+		180: tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_V + TileSetAtlasSource.TRANSFORM_FLIP_H
+		90: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H
+	return tile_alt
+		
+		
+		
+		
+		
