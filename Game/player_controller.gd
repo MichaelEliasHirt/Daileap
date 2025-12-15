@@ -15,6 +15,10 @@ class_name PlayerController
 @onready var jump_particle_gen: CPUParticles2D = $ParticleGenerators/JumpParticleGen
 @onready var world_position_particle_generators: Node2D
 
+## for spawning the bounicing head
+@onready var head_spawn_position: Node2D = $HeadSpawnPosition
+
+
 # --- EXPORTED MOVEMENT & PHYSICS PARAMETERS ---
 
 @export_category("Necesary Child Nodes")
@@ -166,6 +170,9 @@ func _ready():
 	
 	for generator in get_tree().get_nodes_in_group("GlobalParticleGenerator"):
 		generator.get_parent().remove_child(generator)
+	
+	#%HurtArea.call_deferred("add_child",$%CollisionShape2D.duplicate())
+
 
 
 func _update_data():
@@ -577,3 +584,7 @@ func _dashing_time(time):
 
 func die():
 	died.emit()
+
+
+func _on_hurt_area_body_entered(body: Node2D) -> void:
+	die()

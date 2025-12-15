@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://bruxso3gr60bm"]
+
+[ext_resource type="Texture2D" uid="uid://bpsgtfab5k1t0" path="res://assets/character/Character.png" id="1_078lg"]
+[ext_resource type="Texture2D" uid="uid://wf8le818ewga" path="res://assets/character/particle_sprite_test.png" id="2_q6xwo"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_078lg"]
+friction = 0.89
+bounce = 0.66
+
+[sub_resource type="GDScript" id="GDScript_qamjh"]
+script/source = "extends RigidBody2D
+
+@onready var particle_gen: CPUParticles2D = $ParticleGen
+
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	if state.get_contact_count():
+		if not state.get_contact_impulse(0):
+			particle_gen.global_position = state.get_contact_collider_position(0)
+			particle_gen.emitting = true
+"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q6xwo"]
+radius = 7.0
+height = 20.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_cni5r"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_ajiyw"]
+offsets = PackedFloat32Array(0.25, 1)
+colors = PackedColorArray(0.67481464, 0.67481464, 0.6748146, 1, 0.9428228, 0.94282264, 0.94282264, 1)
+
+[node name="PlayerHead" type="RigidBody2D"]
+collision_layer = 143
+collision_mask = 143
+physics_material_override = SubResource("PhysicsMaterial_078lg")
+center_of_mass_mode = 1
+center_of_mass = Vector2(0, 3)
+max_contacts_reported = 2
+script = SubResource("GDScript_qamjh")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_078lg")
+region_enabled = true
+region_rect = Rect2(16, 254, 20, 17)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_q6xwo")
+
+[node name="ParticleGen" type="CPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_cni5r")
+position = Vector2(0, 1)
+rotation = 1.5707964
+emitting = false
+amount = 2
+texture = ExtResource("2_q6xwo")
+lifetime = 0.3
+one_shot = true
+randomness = 0.2
+spread = 10.0
+gravity = Vector2(0, 0)
+damping_max = 1.89
+color_initial_ramp = SubResource("Gradient_ajiyw")
+anim_speed_max = 0.8
+anim_offset_max = 0.6

@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://21tfruwnnvmv" path="res://Game/camera_2d.gd" id="3_jwkme"]
 [ext_resource type="PackedScene" uid="uid://cjphucl6wy0av" path="res://Game/LevelChunks/Specials/end_chunk.tscn" id="4_hvno2"]
 [ext_resource type="Texture2D" uid="uid://dxyrhha5r4kfu" path="res://assets/2 Background/Far_Background.png" id="4_ps1nv"]
-[ext_resource type="Resource" uid="uid://ljqaq5xt0oa8" path="res://Game/LevelChunks/TestLevel1.tres" id="5_16ps5"]
+[ext_resource type="Resource" uid="uid://cs44j6pbcn1wl" path="res://Game/LevelChunks/TestLevel1.tres" id="5_16ps5"]
 [ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://Game/TileSets/Decor 3 Tileset.tres" id="6_71s8c"]
 [ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://Game/TileSets/Decor 2 Tileset.tres" id="7_qvtff"]
 [ext_resource type="TileSet" uid="uid://iaamg7861d4s" path="res://Game/TileSets/Decor 1 Tileset.tres" id="8_1rdhq"]

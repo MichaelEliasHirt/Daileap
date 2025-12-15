@@ -1,6 +1,7 @@
 extends Node2D
 
 const PLAYER = preload("uid://7ybaa4xotguu")
+const PLAYER_HEAD = preload("uid://bruxso3gr60bm")
 
 @export_dir var level_chunks_path: String
 
@@ -47,12 +48,26 @@ func _ready() -> void:
 
 func _respawn_player():
 	_free_player()
+	
+	var player_head = _spawn_bounce_head()
+	
+	await get_tree().create_timer(5).timeout
+	player_head.queue_free()
+
 	_spawn_player()
 
 
+func _spawn_bounce_head() -> RigidBody2D:
+	var player_head: RigidBody2D = PLAYER_HEAD.instantiate()
+	player_head.global_position = current_player.head_spawn_position.global_position
+	player_head.linear_velocity = current_player.velocity * 1.5
+	camera_2d.follow_player = player_head
+	call_deferred("add_child",player_head)
+	return player_head
+
 func _spawn_player():
 	var player: PlayerController = PLAYER.instantiate() 
-	add_child(player,true)
+	call_deferred("add_child",player,true)
 	player.position = player_spawn_location.position
 	player.world_position_particle_generators = %WorldPositionParticleGenerators
 	camera_2d.follow_player = player
@@ -63,7 +78,7 @@ func _spawn_player():
 func _free_player():
 	if current_player:
 		current_player.queue_free()
-		remove_child(current_player)
+		call_deferred("remove_child",current_player)
 
 
 func load_level(rand_seed:int):

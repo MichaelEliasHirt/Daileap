@@ -45,7 +45,9 @@ func _process(_delta: float) -> void:
 					preview_sprite.show()
 					preview_sprite.texture = active_selection.texture
 					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.preview_offset
-	
+					if active_selection.direction:
+						preview_sprite.rotation_degrees = active_selection.direction
+					else: preview_sprite.rotation_degrees = 0
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
@@ -444,7 +446,6 @@ func _create_decor_erase_tilemap():
 func _hide_decor_erase_prev():
 	decor_erase_prev_tilemap.hide()
 	decor_erase_prev = false
-
 
 
 func get_rect_cells(start_pos: Vector2i, end_pos: Vector2i) -> Array[Vector2i]:
