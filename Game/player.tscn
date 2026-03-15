@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://7ybaa4xotguu"]
+[gd_scene load_steps=47 format=3 uid="uid://7ybaa4xotguu"]
 
 [ext_resource type="Script" uid="uid://dpby4nrsub6bc" path="res://Game/player_controller.gd" id="1_c5leg"]
 [ext_resource type="Texture2D" uid="uid://wf8le818ewga" path="res://assets/character/particle_sprite_test.png" id="2_0c3g1"]
@@ -323,6 +323,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4tjw"]
 size = Vector2(12, 28)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0c3g1"]
+size = Vector2(8, 20)
+
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_sprite", "player_collider")]
 collision_layer = 3
 collision_mask = 3
@@ -410,7 +413,6 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
-visible = false
 position = Vector2(0, -14)
 shape = SubResource("RectangleShape2D_h4tjw")
 
@@ -436,9 +438,14 @@ input_pickable = false
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, -14)
-shape = SubResource("RectangleShape2D_h4tjw")
+shape = SubResource("RectangleShape2D_0c3g1")
 
 [node name="HeadSpawnPosition" type="Node2D" parent="."]
 position = Vector2(2, -25)
+
+[node name="DirectionChangeCooldown" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
 
 [connection signal="body_entered" from="HurtArea" to="." method="_on_hurt_area_body_entered"]

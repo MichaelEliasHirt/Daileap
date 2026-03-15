@@ -562,8 +562,6 @@ func _list_all_terrains(tileset:TileSet,_src_id:int,type: SelectionRes.Selection
 					icon_tile_texture = AtlasTexture.new()
 					icon_tile_texture.atlas = src.texture
 					icon_tile_texture.region = src.get_tile_texture_region(tile_id,0)
-					
-					
 					break
 			
 			if icon_tile_texture:

@@ -14,6 +14,8 @@ class_name PlayerController
 @onready var wallslide_particle_gen: CPUParticles2D = $ParticleGenerators/WallslideParticleGen
 @onready var jump_particle_gen: CPUParticles2D = $ParticleGenerators/JumpParticleGen
 @onready var world_position_particle_generators: Node2D
+@onready var direction_change_cooldown: Timer = $DirectionChangeCooldown
+
 
 ## for spawning the bounicing head
 @onready var head_spawn_position: Node2D = $HeadSpawnPosition
@@ -72,8 +74,7 @@ class_name PlayerController
 @export var slide: bool = true
 
 
-signal dash_indicator_on
-signal dash_indicator_off
+signal update_dash_indicator(on:bool)
 
 signal died
 
@@ -155,8 +156,8 @@ var dash: bool = true:
 	set(value):
 		if dash != value:
 			if not value:
-				dash_indicator_off.emit()
-			else: dash_indicator_on.emit()
+				update_dash_indicator.emit(false)
+			else: update_dash_indicator.emit(true)
 		dash = value
 
 
@@ -316,7 +317,9 @@ func _physics_process(delta):
 			is_walking = false
 		else:
 			if is_on_wall():
-				change_direction(null)
+				if not direction_change_cooldown.time_left:
+					direction_change_cooldown.start()
+					change_direction(null)
 				
 			else:
 				if swipe_left:
@@ -586,5 +589,5 @@ func die():
 	died.emit()
 
 
-func _on_hurt_area_body_entered(body: Node2D) -> void:
+func _on_hurt_area_body_entered(_body: Node2D) -> void:
 	die()

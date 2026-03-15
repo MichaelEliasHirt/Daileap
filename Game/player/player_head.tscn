@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://wf8le818ewga" path="res://assets/character/particle_sprite_test.png" id="2_q6xwo"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_078lg"]
-friction = 0.89
+friction = 0.32
 bounce = 0.66
 
 [sub_resource type="GDScript" id="GDScript_qamjh"]

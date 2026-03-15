@@ -16,7 +16,8 @@ const PLAYER_HEAD = preload("uid://bruxso3gr60bm")
 @export var test_chunk: LevelChunkRes
 
 @export_subgroup("Settings")
-@export var chunk_width: int = 14
+@export var respawn_cooldown: float = 5
+var chunk_width: int = 14
 
 @onready var mainground: TileMapLayer = %Mainground
 @onready var background: TileMapLayer = %Background
@@ -26,6 +27,8 @@ const PLAYER_HEAD = preload("uid://bruxso3gr60bm")
 
 @onready var camera_2d: Camera2D = %Camera2D
 @onready var player_spawn_location: Node2D = %PlayerSpawnLocation
+@onready var dash_indicator: Sprite2D = $CanvasLayer/Control/MarginContainer/CenterContainer/CanvasLayer/DashIndicator
+@onready var respawn_indicator: Sprite2D = $CanvasLayer/Control/MarginContainer/CenterContainer/CanvasLayer/RespawnIndicator
 
 
 var level_height: int
@@ -50,10 +53,15 @@ func _respawn_player():
 	_free_player()
 	
 	var player_head = _spawn_bounce_head()
+	dash_indicator.hide()
+	respawn_indicator.show()
+	respawn_indicator.frame = 0
+	var tween = get_tree().create_tween().tween_property(respawn_indicator,"frame",6,respawn_cooldown)
 	
-	await get_tree().create_timer(5).timeout
+	await get_tree().create_timer(respawn_cooldown).timeout
 	player_head.queue_free()
-
+	dash_indicator.show()
+	respawn_indicator.hide()
 	_spawn_player()
 
 
@@ -73,6 +81,7 @@ func _spawn_player():
 	camera_2d.follow_player = player
 	current_player = player
 	player.died.connect(_respawn_player)
+	player.update_dash_indicator.connect(_update_dash_indicator)
 
 
 func _free_player():
@@ -81,9 +90,14 @@ func _free_player():
 		call_deferred("remove_child",current_player)
 
 
+func _update_dash_indicator(on:bool):
+	if on:
+		dash_indicator.frame = 0
+	else:
+		dash_indicator.frame = 1
+
 func load_level(rand_seed:int):
 	seed(rand_seed)
-	
 	
 	camera_2d.limit_bottom = 13 * 16 - int(camera_2d.offset.y)
 	level_height = 0

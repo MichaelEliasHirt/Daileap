@@ -261,7 +261,7 @@ func fill(at: Vector2,erase := false, temp := false) -> bool:
 						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
 				#SelectionType.terrain:
 			if not erase:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
 			else:
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
@@ -290,7 +290,7 @@ func rect(at: Vector2, to: Vector2, erase := false, temp := false):
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
 			else:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
 			#match selection_type:
 				#SelectionType.tile:
 					#for coords in cell_coords:
@@ -322,7 +322,7 @@ func line(at: Vector2, to: Vector2, erase := false, temp := false):
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
 			else:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainset)
+				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
 			#match selection_type:
 				#SelectionType.tile:
 					#for coords in cell_coords:

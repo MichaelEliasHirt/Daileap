@@ -2,6 +2,6 @@
 
 Vertical Platformer game, with theoreticly, basicly infinite levels​
 
-This game was started in Summer of Making 2025!
+This game was mostly beeing worked on in the Milkyway Hackclub event!
 It is heavily inspired by the mobile game LeapDay
 
