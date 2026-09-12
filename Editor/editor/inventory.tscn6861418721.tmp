@@ -1,0 +1,119 @@
+[gd_scene load_steps=13 format=3 uid="uid://b0cpnn43l1wce"]
+
+[ext_resource type="Theme" uid="uid://cud1bh1bqyl5a" path="res://editor_ui_assets/general.tres" id="1_7vkfi"]
+[ext_resource type="Script" uid="uid://cvn3gxc7kb8tk" path="res://editor/inventory_container.gd" id="2_efurm"]
+[ext_resource type="Script" uid="uid://b2v88010o7566" path="res://editor/inventory_group_res.gd" id="3_ycm3c"]
+[ext_resource type="TileSet" uid="uid://ctejcc51qojqo" path="res://shared/tilesets/Tiles Tileset.tres" id="4_w3ljs"]
+[ext_resource type="TileSet" uid="uid://csxk0sp8lxo0u" path="res://shared/tilesets/Walls Tileset.tres" id="5_4m6vq"]
+[ext_resource type="TileSet" uid="uid://iaamg7861d4s" path="res://shared/tilesets/Decor 1 Tileset.tres" id="6_t8dho"]
+[ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://shared/tilesets/Decor 2 Tileset.tres" id="7_f7y7y"]
+[ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://shared/tilesets/Decor 3 Tileset.tres" id="8_keq4g"]
+[ext_resource type="Script" uid="uid://digtilsnemlec" path="res://editor/inventory_group.gd" id="9_b1pxd"]
+[ext_resource type="StyleBox" uid="uid://8aoispb5vxs1" path="res://editor_ui_assets/box_texture.tres" id="10_5htau"]
+[ext_resource type="Script" uid="uid://blqecd1rkkvqf" path="res://editor/inventory_subgroup.gd" id="11_jgkal"]
+
+[sub_resource type="Resource" id="Resource_0vxke"]
+script = ExtResource("3_ycm3c")
+name = "Tiles"
+specifics = Dictionary[String, PackedStringArray]({
+"Full Tiles": PackedStringArray("#Industrial_Tile", "#Industrial_Tile2")
+})
+themes = Dictionary[String, String]({
+"Industrial": "Industrial"
+})
+color = Color(1, 0.18, 0.18, 1)
+tilesets = Dictionary[String, int]({
+"Tiles": 0
+})
+metadata/_custom_type_script = "uid://b2v88010o7566"
+
+[node name="Inventory" type="VBoxContainer"]
+size_flags_vertical = 3
+theme = ExtResource("1_7vkfi")
+script = ExtResource("2_efurm")
+inventory_groups = Array[ExtResource("3_ycm3c")]([SubResource("Resource_0vxke")])
+tiles_tileset = ExtResource("4_w3ljs")
+walls_tileset = ExtResource("5_4m6vq")
+decor1_tileset = ExtResource("6_t8dho")
+decor2_tileset = ExtResource("7_f7y7y")
+decor3_tileset = ExtResource("8_keq4g")
+
+[node name="TabBar" type="TabBar" parent="."]
+layout_mode = 2
+
+[node name="InventoryContainer" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="InventoryGroup" type="Control" parent="InventoryContainer"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+offset_top = 4.0
+offset_right = 292.0
+offset_bottom = 4.0
+script = ExtResource("9_b1pxd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InventoryContainer/InventoryGroup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InventoryContainer/InventoryGroup/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpecificSelector" type="OptionButton" parent="InventoryContainer/InventoryGroup/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ThemeSelector" type="OptionButton" parent="InventoryContainer/InventoryGroup/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InventorySubgroupContainer" type="Control" parent="InventoryContainer/InventoryGroup/VBoxContainer"]
+layout_mode = 2
+
+[node name="InventoryThemegroup" type="ScrollContainer" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer"]
+visible = false
+layout_mode = 0
+offset_top = 4.0
+offset_right = 292.0
+offset_bottom = 597.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = ExtResource("1_7vkfi")
+theme_override_styles/panel = ExtResource("10_5htau")
+
+[node name="InventorySubgroup" type="VBoxContainer" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer/InventoryThemegroup"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_7vkfi")
+script = ExtResource("11_jgkal")
+
+[node name="InventorySeperator" type="HBoxContainer" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer/InventoryThemegroup/InventorySubgroup"]
+layout_mode = 2
+theme = ExtResource("1_7vkfi")
+
+[node name="Label" type="Label" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer/InventoryThemegroup/InventorySubgroup/InventorySeperator"]
+layout_mode = 2
+theme = ExtResource("1_7vkfi")
+text = "label"
+
+[node name="HSeparator" type="HSeparator" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer/InventoryThemegroup/InventorySubgroup/InventorySeperator"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_7vkfi")
+
+[node name="IventoryItemList" type="ItemList" parent="InventoryContainer/InventoryGroup/VBoxContainer/InventorySubgroupContainer/InventoryThemegroup/InventorySubgroup/InventorySeperator"]
+layout_mode = 2
+theme = ExtResource("1_7vkfi")
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Hotbar" type="ItemList" parent="."]
+layout_mode = 2

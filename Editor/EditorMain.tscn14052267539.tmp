@@ -1,0 +1,104 @@
+[gd_scene load_steps=7 format=3 uid="uid://ijd8340qnv2b"]
+
+[ext_resource type="Script" uid="uid://dsug7thwo4kis" path="res://Editor/editor_main.gd" id="1_0by7s"]
+[ext_resource type="TileSet" uid="uid://dqltvs87wbfs5" path="res://Game/mainground_tileset.tres" id="2_byuek"]
+[ext_resource type="TileSet" uid="uid://bpnly4l6tgk65" path="res://Game/background_tileset.tres" id="3_52hkk"]
+[ext_resource type="Texture2D" uid="uid://ba34v2ynk1h80" path="res://assets/editor/Auto_Btn1.png" id="4_52hkk"]
+[ext_resource type="Texture2D" uid="uid://dm4wfaodwfrpf" path="res://assets/editor/Auto_Btn2.png" id="5_rtp05"]
+
+[sub_resource type="Theme" id="Theme_p8nt8"]
+ItemList/constants/h_separation = 20
+ItemList/constants/icon_margin = 0
+ItemList/constants/v_separation = 20
+
+[node name="EditorMain" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0by7s")
+MaingroundTilesets = Array[TileSet]([ExtResource("2_byuek")])
+BackgroundTilesets = Array[TileSet]([ExtResource("3_52hkk")])
+inv_open_strech_ratio = null
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InvContainer" type="TabContainer" parent="MarginContainer/VBoxContainer" groups=["InvTabContainer"]]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.35
+current_tab = 0
+deselect_enabled = true
+
+[node name="MaingroundTiles" type="TabContainer" parent="MarginContainer/VBoxContainer/InvContainer" groups=["InvTabContainer"]]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+tabs_position = 1
+metadata/_tab_index = 0
+
+[node name="MaingroundTilesListContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/InvContainer/MaingroundTiles"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 0
+
+[node name="MaingroundTilesList" type="ItemList" parent="MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="MaingroundTerrainList" type="ItemList" parent="MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_p8nt8")
+max_columns = 5
+icon_mode = 0
+fixed_icon_size = Vector2i(50, 50)
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer"]
+layout_mode = 2
+
+[node name="AutoTileBtn" type="CheckButton" parent="MarginContainer/VBoxContainer/InvContainer/MaingroundTiles/MaingroundTilesListContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -29.0
+offset_right = 56.0
+offset_bottom = 29.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+size_flags_horizontal = 8
+size_flags_vertical = 8
+tooltip_text = "Auto Tiles:"
+theme_override_icons/checked = ExtResource("4_52hkk")
+theme_override_icons/unchecked = ExtResource("5_rtp05")

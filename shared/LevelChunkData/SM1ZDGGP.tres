@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://shared/resources/level_chunk_res.gd" id="1_wfw4r"]
+
+[resource]
+script = ExtResource("1_wfw4r")
+UID = "SM1ZDGGP"
+name = "est213"
+mainground_tile_map_data = PackedByteArray()
+background_tile_map_data = PackedByteArray()
+decor1_tile_map_data = PackedByteArray()
+decor2_tile_map_data = PackedByteArray()
+decor3_tile_map_data = PackedByteArray()
+height = 30
+chunks_left = 2
+exit_position = 2

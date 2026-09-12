@@ -1,0 +1,10 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://c28dowvu7gb60"]
+
+[ext_resource type="FontFile" uid="uid://w2scvworfabx" path="res://editor_ui_assets/quaver.ttf" id="1_jmxlk"]
+
+[resource]
+font = ExtResource("1_jmxlk")
+font_size = 24
+font_color = Color(0.33328104, 0.51710975, 0.5129915, 1)
+outline_size = 20
+shadow_size = 0

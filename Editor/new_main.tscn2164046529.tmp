@@ -1,0 +1,220 @@
+[gd_scene load_steps=20 format=4 uid="uid://blwepm8tffada"]
+
+[ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://editor/tile_maps.gd" id="1_touta"]
+[ext_resource type="Script" uid="uid://bdcns3upjw801" path="res://editor/debug_info_label.gd" id="1_xyy1j"]
+[ext_resource type="TileSet" uid="uid://csxk0sp8lxo0u" path="res://shared/tilesets/Walls Tileset.tres" id="2_g7d0j"]
+[ext_resource type="Texture2D" uid="uid://dx7b6erj4ulhm" path="res://shared/assets/editor/TempTileset.png" id="2_qcw2d"]
+[ext_resource type="Script" uid="uid://bmb7o6y6ydiia" path="res://editor/world_viewport.gd" id="2_ta2aw"]
+[ext_resource type="Texture2D" uid="uid://btlyhoca44jmo" path="res://shared/assets/editor/DecorErasePrevTile.png" id="3_7qgpo"]
+[ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://shared/tilesets/Decor 3 Tileset.tres" id="3_xyy1j"]
+[ext_resource type="Shader" uid="uid://krfsy73ar7mc" path="res://editor/GridHighlight.gdshader" id="4_ksskx"]
+[ext_resource type="TileSet" uid="uid://ctejcc51qojqo" path="res://shared/tilesets/Tiles Tileset.tres" id="4_ta2aw"]
+[ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://shared/tilesets/Decor 2 Tileset.tres" id="5_aeylb"]
+[ext_resource type="Texture2D" uid="uid://b8tec46w0offr" path="res://shared/assets/editor/Entrance.png" id="5_w2kc5"]
+[ext_resource type="Texture2D" uid="uid://da4xfrwaaeibf" path="res://shared/assets/editor/Border.png" id="6_qcw2d"]
+[ext_resource type="TileSet" uid="uid://iaamg7861d4s" path="res://shared/tilesets/Decor 1 Tileset.tres" id="7_886ha"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ta2aw"]
+font_size = 10
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.3137255)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7cuaw"]
+texture = ExtResource("2_qcw2d")
+0:0/0 = 0
+1:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_g7d0j"]
+sources/0 = SubResource("TileSetAtlasSource_7cuaw")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xyy1j"]
+texture = ExtResource("3_7qgpo")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ta2aw"]
+tile_size = Vector2i(8, 8)
+sources/0 = SubResource("TileSetAtlasSource_xyy1j")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aeylb"]
+shader = ExtResource("4_ksskx")
+shader_parameter/grid_size = 16.0
+shader_parameter/line_thickness = 0.5
+shader_parameter/line_color = Color(0.8, 0.8, 0.8, 1)
+shader_parameter/mouse_position = Vector2(0, 0)
+shader_parameter/mouse_offset = Vector2(0, 0)
+shader_parameter/grid_offset = Vector2(0, 8)
+shader_parameter/fade_radius = 50.0
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.5019608, 0.5803922, 0.6313726, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="DebugInfoLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+texture_filter = 2
+layout_mode = 2
+text = "X: 0 Y:0"
+label_settings = SubResource("LabelSettings_ta2aw")
+horizontal_alignment = 2
+script = ExtResource("1_xyy1j")
+
+[node name="WorldViewport" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_ta2aw")
+
+[node name="Background" type="ColorRect" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1672, 0.18962, 0.19, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer"]
+layout_mode = 2
+
+[node name="TileMaps" type="Node2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control"]
+unique_name_in_owner = true
+script = ExtResource("1_touta")
+
+[node name="Background" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+z_index = -20
+tile_set = ExtResource("2_g7d0j")
+collision_enabled = false
+navigation_enabled = false
+
+[node name="Decor3Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps" groups=["decorlayer"]]
+unique_name_in_owner = true
+z_index = -15
+tile_set = ExtResource("3_xyy1j")
+
+[node name="Mainground" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+z_index = -10
+tile_set = ExtResource("4_ta2aw")
+occlusion_enabled = false
+
+[node name="Decor2Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps" groups=["decorlayer"]]
+unique_name_in_owner = true
+z_index = -10
+tile_set = ExtResource("5_aeylb")
+
+[node name="PrevTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+tile_set = SubResource("TileSet_g7d0j")
+occlusion_enabled = false
+navigation_enabled = false
+
+[node name="Decor1Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps" groups=["decorlayer"]]
+unique_name_in_owner = true
+z_index = 10
+tile_set = ExtResource("7_886ha")
+
+[node name="DecorErasePrevTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+z_index = 15
+tile_map_data = PackedByteArray("AAAVAA8AAAAAAAAAAAAVABAAAAAAAAAAAAAWABEAAAAAAAAAAAAWABIAAAAAAAAAAAAWABMAAAAAAAAAAAAXABQAAAAAAAAAAAAXABUAAAAAAAAAAAAXABYAAAAAAAAAAAAXABcAAAAAAAAAAAAXABgAAAAAAAAAAAAXABkAAAAAAAAAAAAXABoAAAAAAAAAAAAXABsAAAAAAAAAAAAXABwAAAAAAAAAAAAWAB0AAAAAAAAAAAAWAB4AAAAAAAAAAAAVAB4AAAAAAAAAAAAVAB0AAAAAAAAAAAAUABwAAAAAAAAAAAATABsAAAAAAAAAAAATABoAAAAAAAAAAAATABkAAAAAAAAAAAATABgAAAAAAAAAAAAUABcAAAAAAAAAAAAUABYAAAAAAAAAAAAUABUAAAAAAAAAAAAVABQAAAAAAAAAAAAXABMAAAAAAAAAAAAYABIAAAAAAAAAAAAZABIAAAAAAAAAAAAaABIAAAAAAAAAAAAbABIAAAAAAAAAAAAcABIAAAAAAAAAAAAdABIAAAAAAAAAAAAeABIAAAAAAAAAAAAfABMAAAAAAAAAAAAfABQAAAAAAAAAAAAgABUAAAAAAAAAAAAgABYAAAAAAAAAAAAgABcAAAAAAAAAAAAgABgAAAAAAAAAAAAgABkAAAAAAAAAAAAgABoAAAAAAAAAAAAgABsAAAAAAAAAAAAgABwAAAAAAAAAAAAgAB0AAAAAAAAAAAAgAB4AAAAAAAAAAAAfAB8AAAAAAAAAAAAeAB4AAAAAAAAAAAAeAB0AAAAAAAAAAAAeABwAAAAAAAAAAAAfABsAAAAAAAAAAAAhABsAAAAAAAAAAAAiABsAAAAAAAAAAAAjABsAAAAAAAAAAAAkABsAAAAAAAAAAAAlABsAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_ta2aw")
+
+[node name="HighlightGrid" type="ColorRect" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_aeylb")
+offset_left = 8.0
+offset_right = 424.0
+offset_bottom = 459.0
+color = Color(1, 1, 1, 0)
+
+[node name="EntranceArrow" type="Node2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+scale = Vector2(2, 1.5)
+
+[node name="Sprite2d" type="Sprite2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps/EntranceArrow"]
+modulate = Color(0, 0.7044197, 0, 1)
+position = Vector2(0, 7.333333)
+texture = ExtResource("5_w2kc5")
+
+[node name="ExitArrow" type="Node2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+scale = Vector2(2, 1.5)
+
+[node name="Sprite2d" type="Sprite2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps/ExitArrow"]
+modulate = Color(0, 0.6181798, 1.3167266, 1)
+position = Vector2(0, -8.666667)
+texture = ExtResource("5_w2kc5")
+
+[node name="Paths" type="Node2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+
+[node name="PreviewSprite" type="Sprite2D" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport/MarginContainer/Control/TileMaps"]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.4392157)
+
+[node name="GameBorder" type="NinePatchRect" parent="MarginContainer/HBoxContainer/VBoxContainer/WorldViewport"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+texture = ExtResource("6_qcw2d")
+region_rect = Rect2(0, 0, 46, 46)
+patch_margin_left = 13
+patch_margin_top = 13
+patch_margin_right = 13
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Control2" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
