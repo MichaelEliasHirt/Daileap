@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://h6ugg04ex5mc" path="res://shared/assets/Decor/On Tiles(1)/All.png" id="1_0224f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cskgi"]
-resource_name = "#Graffiti"
+resource_name = "#de_1_Graffiti"
 texture = ExtResource("1_0224f")
 0:0/size_in_atlas = Vector2i(4, 3)
 0:0/0 = 0

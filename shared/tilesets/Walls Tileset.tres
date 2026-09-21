@@ -121,7 +121,7 @@ texture = ExtResource("2_dv535")
 
 [resource]
 terrain_set_0/mode = 2
-terrain_set_0/terrain_0/name = "#IndustrialWall"
+terrain_set_0/terrain_0/name = "#wa_1_Industrial Wall1"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_ps1nv")
 sources/1 = SubResource("TileSetAtlasSource_1p5se")

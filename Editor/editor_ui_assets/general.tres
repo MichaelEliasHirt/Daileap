@@ -1,7 +1,6 @@
-[gd_resource type="Theme" load_steps=73 format=4 uid="uid://cud1bh1bqyl5a"]
+[gd_resource type="Theme" load_steps=72 format=4 uid="uid://cud1bh1bqyl5a"]
 
 [ext_resource type="FontFile" uid="uid://w2scvworfabx" path="res://editor_ui_assets/quaver.ttf" id="1_y6g1a"]
-[ext_resource type="Texture2D" uid="uid://gwgd5kluxw0h" path="res://shared/assets/editor/Box.png" id="2_2aflp"]
 [ext_resource type="StyleBox" uid="uid://8aoispb5vxs1" path="res://editor_ui_assets/box_texture.tres" id="2_t0krw"]
 
 [sub_resource type="DPITexture" id="DPITexture_2aflp"]
@@ -98,7 +97,6 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2aflp"]
-texture = ExtResource("2_2aflp")
 texture_margin_left = 10.0
 texture_margin_top = 10.0
 texture_margin_right = 10.0

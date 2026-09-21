@@ -9,7 +9,7 @@ class_name TileMapManager extends Node2D
 
 signal tilemap_changed
 
-var active_selection : SelectionRes
+var active_selection: InventoryItem
 var active_tilemap_layer: TileMapLayer
 
 var last_coords: Vector2i
@@ -24,22 +24,21 @@ var decor_erase_prev := false
 
 
 func _process(_delta: float) -> void:
-	
 	## Move the preview sprite when its active, it snappes to the grid
 	preview_sprite.hide()
 	if preview:
-		if active_selection and active_selection.list:
+		if active_selection:
 			if control.get_rect().has_point(control.get_local_mouse_position()):
 				var at = get_global_mouse_position()
 				var local_at = active_tilemap_layer.local_to_map(to_local(at))
 				var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
 				if is_placeable_location(standerdized_local_at):
 					preview_sprite.show()
-					preview_sprite.texture = active_selection.texture
-					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.preview_offset
-					if active_selection.direction:
-						preview_sprite.rotation_degrees = active_selection.direction
-					else: preview_sprite.rotation_degrees = 0
+					preview_sprite.texture = active_selection.root.icon_texture
+					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.root.icon_offset
+					#if active_selection.direction:
+						#preview_sprite.rotation_degrees = active_selection.direction
+					#else: preview_sprite.rotation_degrees = 0
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
@@ -51,7 +50,7 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 			## similar to decor_erase_prev, but the other way round
 			_show_preview()
 			## for now that when the only types that use buttons at all, but maybe I will add buttons for other types 
-			if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
+			if active_selection.group in [InventoryItem.groups.terraintile,InventoryItem.groups.slab,InventoryItem.groups.wall]:
 				match current_tool:
 					0: ## pencil tool 
 						## when you move the mouse quick there will be holes in the "line", this prevents this to some extent
@@ -164,7 +163,7 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 										else: erase_tool_start = false
 			
 			## for now this is everything that just gets placed, nothing fancy
-			elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+			elif active_selection.group in [InventoryItem.groups.decor]:
 				if event.button_mask == 1:
 					place(get_global_mouse_position())
 				elif event.button_mask == 2:
@@ -199,7 +198,7 @@ func is_hovering_temp(at: Vector2) -> bool:
 
 
 func place(at: Vector2, erase := false, temp := false):
-	if active_selection and active_selection.list:
+	if active_selection:
 		var local_at = active_tilemap_layer.local_to_map(to_local(at))
 		var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
 		if is_placeable_location(standerdized_local_at):
@@ -214,17 +213,17 @@ func place(at: Vector2, erase := false, temp := false):
 			if erase:
 				active_tilemap_layer.erase_cell(local_at)
 				##Only Decor
-				if active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+				if active_selection.group in [InventoryItem.groups.decor]:
 					_update_decor_erase_tilemap(local_at,true)
 					
 			else:
-				if active_selection.type in [SelectionRes.SelectionType.terrain,SelectionRes.SelectionType.wall]:
-					_place_terrain([local_at], active_selection.terrainset, active_selection.terrainid)
+				if active_selection.group in [InventoryItem.groups.terraintile,InventoryItem.groups.slab,InventoryItem.groups.wall]:
+					_place_terrain([local_at], active_selection.root.terrain_set_idx, active_selection.root.terrain_idx)
 				
-				elif active_selection.type == SelectionRes.SelectionType.trap:
-					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
-				##Only Decor
-				elif active_selection.type in [SelectionRes.SelectionType.decor1,SelectionRes.SelectionType.decor2,SelectionRes.SelectionType.decor3]:
+				#elif active_selection.type == SelectionRes.SelectionType.trap:
+					#_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
+				###Only Decor
+				elif active_selection.group in [InventoryItem.groups.decor]:
 					_update_decor_erase_tilemap(local_at)
 					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
 
@@ -507,22 +506,10 @@ func get_intersecting_cells(start_pos: Vector2, end_pos: Vector2) -> Array[Vecto
 
 
 func is_placeable_location(at:Vector2):
-	var placeable_rect = Rect2(-abs(owner.chunks_left * (owner.chunk_width-1)),0,
-		abs(((owner.chunks_right + owner.chunks_left) * (owner.chunk_width-1)) + owner.chunk_width),owner.height)
+	var placeable_rect = Rect2(-abs(owner.chunk_data.chunks_left * (owner.chunk_width-1)),0,
+		abs(((owner.chunk_data.chunks_right + owner.chunk_data.chunks_left) * (owner.chunk_width-1)) + owner.chunk_width),owner.chunk_data.height)
 
 	return placeable_rect.has_point(at)
-
-
-func _on_ui_selection_changed(selection: SelectionRes) -> void:
-	if selection:
-		active_selection = selection.custom_duplicate()
-		for tilemap in get_children():
-			if tilemap is TileMapLayer:
-				if tilemap.tile_set == active_selection.tileset:
-					active_tilemap_layer = tilemap
-					break
-	else:
-		active_selection = null
 
 
 func _on_editor_tool_changed(new_current_tool: int) -> void:
@@ -564,3 +551,15 @@ func _get_tile_rotation_alt(direction:int):
 		90: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H
 	return tile_alt
 	
+
+
+func _on_inventory_selection_changed(item: InventoryItem) -> void:
+	if item:
+		active_selection = item
+		for tilemap in get_children():
+			if tilemap is TileMapLayer:
+				if tilemap.tile_set == active_selection.root.tileset:
+					active_tilemap_layer = tilemap
+					break
+	else:
+		active_selection = null

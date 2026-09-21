@@ -1,8 +1,5 @@
-extends VBoxContainer
+extends TabContainer
 class_name Inventory
-
-
-enum tileset_names {tiles,walls,decor1,decor2,decor3}
 
 @export var inventory_groups: Array[InventoryGroupRes]
 
@@ -14,13 +11,12 @@ enum tileset_names {tiles,walls,decor1,decor2,decor3}
 @export var decor3_tileset: TileSet
 @onready var all_tileset: Array[TileSet] = [tiles_tileset,walls_tileset,decor1_tileset,decor2_tileset,decor3_tileset]
 
-@onready var inventory_container: Control = %InventoryContainer
-
-@onready var original_inventory_group: InventoryGroup = %InventoryGroup
-
-var all_inventory_groups: Array[InventoryGroup]
+@onready var original_group_container: InventoryGroupContainer = %GroupContainer
+#@onready var group_selector: OptionButton = $GroupSelector
 
 var all_items_from_tilesets: Array[Dictionary]
+
+signal selection_changed(item: InventoryItem)
 
 
 func _ready() -> void:
@@ -30,26 +26,27 @@ func _ready() -> void:
 func _populate_inventory():
 	_update_all_items_from_tilesets()
 	for group in inventory_groups:
-		var inventory_group = original_inventory_group.duplicate(DUPLICATE_GROUPS|DUPLICATE_SCRIPTS|DUPLICATE_SIGNALS)
-		inventory_container.add_child(inventory_group)
-		inventory_group.show()
+		var group_container = original_group_container.duplicate(DUPLICATE_GROUPS|DUPLICATE_SCRIPTS|DUPLICATE_SIGNALS)
+		add_child(group_container)
 		
-		inventory_group.title = group.name
-		inventory_group.specifics = group.specifics
-		inventory_group.themes = group.themes
-		inventory_group.color = group.color
-		inventory_group.tilesets.clear()
-		for tileset_name in group.tilesets:
-			inventory_group.tilesets.set(tileset_name,all_tileset[tileset_name as int])
+		group_container.name = group.name
+		group_container.title = group.name
+		group_container.groups = group.groups
+		group_container.themes = group.themes
+		group_container.color = group.color
 		
-		inventory_group.populate_group()
+		
+		group_container.populate_group()
+	original_group_container.queue_free()
 	
 	for node: ItemList in get_tree().get_nodes_in_group("InventoryItemLists"):
 		node.connect("item_selected",selected_new_item.bind(node))
 
 
 func selected_new_item(idx: int,item_list: ItemList):
-	print(item_list.get_item_metadata(idx).name)
+	var item = item_list.get_item_metadata(idx) as InventoryItem
+	selection_changed.emit(item)
+	
 	for node in get_tree().get_nodes_in_group("InventoryItemLists"):
 		if node != item_list:
 			node.deselect_all()
@@ -65,21 +62,24 @@ func _update_all_items_from_tilesets():
 				var terrain_name = tileset.get_terrain_name(terrain_set_idx,terrain_idx)
 				if terrain_name.begins_with("#"):
 					
-					all_items.set(terrain_name,InventoryItemTerrain.new(terrain_name,tileset,terrain_set_idx,terrain_idx))
-
+					var item = InventoryItem.new(terrain_name,RootResTerrain.new(tileset,terrain_set_idx,terrain_idx))
+					
+					all_items.set(item.name,item)
 					
 					
 		for source_idx in range(tileset.get_source_count()):
 			var source_id = tileset.get_source_id(source_idx)
 			var source = tileset.get_source(source_id)
 			var source_name = source.resource_name
-			if source_name.begins_with("#") and source_name not in all_items.keys():
+			if source_name.begins_with("#"):
 				for tile_idx in source.get_tiles_count():
 					var tile_coords = source.get_tile_id(tile_idx)
 					for tile_alt_idx in source.get_alternative_tiles_count(tile_coords):
 						var tile_alt_id = source.get_alternative_tile_id(tile_coords,tile_alt_idx)
-						all_items.set(source_name,InventoryItemTile.new(source_name,tileset,source_id,tile_coords,tile_alt_id))
-		
+						
+						var item = InventoryItem.new(source_name,RootResTile.new(tileset,source_id,tile_coords,tile_alt_id))
+						
+						all_items.set(item.name,item)
 		
 		all_items_from_tilesets.append(all_items)
 

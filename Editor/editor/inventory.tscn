@@ -8,9 +8,9 @@
 [ext_resource type="TileSet" uid="uid://iaamg7861d4s" path="res://shared/tilesets/Decor 1 Tileset.tres" id="6_t8dho"]
 [ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://shared/tilesets/Decor 2 Tileset.tres" id="7_f7y7y"]
 [ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://shared/tilesets/Decor 3 Tileset.tres" id="8_keq4g"]
-[ext_resource type="Script" uid="uid://digtilsnemlec" path="res://editor/inventory_group.gd" id="9_b1pxd"]
+[ext_resource type="Script" uid="uid://digtilsnemlec" path="res://editor/inventory_group_container.gd" id="9_b1pxd"]
 [ext_resource type="StyleBox" uid="uid://8aoispb5vxs1" path="res://editor_ui_assets/box_texture.tres" id="10_5htau"]
-[ext_resource type="Script" uid="uid://blqecd1rkkvqf" path="res://editor/inventory_subgroup.gd" id="11_jgkal"]
+[ext_resource type="Script" uid="uid://blqecd1rkkvqf" path="res://editor/inventory_subgroup_container.gd" id="11_jgkal"]
 
 [sub_resource type="Resource" id="Resource_0vxke"]
 script = ExtResource("3_ycm3c")
