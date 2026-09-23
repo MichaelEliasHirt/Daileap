@@ -349,7 +349,7 @@ enum toolboxes {
 	object_toolbox
 }
 
-var active_toolbox: GridContainer
+@onready var active_toolbox: GridContainer = $CenterContainer/BrushToolbox
 
 signal brush_changed(brush: TileMapManager.Brushes)
 
@@ -374,6 +374,13 @@ func _on_rect_btn_pressed() -> void:
 
 func _on_fill_cell_btn_pressed() -> void:
 	brush_changed.emit(TileMapManager.Brushes.fill)
+
+
+func _on_inventory_selection_changed(item: InventoryItem) -> void:
+	if item.bulk_placement:
+		change_toolbox(toolboxes.brush_toolbox)
+	else:
+		change_toolbox(toolboxes.object_toolbox)
 "
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_rc6o0"]
@@ -709,25 +716,25 @@ unique_name_in_owner = true
 z_index = 100
 script = ExtResource("1_touta")
 
-[node name="Background" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
+[node name="Background" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["actuallayer"]]
 unique_name_in_owner = true
 z_index = -20
 tile_map_data = PackedByteArray("AAAKAAgAAAAAAAAAAAAKAAcAAAAAAAAAAAAMAAkAAAACAAEAAAANAAkAAAACAAEAAAAOAAkAAAACAAEAAAANAAoAAAACAAEAAAA=")
 collision_enabled = false
 navigation_enabled = false
 
-[node name="Decor3Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["decorlayer"]]
+[node name="Decor3Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["actuallayer", "decorlayer", "layerwithhitboxes"]]
 unique_name_in_owner = true
 z_index = -15
 tile_map_data = PackedByteArray("AAAlABgAAgAIAAAAAAApABgAAgAIAAAAAAAYABcAAgAIAAAAAAARABoAAgAIAAAAAAA=")
 
-[node name="Mainground" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
+[node name="Mainground" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["actuallayer"]]
 unique_name_in_owner = true
 z_index = -10
 tile_map_data = PackedByteArray("AAACAAwAAAAAAAAAAAAEAAwAAAAAAAAAAAAGAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAKAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAOAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAASAAwAAAAAAAAAAAAUAAwAAAAAAAAAAAAWAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAoAAAAAAAAAAAAYAAsAAAAAAAAAAAAYAAoAAAAAAAAAAAANAAsAAAAAAAAAAAAMAAoAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAgAAAAAAAAAAAAYAAkAAAAAAAAAAAAYAAgAAAAAAAAAAAAAAA4AAAAAAAAAAAAAABAAAAAAAAAAAAAAABIAAAAAAAAAAAAAABQAAAAAAAAAAAAAABYAAAAAAAAAAAAAABgAAAAAAAAAAAAAABoAAAAAAAAAAAAAABwAAAAAAAAAAAAYAA4AAAAAAAAAAAAYABEAAAAAAAAAAAAYABMAAAAAAAAAAAAYABIAAAAAAAAAAAAYABQAAAAAAAAAAAAYABYAAAAAAAAAAAAYABgAAAAAAAAAAAAYABoAAAAAAAAAAAAYABwAAAAAAAAAAAAZAA0AAAAAAAAAAAAaAA4AAAAAAAAAAAAbAA8AAAAAAAAAAAAcABAAAAAAAAAAAAA=")
 occlusion_enabled = false
 
-[node name="Decor2Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["decorlayer"]]
+[node name="Decor2Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["actuallayer", "decorlayer", "layerwithhitboxes"]]
 unique_name_in_owner = true
 z_index = -10
 
@@ -737,7 +744,7 @@ tile_set = SubResource("TileSet_g7d0j")
 occlusion_enabled = false
 navigation_enabled = false
 
-[node name="Decor1Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["decorlayer"]]
+[node name="Decor1Layer" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" groups=["actuallayer", "decorlayer", "layerwithhitboxes"]]
 unique_name_in_owner = true
 z_index = 10
 tile_map_data = PackedByteArray("AAAOABQAAAAJAAAAAAA=")
@@ -1305,6 +1312,7 @@ color = Color(0, 0, 0, 0.78431374)
 
 [connection signal="chunk_data_updated" from="." to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" method="_on_main_chunk_data_updated"]
 [connection signal="selection_changed" from="MarginContainer/HBoxContainer/LeftContainer/Inventory" to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" method="_on_inventory_selection_changed"]
+[connection signal="selection_changed" from="MarginContainer/HBoxContainer/LeftContainer/Inventory" to="MarginContainer/HBoxContainer/RightContainer/ToolContainer" method="_on_inventory_selection_changed"]
 [connection signal="item_selected" from="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeSelector" to="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer" method="_on_theme_selector_item_selected"]
 [connection signal="gui_input" from="MarginContainer/HBoxContainer/CenterContainer/MarginContainer/HBoxContainer/FilenameEdit" to="MarginContainer/HBoxContainer/CenterContainer/MarginContainer/HBoxContainer/FilenameEdit" method="_on_gui_input"]
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/CenterContainer/MarginContainer/HBoxContainer/FilenameEdit" to="." method="_on_filename_edit_text_changed"]

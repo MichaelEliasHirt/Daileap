@@ -30,6 +30,9 @@ var brush_first_coord: Vector2
 
 var decor_erase_prev := false
 
+var all_hitbox_locations: Dictionary[TileMapLayer,PackedByteArray]
+
+
 func _process(_delta: float) -> void:
 	## Move the preview sprite when its active, it snappes to the grid
 	
@@ -51,6 +54,13 @@ func _process(_delta: float) -> void:
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
+		
+		if event.is_action_pressed("mouse_r"):
+			_enable_x_ray_view()
+			
+		elif event.is_action_released("mouse_r"):
+			_disable_x_ray_view()
+		
 		## the decor_erase_prev get hidden but mostly gets shown again a little down the execution
 		hitbox_tilemap.hide()
 		if control.get_rect().has_point(event.position):
@@ -435,13 +445,23 @@ func get_fill_cells_by_terrain(at: Vector2) -> Array[Vector2i]:
 	return cells_hit
 
 
-func _update_hitbox_tilemap():
-	hitbox_tilemap.clear()
-		
-	for cell in %Decor3Layer.get_used_cells() + %Decor2Layer.get_used_cells() + %Decor1Layer.get_used_cells():
-		hitbox_tilemap.set_cell(cell,0,Vector2i(0,0),0)
 
 
+func _update_all_hitbox_locations():
+	for node: TileMapLayer in get_tree().get_nodes_in_group("layerwithhitboxes"):
+		hitbox_tilemap.clear()
+		for cell in node.get_used_cells():
+			hitbox_tilemap.set_cell(cell,0,Vector2i(0,0),0)
+			
+		all_hitbox_locations.set(node,hitbox_tilemap.tile_map_data)
+	
+	if active_tilemap_layer:
+		hitbox_tilemap.tile_map_data = all_hitbox_locations[active_tilemap_layer]
+
+
+func _update_current_hitbox_locations():
+	if active_tilemap_layer:
+		all_hitbox_locations.set(active_tilemap_layer,hitbox_tilemap.tile_map_data)
 
 
 func get_rect_cells(start_pos: Vector2i, end_pos: Vector2i) -> Array[Vector2i]:
@@ -544,15 +564,36 @@ func _get_tile_rotation_alt(direction:int):
 		180: tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_V + TileSetAtlasSource.TRANSFORM_FLIP_H
 		90: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H
 	return tile_alt
-	
+
+
+func _enable_x_ray_view():
+	if active_tilemap_layer:
+		for tilemaplayer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("actuallayer")):
+			if tilemaplayer == active_tilemap_layer:
+				continue
+			
+			tilemaplayer.self_modulate.a = 0.3
+
+func _disable_x_ray_view():
+	if active_tilemap_layer:
+		for tilemaplayer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("actuallayer")):
+			tilemaplayer.self_modulate.a = 1
 
 
 func _on_inventory_selection_changed(item: InventoryItem) -> void:
 	if item:
 		active_item = item
-		for tilemap in get_children():
+		for tilemap:TileMapLayer in get_children():
 			if tilemap is TileMapLayer:
 				if tilemap.tile_set == active_item.root.tileset:
+					if active_tilemap_layer != tilemap and tilemap.is_in_group("layerwithhitboxes"):
+						_update_current_hitbox_locations()
+						var tilemapdata = all_hitbox_locations.get(tilemap)
+						if tilemapdata:
+							hitbox_tilemap.tile_map_data = tilemapdata
+						else: hitbox_tilemap.clear()
+						
+						
 					active_tilemap_layer = tilemap
 					break
 	else:
@@ -577,4 +618,4 @@ func _on_main_chunk_data_updated(chunk_data: LevelChunkRes) -> void:
 	hitbox_tilemap.hide()
 
 	await get_tree().process_frame
-	_update_hitbox_tilemap()
+	_update_all_hitbox_locations()
