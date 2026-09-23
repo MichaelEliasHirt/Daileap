@@ -12,7 +12,7 @@ signal save_data
 signal save_as_data(name:String)
 signal discard_data
 
-var unsaved_changes: bool
+var unsaved_changes: bool = false
 var prevented_function
 
 func data_changed():
@@ -31,6 +31,7 @@ func _on_new_btn_pressed() -> void:
 		unsaved_dialog.throw_dialog(owner.chunk_data.name)
 	else:
 		load_new_data.emit()
+		unsaved_changes = false
 
 
 func _on_load_btn_pressed() -> void:
@@ -40,6 +41,10 @@ func _on_load_btn_pressed() -> void:
 	else:
 		load_dialog.throw_dialog()
 		prevented_function = null
+
+
+func _on_load_dialog_load_btn_pressed(selected_UID: StringName) -> void:
+	load_data.emit(selected_UID)
 
 
 func _on_save_btn_pressed() -> void:
@@ -79,7 +84,3 @@ func _on_save_as_dialog_save_btn_pressed(text: String) -> void:
 	if prevented_function:
 		unsaved_changes = false
 		prevented_function.call()
-
-
-func _on_load_dialog_load_btn_pressed(selected_UID: StringName) -> void:
-	load_data.emit(selected_UID)

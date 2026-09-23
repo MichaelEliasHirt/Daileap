@@ -23,5 +23,6 @@ func _init(tileset_: TileSet,terrain_set_idx_: int,terrain_idx_: int) -> void:
 				icon_texture.atlas = src.texture
 				icon_texture.region = src.get_tile_texture_region(tile_id,0)
 				icon_offset = tiledata.texture_origin
+				
 				break
 	

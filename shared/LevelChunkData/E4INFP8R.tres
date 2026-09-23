@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=3 uid="uid://pqga7ithqci0"]
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=3]
 
-[ext_resource type="Script" uid="uid://65gcglg46dtd" path="res://shared/resources/level_chunk_res.gd" id="1_xv4xe"]
+[ext_resource type="Script" path="res://shared/resources/level_chunk_res.gd" id="1_xv4xe"]
 
 [resource]
 script = ExtResource("1_xv4xe")
@@ -8,10 +8,10 @@ UID = "E4INFP8R"
 name = "Test1"
 mainground_tile_map_data = PackedByteArray()
 background_tile_map_data = PackedByteArray()
-decor1_tile_map_data = PackedByteArray()
+decor1_tile_map_data = PackedByteArray(0, 0, 14, 0, 20, 0, 0, 0, 9, 0, 0, 0, 0, 0)
 decor2_tile_map_data = PackedByteArray()
 decor3_tile_map_data = PackedByteArray()
-height = 70
+height = 50
 chunks_left = 2
 chunks_right = 1
 exit_position = 2

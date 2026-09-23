@@ -1,4 +1,4 @@
-[gd_scene load_steps=108 format=4 uid="uid://blwepm8tffada"]
+[gd_scene load_steps=105 format=4 uid="uid://blwepm8tffada"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://main.gd" id="1_886ha"]
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://editor/tile_maps.gd" id="1_touta"]
@@ -84,20 +84,6 @@ themes = Dictionary[String, int]({
 })
 metadata/_custom_type_script = "uid://b2v88010o7566"
 
-[sub_resource type="Resource" id="Resource_opftb"]
-script = ExtResource("10_fjkr7")
-name = "Decor"
-groups = Dictionary[String, int]({
-"Background": 6,
-"Foreground": 4,
-"OnLevel": 5
-})
-themes = Dictionary[String, int]({
-"Industrial": 1
-})
-color = Color(0.3642604, 0.01966058, 0.16355684, 1)
-metadata/_custom_type_script = "uid://b2v88010o7566"
-
 [sub_resource type="LabelSettings" id="LabelSettings_onh5e"]
 font_size = 23
 outline_size = 9
@@ -176,7 +162,6 @@ sources/0 = SubResource("TileSetAtlasSource_a0ntl")
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xyy1j"]
 texture = ExtResource("19_opftb")
 texture_region_size = Vector2i(8, 8)
-0:0/next_alternative_id = 3
 0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ta2aw"]
@@ -241,15 +226,6 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46fn7"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="InputEventKey" id="InputEventKey_opftb"]
-device = -1
-ctrl_pressed = true
-pressed = true
-keycode = 83
-
-[sub_resource type="Shortcut" id="Shortcut_opftb"]
-events = [SubResource("InputEventKey_opftb")]
 
 [sub_resource type="GDScript" id="GDScript_c8ju1"]
 script/source = "extends LineEdit
@@ -520,7 +496,7 @@ tab_alignment = 1
 current_tab = 0
 drag_to_rearrange_enabled = true
 script = ExtResource("9_0vxke")
-inventory_groups = Array[ExtResource("10_fjkr7")]([SubResource("Resource_3bujr"), SubResource("Resource_go5yj"), SubResource("Resource_opftb")])
+inventory_groups = Array[ExtResource("10_fjkr7")]([SubResource("Resource_3bujr"), SubResource("Resource_go5yj")])
 tiles_tileset = ExtResource("6_xoyte")
 walls_tileset = ExtResource("7_jgecq")
 decor1_tileset = ExtResource("8_c8ju1")
@@ -579,17 +555,14 @@ theme_override_styles/separator = SubResource("StyleBoxLine_3bujr")
 
 [node name="InventoryItemList" type="ItemList" parent="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeContainerContainer/ThemeContainer/VBoxContainer/SubgroupContainer" groups=["InventoryItemLists"]]
 layout_mode = 2
-theme_override_colors/guide_color = Color(0.39308554, 0.39308548, 0.39308557, 0.65882355)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_onh5e")
 theme_override_styles/hovered_selected = SubResource("StyleBoxFlat_onh5e")
 theme_override_styles/hovered_selected_focus = SubResource("StyleBoxFlat_onh5e")
 theme_override_styles/selected = SubResource("StyleBoxFlat_onh5e")
 theme_override_styles/selected_focus = SubResource("StyleBoxFlat_onh5e")
 auto_height = true
-max_columns = 0
-same_column_width = true
-icon_mode = 0
-icon_scale = 2.0
+max_columns = 5
+icon_scale = 3.0
 
 [node name="CenterContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -742,9 +715,10 @@ unique_name_in_owner = true
 z_index = 10
 tile_map_data = PackedByteArray("AAAOABQAAAAJAAAAAAA=")
 
-[node name="HitboxTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
+[node name="DecorErasePrevTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
 unique_name_in_owner = true
 z_index = 15
+tile_map_data = PackedByteArray("AAAVAA8AAAAAAAAAAAAVABAAAAAAAAAAAAAWABEAAAAAAAAAAAAWABIAAAAAAAAAAAAWABMAAAAAAAAAAAAXABQAAAAAAAAAAAAXABUAAAAAAAAAAAAXABYAAAAAAAAAAAAXABcAAAAAAAAAAAAXABgAAAAAAAAAAAAXABkAAAAAAAAAAAAXABoAAAAAAAAAAAAXABsAAAAAAAAAAAAXABwAAAAAAAAAAAAWAB0AAAAAAAAAAAAWAB4AAAAAAAAAAAAVAB4AAAAAAAAAAAAVAB0AAAAAAAAAAAAUABwAAAAAAAAAAAATABsAAAAAAAAAAAATABoAAAAAAAAAAAATABkAAAAAAAAAAAATABgAAAAAAAAAAAAUABcAAAAAAAAAAAAUABYAAAAAAAAAAAAUABUAAAAAAAAAAAAVABQAAAAAAAAAAAAXABMAAAAAAAAAAAAYABIAAAAAAAAAAAAZABIAAAAAAAAAAAAaABIAAAAAAAAAAAAbABIAAAAAAAAAAAAcABIAAAAAAAAAAAAdABIAAAAAAAAAAAAeABIAAAAAAAAAAAAfABMAAAAAAAAAAAAfABQAAAAAAAAAAAAgABUAAAAAAAAAAAAgABYAAAAAAAAAAAAgABcAAAAAAAAAAAAgABgAAAAAAAAAAAAgABkAAAAAAAAAAAAgABoAAAAAAAAAAAAgABsAAAAAAAAAAAAgABwAAAAAAAAAAAAgAB0AAAAAAAAAAAAgAB4AAAAAAAAAAAAfAB8AAAAAAAAAAAAeAB4AAAAAAAAAAAAeAB0AAAAAAAAAAAAeABwAAAAAAAAAAAAfABsAAAAAAAAAAAAhABsAAAAAAAAAAAAiABsAAAAAAAAAAAAjABsAAAAAAAAAAAAkABsAAAAAAAAAAAAlABsAAAAAAAAAAAAZABkAAAAAAAAAAAAaABkAAAAAAAAAAAABAB8AAAAAAAAAAAADAB8AAAAAAAAAAAAFAB8AAAAAAAAAAAAHAB8AAAAAAAAAAAAJAB8AAAAAAAAAAAALAB8AAAAAAAAAAAANAB8AAAAAAAAAAAAPAB8AAAAAAAAAAAARAB8AAAAAAAAAAAATAB8AAAAAAAAAAAAVAB8AAAAAAAAAAAAXAB8AAAAAAAAAAAAaAB8AAAAAAAAAAAAZAB8AAAAAAAAAAAAbAB8AAAAAAAAAAAAdAB8AAAAAAAAAAAAhAB8AAAAAAAAAAAAjAB8AAAAAAAAAAAAlAB8AAAAAAAAAAAAnAB8AAAAAAAAAAAA=")
 tile_set = SubResource("TileSet_ta2aw")
 
 [node name="EntranceArrow" type="Node2D" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
@@ -857,10 +831,7 @@ alignment = 2
 [node name="SaveButtonsContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer/RightContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
 theme = ExtResource("20_1rny3")
-theme_override_styles/panel = ExtResource("12_jr4bh")
 
 [node name="SaveButtons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightContainer/HBoxContainer/SaveButtonsContainer"]
 unique_name_in_owner = true
@@ -886,7 +857,6 @@ text = "Load"
 custom_minimum_size = Vector2(70, 30)
 layout_mode = 2
 theme = ExtResource("20_1rny3")
-shortcut = SubResource("Shortcut_opftb")
 text = "Save"
 
 [node name="UnsavedDialog" type="AcceptDialog" parent="MarginContainer/HBoxContainer/RightContainer/HBoxContainer/SaveButtonsContainer/SaveButtons"]
@@ -1303,7 +1273,6 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.78431374)
 
-[connection signal="chunk_data_updated" from="." to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" method="_on_main_chunk_data_updated"]
 [connection signal="selection_changed" from="MarginContainer/HBoxContainer/LeftContainer/Inventory" to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" method="_on_inventory_selection_changed"]
 [connection signal="item_selected" from="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeSelector" to="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer" method="_on_theme_selector_item_selected"]
 [connection signal="gui_input" from="MarginContainer/HBoxContainer/CenterContainer/MarginContainer/HBoxContainer/FilenameEdit" to="MarginContainer/HBoxContainer/CenterContainer/MarginContainer/HBoxContainer/FilenameEdit" method="_on_gui_input"]

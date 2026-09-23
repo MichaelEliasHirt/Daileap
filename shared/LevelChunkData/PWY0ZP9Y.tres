@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=4]
+
+[ext_resource type="Script" path="res://shared/resources/level_chunk_res.gd" id="1_2n38q"]
+
+[resource]
+script = ExtResource("1_2n38q")
+UID = "PWY0ZP9Y"
+name = "test123123123"
+mainground_tile_map_data = PackedByteArray("AAACAAYAAwAAAAAAAAADAAYAAwABAAAAAAAEAAYAAwABAAAAAAAFAAYAAwACAAAAAAADAAkAAwAAAAAAAAAEAAkAAwABAAAAAAAFAAkAAwABAAAAAAAGAAkAAwACAAAAAAA=")
+background_tile_map_data = PackedByteArray()
+decor1_tile_map_data = PackedByteArray("AAAOABQAAAAJAAAAAAA=")
+decor2_tile_map_data = PackedByteArray()
+decor3_tile_map_data = PackedByteArray()
+height = 30

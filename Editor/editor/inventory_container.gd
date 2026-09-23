@@ -74,12 +74,21 @@ func _update_all_items_from_tilesets():
 			if source_name.begins_with("#"):
 				for tile_idx in source.get_tiles_count():
 					var tile_coords = source.get_tile_id(tile_idx)
+
 					for tile_alt_idx in source.get_alternative_tiles_count(tile_coords):
 						var tile_alt_id = source.get_alternative_tile_id(tile_coords,tile_alt_idx)
 						
 						var item = InventoryItem.new(source_name,RootResTile.new(tileset,source_id,tile_coords,tile_alt_id))
 						
-						all_items.set(item.name,item)
+						var res_name: String
+						if tile_idx > 0:
+							res_name = item.name + "_" + str(tile_idx)
+						elif tile_alt_idx > 0 :
+							res_name = item.name + "_" + str(tile_idx) + "_" + str(tile_alt_id)
+						else:
+							res_name = item.name
+						
+						all_items.set(res_name,item)
 		
 		all_items_from_tilesets.append(all_items)
 

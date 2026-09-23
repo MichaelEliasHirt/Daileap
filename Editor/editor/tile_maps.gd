@@ -1,242 +1,242 @@
 class_name TileMapManager extends Node2D
 
+enum Brushes {
+	paint,
+	line,
+	rect,
+	fill
+}
+
+
+
 @onready var debug_info_label: Label = %DebugInfoLabel
 @onready var grid: ColorRect = %HighlightGrid
 @onready var control: Control = $".."
-@onready var decor_erase_prev_tilemap: TileMapLayer = %DecorErasePrevTilemap
+@onready var hitbox_tilemap: TileMapLayer = %HitboxTilemap
 
 @onready var preview_sprite: Sprite2D = %PreviewSprite
 
 signal tilemap_changed
 
-var active_selection: InventoryItem
+var active_item: InventoryItem
 var active_tilemap_layer: TileMapLayer
 
-var last_coords: Vector2i
-var current_tool: int = 0
-var tool_start: bool
-var tool_first_coord: Vector2
-var erase_tool_start: bool
-var erase_tool_first_coord: Vector2
 
-var preview := true
+var active_brush: Brushes = 0 as Brushes
+var brush_down: bool
+var brush_first_coord: Vector2
+#var erase_tool_start: bool
+#var erase_tool_first_coord: Vector2
+
 var decor_erase_prev := false
-
 
 func _process(_delta: float) -> void:
 	## Move the preview sprite when its active, it snappes to the grid
-	preview_sprite.hide()
-	if preview:
-		if active_selection:
+	
+	if preview_sprite.visible:
+		preview_sprite.hide()
+		if active_item:
 			if control.get_rect().has_point(control.get_local_mouse_position()):
 				var at = get_global_mouse_position()
 				var local_at = active_tilemap_layer.local_to_map(to_local(at))
 				var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
 				if is_placeable_location(standerdized_local_at):
 					preview_sprite.show()
-					preview_sprite.texture = active_selection.root.icon_texture
-					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_selection.root.icon_offset
+					preview_sprite.texture = active_item.root.icon_texture
+					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_item.root.icon_offset
 					#if active_selection.direction:
 						#preview_sprite.rotation_degrees = active_selection.direction
 					#else: preview_sprite.rotation_degrees = 0
+					
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		## the decor_erase_prev get hidden but mostly gets shown again a little down the execution
-		_hide_decor_erase_prev()
-		if control.get_rect().has_point(control.get_local_mouse_position()):
-			if not active_selection:
+		hitbox_tilemap.hide()
+		if control.get_rect().has_point(event.position):
+			if not active_item:
 				return
-			## similar to decor_erase_prev, but the other way round
-			_show_preview()
-			## for now that when the only types that use buttons at all, but maybe I will add buttons for other types 
-			if active_selection.group in [InventoryItem.groups.terraintile,InventoryItem.groups.slab,InventoryItem.groups.wall]:
-				match current_tool:
-					0: ## pencil tool 
+			preview_sprite.show()
+			
+			if active_item.bulk_placement:
+				match active_brush:
+					Brushes.paint: 
+						clear_preview_tilemap()
 						## when you move the mouse quick there will be holes in the "line", this prevents this to some extent
 						if event is InputEventMouseMotion:
+							if event.button_mask == 2:
+								paint(event.global_position, true, true)
+								
 							if abs(event.screen_relative.x) > 16 or abs(event.screen_relative.x) > 16:
-								if event.button_mask == 1:
-									place(get_global_mouse_position() - (event.screen_relative/2))
-								elif event.button_mask == 2:
-									place(get_global_mouse_position() - (event.screen_relative/2),true)
-						if event.button_mask == 1:
-							place(get_global_mouse_position())
-						elif event.button_mask == 2:
-							_hide_preview()
-							place(get_global_mouse_position(),true)
-					1: ## line tool
+								if event.button_mask in [1,2]:
+									paint(event.global_position - (event.screen_relative/2), event.button_mask == 2)
+								#elif event.button_mask == 2:
+									#place(get_global_mouse_position() - (event.screen_relative/2),true)
+						
+						if event.button_mask in [1,2]:
+							paint(event.global_position, event.button_mask == 2)
+							
+						#elif event.button_mask == 2:
+							#_hide_preview()
+							#place(get_global_mouse_position(),true)
+					Brushes.line:
 						## when you first press the start of the line is gettign marked
 						if event is InputEventMouseButton:
-							if not event.is_echo():
-								if event.button_mask == 1:
-									tool_start = true
-									tool_first_coord = get_global_mouse_position()
-								if event.button_mask == 2:
-									erase_tool_start = true
-									erase_tool_first_coord = get_global_mouse_position()
+							if not event.is_echo() and event.button_mask in [1,2]:
+								brush_down = true
+								brush_first_coord = event.global_position
+							#if event.button_mask == 2:
+								#erase_tool_start = true
+								#erase_tool_first_coord = get_global_mouse_position()
 						## only if the line has started already
-						if tool_start:
+						if brush_down:
 							## preview line gets updated as long as pressed
-							if event.button_mask == 1:
-								line(tool_first_coord,get_global_mouse_position(),false,true)
+							if event.button_mask in [1,2]:
+								line(brush_first_coord,event.global_position,event.button_mask == 2,true)
 								
 							## when released the actual line is placed
-							elif event.is_released():
-								tool_start = false
-								clear_temp()
-								line(tool_first_coord,get_global_mouse_position())
+							elif event is InputEventMouseButton and event.is_released() and event.button_index in [1,2]:
+								brush_down = false
+								clear_preview_tilemap()
+								line(brush_first_coord,event.global_position, event.button_index == 2)
 						
-						## same for erase line
-						if erase_tool_start:
-							if event.button_mask == 2:
-								_hide_preview()
-								line(erase_tool_first_coord,get_global_mouse_position(),true,true)
-								
-							elif event.is_released():
-								erase_tool_start = false
-								clear_temp()
-								_hide_preview()
-								line(erase_tool_first_coord,get_global_mouse_position(),true)
-					2: ## rect tool
-						
+						### same for erase line
+						#if erase_tool_start:
+							#if event.button_mask == 2:
+								#_hide_preview()
+								#line(erase_tool_first_coord,get_global_mouse_position(),true,true)
+								#
+							#elif event.is_released():
+								#erase_tool_start = false
+								#clear_temp()
+								#_hide_preview()
+								#line(erase_tool_first_coord,get_global_mouse_position(),true)
+					Brushes.rect:
 						## similar to line tool but the changed tiles are different
 						if event is InputEventMouseButton:
-							if not event.is_echo():
-								if event.button_mask == 1:
-									tool_start = true
-									tool_first_coord = get_global_mouse_position()
-								if event.button_mask == 2:
-									erase_tool_start = true
-									erase_tool_first_coord = get_global_mouse_position()
-									
-						if tool_start:
-							if event.button_mask == 1:
-								rect(tool_first_coord,get_global_mouse_position(),false,true)
+							if not event.is_echo() and event.button_mask in [1,2]:
+								brush_down = true
+								brush_first_coord = event.global_position
+							#if event.button_mask == 2:
+								#erase_tool_start = true
+								#erase_tool_first_coord = get_global_mouse_position()
+						## only if the line has started already
+						if brush_down:
+							## preview line gets updated as long as pressed
+							if event.button_mask in [1,2]:
+								rect(brush_first_coord,event.global_position,event.button_mask == 2, true)
 								
-							elif event.is_released():
-								tool_start = false
-								clear_temp()
-								rect(tool_first_coord,get_global_mouse_position())
+							## when released the actual line is placed
+							elif event is InputEventMouseButton and event.is_released() and event.button_index in [1,2]:
+								brush_down = false
+								clear_preview_tilemap()
+								rect(brush_first_coord,event.global_position, event.button_index == 2)
 							
-						if erase_tool_start:
-							if event.button_mask == 2:
-								_hide_preview()
-								rect(erase_tool_first_coord,get_global_mouse_position(),true,true)
+						#if erase_tool_start:
+							#if event.button_mask == 2:
+								#_hide_preview()
+								#rect(erase_tool_first_coord,event.global_position,true,true)
 								
-							elif event.is_released():
-								erase_tool_start = false
-								clear_temp()
-								_hide_preview()
-								rect(erase_tool_first_coord,get_global_mouse_position(),true)
-					3: ## fill tool
-						_hide_preview()
+							#elif event.is_released():
+								#erase_tool_start = false
+								#clear_temp()
+								#_hide_preview()
+								#rect(erase_tool_first_coord,event.global_position,true)
+					Brushes.fill:
+						preview_sprite.hide()
 						
 						if event is InputEventMouseButton:
-							if not event.is_echo():
-								if event.button_mask == 1:
-									if tool_start:
-										tool_start = false
-										## if you click again on the preview, then actually set the tiles
-										## if you would click outside the tool just resets
-										if is_hovering_temp(get_global_mouse_position()):
-											fill(get_global_mouse_position())
-										clear_temp()
-									else:
-										## set the preview fill
-										var success = fill(get_global_mouse_position(),false,true)
-										if success:
-											tool_start = true
-										else: tool_start = false
-								
-								## same for erase
-								elif event.button_mask == 2:
-									if erase_tool_start:
-										erase_tool_start = false
-										if is_hovering_temp(get_global_mouse_position()):
-											fill(get_global_mouse_position(),true)
-										clear_temp()
-									else:
-										var success = fill(get_global_mouse_position(),true,true)
-										if success:
-											erase_tool_start = true
-										else: erase_tool_start = false
-			
-			## for now this is everything that just gets placed, nothing fancy
-			elif active_selection.group in [InventoryItem.groups.decor]:
-				if event.button_mask == 1:
-					place(get_global_mouse_position())
-				elif event.button_mask == 2:
-					## shows little hitboxed to make it easier to hit them
-					_show_decor_erase_prev()
-					_hide_preview()
-					place(get_global_mouse_position(),true)
+							if not event.is_echo() and event.button_mask in [1,2]:
+								if brush_down:
+									brush_down = false
+									## if you click again on the preview, then actually set the tiles
+									## if you would click outside the tool just resets
+									if is_hovering_preview_tile(event.global_position):
+										fill(event.global_position, event.button_mask == 2)
+									clear_preview_tilemap()
+								else:
+									## set the preview fill
+									var success = fill(event.global_position,event.button_mask == 2,true)
+									if success:
+										brush_down = true
+									else: brush_down = false
+							
+							### same for erase
+							#elif event.button_mask == 2:
+								#if erase_tool_start:
+									#erase_tool_start = false
+									#if is_hovering_temp(event.global_position):
+										#fill(event.global_position,true)
+									#clear_temp()
+								#else:
+									#var success = fill(event.global_position,true,true)
+									#if success:
+										#erase_tool_start = true
+									#else: erase_tool_start = false
+			else:
+				if event.button_mask == 2:
+					hitbox_tilemap.show()
+					preview_sprite.hide()
+					place(event.global_position,true)
 					
-			elif active_selection.type in [SelectionRes.SelectionType.trap]:
-				if event.button_mask == 1:
-					place(get_global_mouse_position())
-				elif event.button_mask == 2:
-					place(get_global_mouse_position(),true)
+				elif event is InputEventMouseButton:
+					if event.button_mask == 1 and not event.is_echo():
+						place(event.global_position)
 
-
-func _place_tile(at:Vector2i, source:int, tilecoords:Vector2i,tilealtid:int):
+func _place_tile(at:Vector2i, root: RootRes):
 	if active_tilemap_layer:
-		active_tilemap_layer.set_cell(at,source,tilecoords,tilealtid)
+		active_tilemap_layer.set_cell(at,root.source_id,root.tile_coords,root.alt_id)
 
 
-func _place_terrain(ats:Array[Vector2i], terrainset:int, terrainid:int):
+func _place_terrain(ats:Array[Vector2i], root: RootRes):
 	if active_tilemap_layer:
-		active_tilemap_layer.set_cells_terrain_connect(ats,terrainset,terrainid)
+		active_tilemap_layer.set_cells_terrain_connect(ats,root.terrain_set_idx,root.terrain_idx)
 
 
-func clear_temp():
+func clear_preview_tilemap():
 	%PrevTilemap.clear()
 
 
-func is_hovering_temp(at: Vector2) -> bool:
+func is_hovering_preview_tile(at: Vector2) -> bool:
 	return %PrevTilemap.get_cell_source_id(%PrevTilemap.local_to_map(to_local(at))) != -1
 
 
-func place(at: Vector2, erase := false, temp := false):
-	if active_selection:
+func paint(at: Vector2, erase, preview := false):
+	if active_item:
 		var local_at = active_tilemap_layer.local_to_map(to_local(at))
-		var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
+		var standerdized_local_at  = local_at * active_tilemap_layer.tile_set.tile_size / 16
 		if is_placeable_location(standerdized_local_at):
-			if temp:
-				%PrevTilemap.set_cell(standerdized_local_at,0,Vector2i(0,0),0)
-				return
 			tilemap_changed.emit()
-			#match selection_type:
-				#SelectionType.tile:
-					#_place_tile(at, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				#SelectionType.terrain:
+	
+			if preview:
+				if erase:
+					%PrevTilemap.set_cell(standerdized_local_at,0,Vector2i(1,0),0)
+				return
+			
 			if erase:
 				active_tilemap_layer.erase_cell(local_at)
-				##Only Decor
-				if active_selection.group in [InventoryItem.groups.decor]:
-					_update_decor_erase_tilemap(local_at,true)
+				owner.data_changed()
 					
 			else:
-				if active_selection.group in [InventoryItem.groups.terraintile,InventoryItem.groups.slab,InventoryItem.groups.wall]:
-					_place_terrain([local_at], active_selection.root.terrain_set_idx, active_selection.root.terrain_idx)
-				
-				#elif active_selection.type == SelectionRes.SelectionType.trap:
-					#_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
-				###Only Decor
-				elif active_selection.group in [InventoryItem.groups.decor]:
-					_update_decor_erase_tilemap(local_at)
-					_place_tile(local_at,active_selection.tilesrc,active_selection.tilecoords,active_selection.tilealtid)
+				if active_item.root is RootResTerrain:
+					_place_terrain([local_at], active_item.root)
+					owner.data_changed()
 
-func fill(at: Vector2,erase := false, temp := false) -> bool:
-	if active_selection:
+				elif active_item.root is RootResTile:
+					_place_tile(local_at,active_item.root)
+					owner.data_changed()
+
+
+func fill(at: Vector2, erase, preview := false) -> bool:
+	if active_item:
 		var local_at = %PrevTilemap.to_local(at)
 		if is_placeable_location(%PrevTilemap.local_to_map(local_at)):
 			var cell_coords := get_fill_cells_by_terrain(%PrevTilemap.local_to_map(local_at))
 			if cell_coords.is_empty():
 				cell_coords = get_fill_cells_by_cell(%PrevTilemap.local_to_map(local_at))
 				
-			if temp:
-				clear_temp()
+			if preview:
+				clear_preview_tilemap()
 				if erase:
 					for coords in cell_coords:
 						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
@@ -246,28 +246,33 @@ func fill(at: Vector2,erase := false, temp := false) -> bool:
 				return true
 			
 			tilemap_changed.emit()
-			#match selection_type:
-				#SelectionType.tile:
-					#for coords in cell_coords:
-						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				#SelectionType.terrain:
-			if not erase:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
-			else:
+
+			if erase:
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
+				owner.data_changed()
+					
+			else:
+				if active_item.root is RootResTerrain:
+					_place_terrain(cell_coords, active_item.root)
+					owner.data_changed()
+					
+				elif active_item.root is RootResTile:
+					for coord in cell_coords:
+						_place_tile(coord,active_item.root)
+					owner.data_changed()
 	return true
 
 
-func rect(at: Vector2, to: Vector2, erase := false, temp := false):
-	if active_selection:
+func rect(at: Vector2, to: Vector2, erase, preview := false):
+	if active_item:
 		var local_at = %PrevTilemap.to_local(at)
 		var local_to = %PrevTilemap.to_local(to)
 		if is_placeable_location(%PrevTilemap.local_to_map(local_at)) and is_placeable_location(%PrevTilemap.local_to_map(local_to)):
 			var cell_coords := get_rect_cells(%PrevTilemap.local_to_map(local_at), %PrevTilemap.local_to_map(local_to))
 
-			if temp:
-				clear_temp()
+			if preview:
+				clear_preview_tilemap()
 				if erase:
 					for coords in cell_coords:
 						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
@@ -280,25 +285,27 @@ func rect(at: Vector2, to: Vector2, erase := false, temp := false):
 			if erase:
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
+				owner.data_changed()
 			else:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
-			#match selection_type:
-				#SelectionType.tile:
-					#for coords in cell_coords:
-						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				#SelectionType.terrain:
+				if active_item.root is RootResTerrain:
+					_place_terrain(cell_coords, active_item.root)
+					owner.data_changed()
+
+				elif active_item.root is RootResTile:
+					for coord in cell_coords:
+						_place_tile(coord,active_item.root)
+					owner.data_changed()
 
 
-func line(at: Vector2, to: Vector2, erase := false, temp := false):
-	if active_selection:
+func line(at: Vector2, to: Vector2, erase, preview := false):
+	if active_item:
 		var local_at = %PrevTilemap.to_local(at)
 		var local_to = %PrevTilemap.to_local(to)
 		if is_placeable_location(%PrevTilemap.local_to_map(local_at)) and is_placeable_location(%PrevTilemap.local_to_map(local_to)):
-
 			var cell_coords := get_intersecting_cells(local_at,local_to)
 
-			if temp:
-				clear_temp()
+			if preview:
+				clear_preview_tilemap()
 				if erase:
 					for coords in cell_coords:
 						%PrevTilemap.set_cell(coords,0,Vector2i(1,0),0)
@@ -312,14 +319,40 @@ func line(at: Vector2, to: Vector2, erase := false, temp := false):
 			if erase:
 				for coords in cell_coords:
 					active_tilemap_layer.erase_cell(coords)
+				owner.data_changed()
 			else:
-				_place_terrain(cell_coords, active_selection.terrainset, active_selection.terrainid)
-			#match selection_type:
-				#SelectionType.tile:
-					#for coords in cell_coords:
-						#_place_tile(coords, selection_tilesrc, selection_tilecoords,selection_tilealtid)
-				#SelectionType.terrain:
+				if active_item.root is RootResTerrain:
+					_place_terrain(cell_coords, active_item.root)
+					owner.data_changed()
 
+				elif active_item.root is RootResTile:
+					for coord in cell_coords:
+						_place_tile(coord,active_item.root)
+					owner.data_changed()
+
+
+func place(at: Vector2i, erase:= false):
+	if active_item:
+		var local_at = active_tilemap_layer.local_to_map(to_local(at))
+		var standerdized_local_at  = local_at * active_tilemap_layer.tile_set.tile_size / 16
+		if is_placeable_location(standerdized_local_at):
+			tilemap_changed.emit()
+			
+			if erase:
+				active_tilemap_layer.erase_cell(local_at)
+				owner.data_changed()
+				if active_item.bulk_placement == false:
+					if active_item.root.tileset.tile_size.x == 8:
+						hitbox_tilemap.erase_cell(local_at)
+						
+					
+			else:
+				if active_item.root is RootResTile:
+					_place_tile(local_at,active_item.root)
+					owner.data_changed()
+					if active_item.bulk_placement == false:
+						if active_item.root.tileset.tile_size.x == 8:
+							hitbox_tilemap.set_cell(local_at,0,Vector2i(0,0),0)
 
 
 func get_fill_cells_by_cell(at: Vector2) -> Array[Vector2i]:
@@ -401,42 +434,14 @@ func get_fill_cells_by_terrain(at: Vector2) -> Array[Vector2i]:
 	
 	return cells_hit
 
-func _hide_preview():
-	preview = false
+
+func _update_hitbox_tilemap():
+	hitbox_tilemap.clear()
+		
+	for cell in %Decor3Layer.get_used_cells() + %Decor2Layer.get_used_cells() + %Decor1Layer.get_used_cells():
+		hitbox_tilemap.set_cell(cell,0,Vector2i(0,0),0)
 
 
-func _show_preview():
-	preview = true
-	
-	
-func _show_decor_erase_prev():
-	decor_erase_prev_tilemap.show()
-	decor_erase_prev = true
-
-
-func _update_decor_erase_tilemap(coords:Vector2i, erase := false):
-	if erase:
-		var has_another_tile = false
-		for layer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("decorlayer")):
-			if layer.get_cell_tile_data(coords):
-				has_another_tile = true
-				break
-		if not has_another_tile:
-			decor_erase_prev_tilemap.erase_cell(coords)
-	else: 
-		decor_erase_prev_tilemap.set_cell(coords,0,Vector2i(0,0),0)
-
-
-func _create_decor_erase_tilemap():
-	decor_erase_prev_tilemap.clear()
-	for layer: TileMapLayer in get_children().filter(func(x): return x.is_in_group("decorlayer")):
-		for cell in layer.get_used_cells():
-			_update_decor_erase_tilemap(cell)
-
-
-func _hide_decor_erase_prev():
-	decor_erase_prev_tilemap.hide()
-	decor_erase_prev = false
 
 
 func get_rect_cells(start_pos: Vector2i, end_pos: Vector2i) -> Array[Vector2i]:
@@ -512,35 +517,24 @@ func is_placeable_location(at:Vector2):
 	return placeable_rect.has_point(at)
 
 
-func _on_editor_tool_changed(new_current_tool: int) -> void:
-	current_tool = new_current_tool
-	tool_start = false
-	erase_tool_start = false
 
 
-func _on_save_menu_new_chunk_loaded(_data: LevelChunkRes) -> void:
-	_hide_preview()
-	_hide_decor_erase_prev()
-	await get_tree().process_frame
-	_create_decor_erase_tilemap()
-
-
-func _on_rotate_left_btn_pressed() -> void:
-	if active_selection.type in [SelectionRes.SelectionType.trap]:
-		if not active_selection.direction:
-			active_selection.direction = 0
-			
-		active_selection.direction = wrapi(active_selection.direction - 90,0,360)
-		active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
-
-
-func _on_rotate_right_btn_pressed() -> void:
-	if active_selection.type in [SelectionRes.SelectionType.trap]:
-		if active_selection.direction == null:
-			active_selection.direction = 0
-			
-		active_selection.direction = wrapi(active_selection.direction + 90,0,360)
-		active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
+#func _on_rotate_left_btn_pressed() -> void:
+	#if active_selection.type in [SelectionRes.SelectionType.trap]:
+		#if not active_selection.direction:
+			#active_selection.direction = 0
+			#
+		#active_selection.direction = wrapi(active_selection.direction - 90,0,360)
+		#active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
+#
+#
+#func _on_rotate_right_btn_pressed() -> void:
+	#if active_selection.type in [SelectionRes.SelectionType.trap]:
+		#if active_selection.direction == null:
+			#active_selection.direction = 0
+			#
+		#active_selection.direction = wrapi(active_selection.direction + 90,0,360)
+		#active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
 
 
 func _get_tile_rotation_alt(direction:int):
@@ -555,11 +549,32 @@ func _get_tile_rotation_alt(direction:int):
 
 func _on_inventory_selection_changed(item: InventoryItem) -> void:
 	if item:
-		active_selection = item
+		active_item = item
 		for tilemap in get_children():
 			if tilemap is TileMapLayer:
-				if tilemap.tile_set == active_selection.root.tileset:
+				if tilemap.tile_set == active_item.root.tileset:
 					active_tilemap_layer = tilemap
 					break
 	else:
-		active_selection = null
+		active_item = null
+
+
+func _on_tool_container_brush_changed(brush: TileMapManager.Brushes) -> void:
+	active_brush = brush
+	brush_down = false
+	#erase_tool_start = false
+
+
+func _on_main_chunk_data_updated(chunk_data: LevelChunkRes) -> void:
+	%Background.tile_map_data = chunk_data.background_tile_map_data
+	%Decor3Layer.tile_map_data = chunk_data.decor3_tile_map_data
+	%Mainground.tile_map_data = chunk_data.mainground_tile_map_data
+	%Decor2Layer.tile_map_data = chunk_data.decor2_tile_map_data
+	%Decor1Layer.tile_map_data = chunk_data.decor1_tile_map_data
+	
+	
+	preview_sprite.hide()
+	hitbox_tilemap.hide()
+
+	await get_tree().process_frame
+	_update_hitbox_tilemap()

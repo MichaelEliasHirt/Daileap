@@ -34,12 +34,9 @@ extends Control
 @export var max_side_chunks: int = 5
 @export var height_view_over: int = 5
 
-signal tool_changed(current_tool:int)
 
 var current_height: float
 var current_side_chunk_index: int
-
-var current_tool_index: int = 0
 
 
 var chunk_data: LevelChunkRes
@@ -48,14 +45,10 @@ var viewport_position: Vector2
 var all_UIDs: Array[StringName]
 var all_chunks: Array[LevelChunkRes]
 
+signal chunk_data_updated(chunk_data: LevelChunkRes)
+
 
 func _ready() -> void:
-	
-	
-	#get_viewport().size_changed.connect(fit_to_screen)
-	#fit_to_screen()
-	#fix_all_terrains(tiles_tileset)
-	#fix_all_terrains(walls_tileset)
 	mainground.tile_set = tiles_tileset
 	background.tile_set = walls_tileset
 	decor_1_layer.tile_set = decor1_tileset
@@ -68,52 +61,6 @@ func _ready() -> void:
 	await get_tree().process_frame
 	generate_blank_chunk()
 
-
-#func fit_to_screen() -> void:
-	#var viewport_size = get_viewport_rect().size
-	#camera.offset = viewport_size / 2 / 2
-	#change_camera_y()
-	#update_valid_build_region()
-
-
-func _on_ui_selection_changed(_selection: SelectionRes) -> void:
-	pass # Replace with function body.
-
-#func fix_all_terrains(tileset:TileSet):
-	#var terrains: Array
-	#pass
-	##for terrain_sets_idx in range(tileset.get_terrain_sets_count()):
-		##var terrains_ := []
-		##for terrain_idx in range(tileset.get_terrains_count(terrain_sets_idx)):
-			##terrains_.append([])
-		##terrains.append(terrains_)
-			##
-			##
-	##for src_idx in tileset.get_source_count():
-		##var src := tileset.get_source(tileset.get_source_id(src_idx))
-		##
-		##for tiles_idx in range(src.get_tiles_count()):
-			##var tile_id := src.get_tile_id(tiles_idx)
-			##var tiledata = src.get_tile_data(tile_id, 0)
-			##
-			##if tiledata.terrain_set != -1 and tiledata.terrain != -1:
-				##for bit in range(15):
-					##if tiledata.is_valid_terrain_peering_bit(bit):
-						##if tiledata.get_terrain_peering_bit(bit) != -1:
-							##tiledata.set_meta("has_perring_bit_source",src)
-							##break
-							##
-				##terrains[tiledata.terrain_set][tiledata.terrain].append(tiledata)
-				##
-	##for terrains_ in terrains:
-		##for terrain in terrains_:
-			##if terrain.all(func(x): return x.has_meta("has_perring_bit_source")):
-				##var src = terrain[terrain.find_custom(func(x): return x.has_meta("has_perring_bit_source"))].get_meta("has_perring_bit_source") as TileSetAtlasSource
-				##var altid = src.create_alternative_tile(Vector2i(0,0))
-				##var alt_tiledata = src.get_tile_data(Vector2i(0,0),altid) as TileData
-				##alt_tiledata.terrain_set = terrain.front().terrain_set
-				##alt_tiledata.terrain = terrain.front().terrain
-#
 
 func _on_vertical_slider_value_changed(value: float) -> void:
 	current_height = value - 1
@@ -152,7 +99,6 @@ func _on_new_chunk_loaded(data: LevelChunkRes) -> void:
 	current_side_chunk_index = data.chunks_left # center the view to the main chunk
 	move_viewport()
 	update_valid_build_region()
-	
 
 	await get_tree().create_timer(0.25).timeout
 	%VerticalSlider.value = 0.01
@@ -183,48 +129,6 @@ func _on_move_right_btn_pressed() -> void:
 	move_viewport()
 
 
-func _on_paint_btn_pressed() -> void:
-	_reset_tools()
-	current_tool_index = 0
-	tool_changed.emit(current_tool_index)
-
-
-func _on_line_btn_pressed() -> void:
-	_reset_tools()
-	current_tool_index = 1
-	tool_changed.emit(current_tool_index)
-
-
-func _on_rect_btn_pressed() -> void:
-	_reset_tools()
-	current_tool_index = 2
-	tool_changed.emit(current_tool_index)
-
-
-func _on_fill_cell_btn_pressed() -> void:
-	_reset_tools()
-	current_tool_index = 3
-	tool_changed.emit(current_tool_index)
-
-
-func _on_fill_auto_btn_pressed() -> void:
-	_reset_tools()
-	current_tool_index = 4
-	tool_changed.emit(current_tool_index)
-
-
-func _reset_tools() -> void:
-	tile_maps.clear_temp()
-
-
-func _on_rotate_left_btn_pressed() -> void:
-	pass # Replace with function body.
-
-
-func _on_rotate_right_btn_pressed() -> void:
-	pass # Replace with function body.
-
-
 func _on_settings_settings_changed(height: int, chunks_left: int, chunks_right: int, exit_position: int) -> void:
 	chunk_data.height = height
 	chunk_data.chunks_left = chunks_left
@@ -247,12 +151,10 @@ func _on_settings_settings_discarded() -> void:
 
 
 func _on_save_buttons_save_data() -> void:
-
-	
+	_update_chunk_data_from_map()
 	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + chunk_data.UID + ".tres")
 	if error:
 		print(error_string(error))
-	
 	
 	filename_edit.update(chunk_data.name)
 	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
@@ -278,6 +180,7 @@ func _on_save_buttons_save_as_data(res_name: String) -> void:
 	
 	chunk_data.UID = UID
 	chunk_data.name = res_name
+	_update_chunk_data_from_map()
 	
 	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + UID + ".tres")
 	if error:
@@ -288,6 +191,15 @@ func _on_save_buttons_save_as_data(res_name: String) -> void:
 	filename_edit.update(chunk_data.name)
 	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
 	save_buttons.data_saved()
+
+
+func _update_chunk_data_from_map():
+	chunk_data.background_tile_map_data = background.tile_map_data
+	chunk_data.decor3_tile_map_data = decor_3_layer.tile_map_data
+	chunk_data.mainground_tile_map_data = mainground.tile_map_data
+	chunk_data.decor2_tile_map_data = decor_2_layer.tile_map_data
+	chunk_data.decor1_tile_map_data = decor_1_layer.tile_map_data
+
 
 func load_filenames():
 	all_UIDs.clear()
@@ -330,7 +242,7 @@ func generate_blank_chunk():
 	filename_edit.lock()
 	filename_edit.update(chunk_data.name)
 	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
-	data_changed()
+	chunk_data_updated.emit(chunk_data)
 	
 
 
@@ -345,23 +257,27 @@ func _on_filename_edit_text_changed(new_text: String) -> void:
 
 func _on_save_buttons_load_data(UID: StringName) -> void:
 	load_files()
+	#load chunk with UID
 	chunk_data = all_chunks[all_chunks.find_custom(func(x): return x.UID == UID)].duplicate(true)
 	
 	filename_edit.unlock()
 	filename_edit.update(chunk_data.name)
 	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
 	save_buttons.data_saved()
+	chunk_data_updated.emit(chunk_data)
 
 
 func _on_save_buttons_discard_data() -> void:
 	load_files()
+	#if there is no UID generate new chunk
 	if chunk_data.UID == "":
 		generate_blank_chunk()
 		return
-	
+	#if there is a UID reset the chunk
 	chunk_data = all_chunks[all_chunks.find_custom(func(x): return x.UID == chunk_data.UID)].duplicate(true)
 	
 	filename_edit.unlock()
 	filename_edit.update(chunk_data.name)
 	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
 	save_buttons.data_saved()
+	chunk_data_updated.emit(chunk_data)

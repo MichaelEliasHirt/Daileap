@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=4]
 
 [ext_resource type="Script" path="res://shared/resources/level_chunk_res.gd" id="1_o84n5"]
 
@@ -6,7 +6,7 @@
 script = ExtResource("1_o84n5")
 UID = "OLAXULXY"
 name = "well"
-mainground_tile_map_data = PackedByteArray()
+mainground_tile_map_data = PackedByteArray("AAACAAYAAgAAAAAAAAACAAcAAgAAAAEAAAACAAgAAgAAAAEAAAACAAkAAgABAAIAAAADAAkAAgADAAMAAAAFAAcAAgAAAAEAAAAFAAYAAgABAAAAAAAGAAYAAgACAAMAAAAHAAYAAgADAAAAAAAHAAcAAgAAAAEAAAAJAAYAAgAAAAAAAAAJAAcAAgAAAAEAAAAJAAgAAgAAAAEAAAAJAAkAAgABAAIAAAAKAAkAAgACAAMAAAALAAkAAgADAAMAAAAHAAgAAgAAAAEAAAAHAAkAAgADAAIAAAAGAAkAAgACAAMAAAAFAAkAAgABAAIAAAAFAAgAAgAAAAEAAAA=")
 background_tile_map_data = PackedByteArray()
 decor1_tile_map_data = PackedByteArray()
 decor2_tile_map_data = PackedByteArray()

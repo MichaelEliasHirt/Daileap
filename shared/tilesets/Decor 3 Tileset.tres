@@ -77,6 +77,7 @@ texture_region_size = Vector2i(8, 8)
 16:0/0/texture_origin = Vector2i(0, 4)
 
 [resource]
+resource_name = "Decor3 Tileset"
 tile_size = Vector2i(8, 8)
 sources/0 = SubResource("TileSetAtlasSource_fsdrh")
 sources/1 = SubResource("TileSetAtlasSource_oggos")

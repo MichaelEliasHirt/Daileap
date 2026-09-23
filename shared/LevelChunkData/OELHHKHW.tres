@@ -10,6 +10,6 @@ mainground_tile_map_data = PackedByteArray()
 background_tile_map_data = PackedByteArray()
 decor1_tile_map_data = PackedByteArray()
 decor2_tile_map_data = PackedByteArray()
-decor3_tile_map_data = PackedByteArray()
+decor3_tile_map_data = PackedByteArray(0, 0, 13, 0, 23, 0, 0, 0, 4, 0, 0, 0, 0, 0, 7, 0, 29, 0, 0, 0, 4, 0, 0, 0, 0, 0, 16, 0, 16, 0, 0, 0, 4, 0, 0, 0, 0, 0, 19, 0, 26, 0, 0, 0, 4, 0, 0, 0, 0, 0, 11, 0, 26, 0, 0, 0, 4, 0, 0, 0, 0, 0)
 height = 30
 chunks_right = 2
