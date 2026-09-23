@@ -1,13 +1,10 @@
 extends RootRes
 class_name RootResTile
 
-@export var tileset: TileSet
 @export var source_id: int
 @export var tile_coords: Vector2i
 @export var alt_id: int
 
-@export var icon_texture: Texture2D
-@export var icon_offset: Vector2i
 
 func _init(tileset_: TileSet,source_id_: int,tile_coords_: Vector2i, alt_id_: int) -> void:
 	tileset = tileset_

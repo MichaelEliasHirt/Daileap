@@ -1,12 +1,9 @@
 extends RootRes
 class_name RootResTerrain
 
-@export var tileset: TileSet
 @export var terrain_set_idx: int
 @export var terrain_idx: int
 
-@export var icon_texture: Texture2D
-@export var icon_offset: Vector2i
 
 func _init(tileset_: TileSet,terrain_set_idx_: int,terrain_idx_: int) -> void:
 	tileset = tileset_

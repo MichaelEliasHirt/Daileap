@@ -32,6 +32,9 @@ var decor_erase_prev := false
 
 var all_hitbox_locations: Dictionary[TileMapLayer,PackedByteArray]
 
+var active_item_direction: int = 0
+var active_item_flip: int = 1
+
 
 func _process(_delta: float) -> void:
 	## Move the preview sprite when its active, it snappes to the grid
@@ -45,12 +48,14 @@ func _process(_delta: float) -> void:
 				var standerdized_local_at  = local_at*active_tilemap_layer.tile_set.tile_size/16
 				if is_placeable_location(standerdized_local_at):
 					preview_sprite.show()
+					preview_sprite.flip_h = active_item_flip == -1 #flip the sprite when the item is
 					preview_sprite.texture = active_item.root.icon_texture
-					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - active_item.root.icon_offset
-					#if active_selection.direction:
-						#preview_sprite.rotation_degrees = active_selection.direction
-					#else: preview_sprite.rotation_degrees = 0
-					
+					# at the end there I rotate the offset according to the rotation
+					preview_sprite.position = local_at * active_tilemap_layer.tile_set.tile_size + active_tilemap_layer.tile_set.tile_size/2 - _get_vector_rotation(active_item.root.icon_offset,active_item_direction)
+					if active_item_direction:
+						preview_sprite.rotation_degrees = active_item_direction
+					else: preview_sprite.rotation_degrees = 0
+
 
 func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
@@ -539,31 +544,7 @@ func is_placeable_location(at:Vector2):
 
 
 
-#func _on_rotate_left_btn_pressed() -> void:
-	#if active_selection.type in [SelectionRes.SelectionType.trap]:
-		#if not active_selection.direction:
-			#active_selection.direction = 0
-			#
-		#active_selection.direction = wrapi(active_selection.direction - 90,0,360)
-		#active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
-#
-#
-#func _on_rotate_right_btn_pressed() -> void:
-	#if active_selection.type in [SelectionRes.SelectionType.trap]:
-		#if active_selection.direction == null:
-			#active_selection.direction = 0
-			#
-		#active_selection.direction = wrapi(active_selection.direction + 90,0,360)
-		#active_selection.tilealtid = _get_tile_rotation_alt(active_selection.direction)
 
-
-func _get_tile_rotation_alt(direction:int):
-	var tile_alt: int = 0
-	match direction:
-		270: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_V
-		180: tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_V + TileSetAtlasSource.TRANSFORM_FLIP_H
-		90: tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H
-	return tile_alt
 
 
 func _enable_x_ray_view():
@@ -582,17 +563,21 @@ func _disable_x_ray_view():
 
 func _on_inventory_selection_changed(item: InventoryItem) -> void:
 	if item:
+		active_item_direction = 0
+		active_item_flip = 1
+		%ToolContainer.change_rotation_pressed(active_item_direction,active_item_flip)
 		active_item = item
 		for tilemap:TileMapLayer in get_children():
 			if tilemap is TileMapLayer:
 				if tilemap.tile_set == active_item.root.tileset:
-					if active_tilemap_layer != tilemap and tilemap.is_in_group("layerwithhitboxes"):
-						_update_current_hitbox_locations()
-						var tilemapdata = all_hitbox_locations.get(tilemap)
-						if tilemapdata:
-							hitbox_tilemap.tile_map_data = tilemapdata
-						else: hitbox_tilemap.clear()
-						
+					if active_tilemap_layer:
+						if active_tilemap_layer != tilemap:
+							if active_tilemap_layer.is_in_group("layerwithhitboxes"):
+								_update_current_hitbox_locations()
+							var tilemapdata = all_hitbox_locations.get(tilemap)
+							if tilemapdata:
+								hitbox_tilemap.tile_map_data = tilemapdata
+							else: hitbox_tilemap.clear()
 						
 					active_tilemap_layer = tilemap
 					break
@@ -619,3 +604,81 @@ func _on_main_chunk_data_updated(chunk_data: LevelChunkRes) -> void:
 
 	await get_tree().process_frame
 	_update_all_hitbox_locations()
+
+
+func _on_rotate_left_btn_pressed() -> void:
+	active_item_direction = wrapi(active_item_direction - 90,0,360)
+	_apply_rotation()
+
+
+func _on_mirror_btn_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		active_item_flip = -1
+	else:
+		active_item_flip = 1
+	_apply_rotation()
+
+
+func _on_rotate_right_btn_pressed() -> void:
+	active_item_direction = wrapi(active_item_direction + 90,0,360)
+	_apply_rotation()
+
+
+func _on_rotate_north_btn_pressed() -> void:
+	active_item_direction = 0
+	_apply_rotation()
+
+
+func _on_rotate_east_btn_pressed() -> void:
+	active_item_direction = 90
+	_apply_rotation()
+
+
+func _on_rotate_south_btn_pressed() -> void:
+	active_item_direction = 180
+	_apply_rotation()
+
+
+func _on_rotate_west_btn_pressed() -> void:
+	active_item_direction = 270
+	_apply_rotation()
+
+
+func _on_rotate_reset_btn_pressed() -> void:
+	active_item_direction = 0
+	active_item_flip = 1
+	_apply_rotation()
+
+
+func _apply_rotation() -> void:
+	if active_item:
+		if not active_item.bulk_placement:
+			var tilealtid = active_item.root.alt_id & ~(TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V | TileSetAtlasSource.TRANSFORM_TRANSPOSE)
+			active_item.root.alt_id = tilealtid | _get_tile_rotation_alt(active_item_direction,active_item_flip)
+			%ToolContainer.change_rotation_pressed(active_item_direction,active_item_flip)
+
+func _get_tile_rotation_alt(direction: int, flip: int):
+	print(direction,flip)
+	var tile_alt: int = 0
+	if flip == 1:
+		match direction:
+			270:	tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_V
+			180:	tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_V + TileSetAtlasSource.TRANSFORM_FLIP_H
+			90:	 	tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H
+	else:
+		match direction:
+			0:		tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_H
+			90:		tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE + TileSetAtlasSource.TRANSFORM_FLIP_H + TileSetAtlasSource.TRANSFORM_FLIP_V
+			180:	tile_alt = TileSetAtlasSource.TRANSFORM_FLIP_V
+			270:	tile_alt = TileSetAtlasSource.TRANSFORM_TRANSPOSE
+	
+	return tile_alt
+
+
+func _get_vector_rotation(vector: Vector2i ,direction:int):
+	match direction:
+		270:	vector = Vector2i(vector.y,-vector.x)
+		180:	vector = Vector2i(-vector.x,-vector.y)
+		90:		vector = Vector2i(-vector.y,vector.x)
+	return vector
+	
