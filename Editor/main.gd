@@ -129,11 +129,13 @@ func _on_move_right_btn_pressed() -> void:
 	move_viewport()
 
 
-func _on_settings_settings_changed(height: int, chunks_left: int, chunks_right: int, exit_position: int) -> void:
+func _on_settings_settings_changed(height: int, chunks_left: int, chunks_right: int, exit_position: int, difficulty: int, validility: bool) -> void:
 	chunk_data.height = height
 	chunk_data.chunks_left = chunks_left
 	chunk_data.chunks_right = chunks_right
 	chunk_data.exit_position = exit_position
+	chunk_data.difficulty = difficulty
+	chunk_data.valid = validility
 	
 	current_side_chunk_index = chunks_left 
 	update_valid_build_region()
@@ -147,7 +149,7 @@ func _on_settings_settings_changed(height: int, chunks_left: int, chunks_right: 
 
 
 func _on_settings_settings_discarded() -> void:
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 
 
 func _on_save_buttons_save_data() -> void:
@@ -157,7 +159,7 @@ func _on_save_buttons_save_data() -> void:
 		print(error_string(error))
 	
 	filename_edit.update(chunk_data.name)
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 	save_buttons.data_saved()
 
 func _on_save_buttons_save_as_data(res_name: String) -> void:
@@ -178,6 +180,7 @@ func _on_save_buttons_save_as_data(res_name: String) -> void:
 				break
 		res_name = res_name + "_" + str(name_extra_number)
 	
+	%DangerZone.update_uid_label(UID)
 	chunk_data.UID = UID
 	chunk_data.name = res_name
 	_update_chunk_data_from_map()
@@ -189,7 +192,7 @@ func _on_save_buttons_save_as_data(res_name: String) -> void:
 	
 	filename_edit.unlock()
 	filename_edit.update(chunk_data.name)
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 	save_buttons.data_saved()
 
 
@@ -230,6 +233,7 @@ func _on_save_buttons_load_new_data() -> void:
 
 func generate_blank_chunk():
 	chunk_data = LevelChunkRes.new()
+	%DangerZone.update_uid_label("0000000")
 	chunk_data.UID = StringName()
 	chunk_data.chunks_left = 0
 	chunk_data.chunks_right = 0
@@ -241,8 +245,10 @@ func generate_blank_chunk():
 	
 	filename_edit.lock()
 	filename_edit.update(chunk_data.name)
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 	chunk_data_updated.emit(chunk_data)
+
+	save_buttons.data_saved()
 	
 
 
@@ -256,13 +262,14 @@ func _on_filename_edit_text_changed(new_text: String) -> void:
 
 
 func _on_save_buttons_load_data(UID: StringName) -> void:
+	%DangerZone.update_uid_label(UID)
 	load_files()
 	#load chunk with UID
 	chunk_data = all_chunks[all_chunks.find_custom(func(x): return x.UID == UID)].duplicate(true)
 	
 	filename_edit.unlock()
 	filename_edit.update(chunk_data.name)
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 	save_buttons.data_saved()
 	chunk_data_updated.emit(chunk_data)
 
@@ -278,6 +285,25 @@ func _on_save_buttons_discard_data() -> void:
 	
 	filename_edit.unlock()
 	filename_edit.update(chunk_data.name)
-	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position)
+	settings.update_settings(chunk_data.height,chunk_data.chunks_left,chunk_data.chunks_right,chunk_data.exit_position,chunk_data.difficulty,chunk_data.valid)
 	save_buttons.data_saved()
 	chunk_data_updated.emit(chunk_data)
+
+
+func _on_delete_container_on_delete_chunk_button_pressed() -> void:
+	print("try delete")
+	for subpath in ResourceLoader.list_directory(level_chunks_path):
+		if ResourceLoader.exists(level_chunks_path + "/" + subpath):
+			var res = ResourceLoader.load(level_chunks_path + "/" + subpath)
+			if res is LevelChunkRes:
+				if res.UID == chunk_data.UID:
+					
+					var access = DirAccess.open(level_chunks_path)
+					var error = access.remove(subpath)
+					if error != Error.OK:
+						print(error_string(error))
+					else:
+						print("deleted: " + String(level_chunks_path))
+					generate_blank_chunk()
+					return
+	print("delete file not found")

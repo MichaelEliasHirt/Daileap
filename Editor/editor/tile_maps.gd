@@ -461,7 +461,8 @@ func _update_all_hitbox_locations():
 		all_hitbox_locations.set(node,hitbox_tilemap.tile_map_data)
 	
 	if active_tilemap_layer:
-		hitbox_tilemap.tile_map_data = all_hitbox_locations[active_tilemap_layer]
+		if active_tilemap_layer.is_in_group("layerwithhitboxes"):
+			hitbox_tilemap.tile_map_data = all_hitbox_locations[active_tilemap_layer]
 
 
 func _update_current_hitbox_locations():

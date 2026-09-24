@@ -1442,6 +1442,7 @@ oversampling_override = 1.0
 title = "Are you sure?"
 initial_position = 4
 size = Vector2i(232, 72)
+visible = true
 unresizable = true
 popup_window = true
 popup_wm_hint = true
