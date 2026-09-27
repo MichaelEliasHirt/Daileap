@@ -8,7 +8,8 @@ enum groups {
 	wall,
 	decor1,
 	decor2,
-	decor3
+	decor3,
+	meleedamage
 }
 
 const SHORTHANDS = {
@@ -16,9 +17,10 @@ const SHORTHANDS = {
 	"sl": groups.slab,
 	"wa": groups.wall,
 	"de": groups.na,
+	"md": groups.meleedamage
 	}
 
-const CAN_BE_BUCK_PLACED = [
+const CAN_BE_BLUCK_PLACED = [
 	groups.terraintile,
 	groups.slab,
 	groups.wall,
@@ -29,7 +31,6 @@ const CAN_BE_BUCK_PLACED = [
 @export var group: groups
 
 @export var root: RootRes
-@export var layer: int
 @export var theme: int
 
 @export var bulk_placement: bool
@@ -46,7 +47,7 @@ func _init(name_: String, root_: RootRes) -> void:
 	
 	theme = int(split_name[1])
 	name = split_name[2]
-	bulk_placement = group in CAN_BE_BUCK_PLACED
+	bulk_placement = group in CAN_BE_BLUCK_PLACED
 
 	
 	

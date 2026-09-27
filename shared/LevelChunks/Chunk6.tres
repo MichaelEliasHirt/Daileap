@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=4 uid="uid://w1wnkowqsmro"]
+[gd_resource type="Resource" script_class="LevelChunkRes" load_steps=2 format=4]
 
-[ext_resource type="Script" uid="uid://65gcglg46dtd" path="res://shared/resources/level_chunk_res.gd" id="1_nu5ny"]
+[ext_resource type="Script" path="res://shared/resources/level_chunk_res.gd" id="1_nu5ny"]
 
 [resource]
 script = ExtResource("1_nu5ny")
-UID = "4668096246948068"
+UID = "9V1K8C3A"
 valid = true
 name = "Chunk6"
 difficulty = 1

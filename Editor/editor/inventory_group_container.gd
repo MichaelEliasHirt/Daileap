@@ -7,6 +7,7 @@ class_name InventoryGroupContainer
 @onready var original_theme_container: ScrollContainer = $VBoxContainer/ThemeContainerContainer/ThemeContainer
 @onready var original_subgroup_container: InventorySubgroupContainer = $VBoxContainer/ThemeContainerContainer/ThemeContainer/VBoxContainer/SubgroupContainer
 
+@onready var theme_container_container: VBoxContainer = $VBoxContainer/ThemeContainerContainer
 
 var title: String
 var groups: Dictionary[String,InventoryItem.groups]
@@ -21,7 +22,7 @@ func populate_group():
 		theme_selector.add_item(theme_name)
 		var theme_container = original_theme_container.duplicate(DUPLICATE_GROUPS|DUPLICATE_SCRIPTS|DUPLICATE_SIGNALS)
 		theme_container.name = theme_name
-		$VBoxContainer/ThemeContainerContainer.add_child(theme_container)
+		theme_container_container.add_child(theme_container)
 		
 		for subgroup_name in groups:
 			var subgroup_container = original_subgroup_container.duplicate(DUPLICATE_GROUPS|DUPLICATE_SCRIPTS|DUPLICATE_SIGNALS)

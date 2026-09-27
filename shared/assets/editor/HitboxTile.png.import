@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btlyhoca44jmo"
-path="res://.godot/imported/DecorErasePrevTile.png-6a5a81bbdc697b84885e05abe26e5371.ctex"
+uid="uid://b7r3jxodbm8u4"
+path="res://.godot/imported/HitboxTile.png-40e776589d7d88bfcefe21ebb964ff20.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://shared/assets/editor/DecorErasePrevTile.png"
-dest_files=["res://.godot/imported/DecorErasePrevTile.png-6a5a81bbdc697b84885e05abe26e5371.ctex"]
+source_file="res://shared/assets/editor/HitboxTile.png"
+dest_files=["res://.godot/imported/HitboxTile.png-40e776589d7d88bfcefe21ebb964ff20.ctex"]
 
 [params]
 

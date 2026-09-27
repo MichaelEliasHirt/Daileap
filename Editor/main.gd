@@ -154,7 +154,7 @@ func _on_settings_settings_discarded() -> void:
 
 func _on_save_buttons_save_data() -> void:
 	_update_chunk_data_from_map()
-	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + chunk_data.UID + ".tres")
+	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + chunk_data.name + ".tres")
 	if error:
 		print(error_string(error))
 	
@@ -185,7 +185,7 @@ func _on_save_buttons_save_as_data(res_name: String) -> void:
 	chunk_data.name = res_name
 	_update_chunk_data_from_map()
 	
-	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + UID + ".tres")
+	var error = ResourceSaver.save(chunk_data,level_chunks_path + "/" + res_name + ".tres")
 	if error:
 		print(error_string(error))
 	
@@ -291,7 +291,6 @@ func _on_save_buttons_discard_data() -> void:
 
 
 func _on_delete_container_on_delete_chunk_button_pressed() -> void:
-	print("try delete")
 	for subpath in ResourceLoader.list_directory(level_chunks_path):
 		if ResourceLoader.exists(level_chunks_path + "/" + subpath):
 			var res = ResourceLoader.load(level_chunks_path + "/" + subpath)

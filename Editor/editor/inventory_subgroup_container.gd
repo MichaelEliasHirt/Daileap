@@ -2,7 +2,7 @@ extends VBoxContainer
 class_name InventorySubgroupContainer
 
 @onready var label: Label = $HBoxContainer/SubgroupNameLabel
-@onready var inventory_item_list: ItemList = $InventoryItemList
+@onready var inventory_item_list: ItemList = $MarginContainer/InventoryItemList
 
 var title: String:
 	set(value):

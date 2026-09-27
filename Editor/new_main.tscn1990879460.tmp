@@ -1,4 +1,4 @@
-[gd_scene load_steps=140 format=4 uid="uid://blwepm8tffada"]
+[gd_scene load_steps=134 format=4 uid="uid://blwepm8tffada"]
 
 [ext_resource type="Script" uid="uid://c2f02ku83kr5c" path="res://main.gd" id="1_886ha"]
 [ext_resource type="Script" uid="uid://be7pcr20xb6ui" path="res://editor/tile_maps.gd" id="1_touta"]
@@ -13,23 +13,22 @@
 [ext_resource type="TileSet" uid="uid://bbrs5a7t58dx" path="res://shared/tilesets/Decor 2 Tileset.tres" id="9_onh5e"]
 [ext_resource type="TileSet" uid="uid://bklrik7ongcnj" path="res://shared/tilesets/Decor 3 Tileset.tres" id="10_3bujr"]
 [ext_resource type="Script" uid="uid://b2v88010o7566" path="res://editor/inventory_group_res.gd" id="10_fjkr7"]
-[ext_resource type="Script" uid="uid://digtilsnemlec" path="res://editor/inventory_group_container.gd" id="11_76mko"]
+[ext_resource type="Script" path="res://editor/inventory_group_container.gd" id="11_76mko"]
 [ext_resource type="StyleBox" uid="uid://8aoispb5vxs1" path="res://editor_ui_assets/box_texture.tres" id="12_jr4bh"]
-[ext_resource type="Script" uid="uid://blqecd1rkkvqf" path="res://editor/inventory_subgroup_container.gd" id="13_6jedc"]
+[ext_resource type="Script" path="res://editor/inventory_subgroup_container.gd" id="13_6jedc"]
 [ext_resource type="Script" uid="uid://bsrtqprnpwctt" path="res://editor/save.gd" id="16_1rny3"]
 [ext_resource type="Script" uid="uid://c3m8oopftunvi" path="res://editor/settings.gd" id="17_jgecq"]
 [ext_resource type="Texture2D" uid="uid://cp0aux1dmm77r" path="res://shared/assets/editor/ArrowBtns.png" id="18_c8ju1"]
 [ext_resource type="Texture2D" uid="uid://dx7b6erj4ulhm" path="res://shared/assets/editor/TempTileset.png" id="18_go5yj"]
 [ext_resource type="Script" uid="uid://c2gihtnw16egf" path="res://editor/unsafed_dialog.gd" id="18_xoyte"]
-[ext_resource type="Texture2D" uid="uid://b7r3jxodbm8u4" path="res://shared/assets/editor/HitboxTile.png" id="19_0vxke"]
 [ext_resource type="Texture2D" uid="uid://3e78ed4d1f6w" path="res://shared/assets/editor/Slider_Handel.png" id="19_3bujr"]
 [ext_resource type="Script" uid="uid://cygeshc5j1fkt" path="res://editor/save_as_dialog.gd" id="19_jgecq"]
 [ext_resource type="LabelSettings" uid="uid://yawgcbranxjf" path="res://editor_ui_assets/labelsetting_title2.tres" id="19_onh5e"]
+[ext_resource type="Texture2D" uid="uid://btlyhoca44jmo" path="res://shared/assets/editor/DecorErasePrevTile.png" id="19_opftb"]
 [ext_resource type="Theme" uid="uid://cud1bh1bqyl5a" path="res://editor_ui_assets/general.tres" id="20_1rny3"]
 [ext_resource type="Texture2D" uid="uid://b8tec46w0offr" path="res://shared/assets/editor/Entrance.png" id="20_a0ntl"]
 [ext_resource type="Script" uid="uid://cngiwsxbcmbv1" path="res://editor/load_dialog.gd" id="20_c8ju1"]
 [ext_resource type="Script" uid="uid://bef1bwapspkeq" path="res://editor/side_chunk_manager.gd" id="22_opftb"]
-[ext_resource type="Texture2D" uid="uid://dl166255rym5e" path="res://shared/assets/editor/layer_label_sheet.png" id="23_fjkr7"]
 [ext_resource type="Texture2D" uid="uid://4qmvmkrjuhqa" path="res://shared/assets/editor/SideChunksBtns.png" id="25_jgecq"]
 [ext_resource type="Texture2D" uid="uid://buytq20f1bbcj" path="res://shared/assets/editor/ToolsBtns.png" id="30_opftb"]
 [ext_resource type="Script" uid="uid://cciwy7u5ky7n6" path="res://danger_zone.gd" id="31_jo75h"]
@@ -103,18 +102,6 @@ themes = Dictionary[String, int]({
 color = Color(0.3642604, 0.01966058, 0.16355684, 1)
 metadata/_custom_type_script = "uid://b2v88010o7566"
 
-[sub_resource type="Resource" id="Resource_0vxke"]
-script = ExtResource("10_fjkr7")
-name = "Traps"
-groups = Dictionary[String, int]({
-"Melee": 7
-})
-themes = Dictionary[String, int]({
-"Universal": 0
-})
-color = Color(1, 0, 0, 1)
-metadata/_custom_type_script = "uid://b2v88010o7566"
-
 [sub_resource type="LabelSettings" id="LabelSettings_onh5e"]
 font_size = 23
 outline_size = 9
@@ -125,30 +112,9 @@ color = Color(0.5053441, 0.50534403, 0.5053441, 1)
 thickness = 3
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_onh5e"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0vxke"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fjkr7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onh5e"]
 bg_color = Color(0.38982666, 0.53787273, 0.4993056, 1)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0, 0.29013267, 0.23968178, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-expand_margin_left = 5.0
-expand_margin_top = 5.0
-expand_margin_right = 5.0
-expand_margin_bottom = 5.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_jgecq"]
 font_size = 24
@@ -219,14 +185,15 @@ texture = ExtResource("18_go5yj")
 [sub_resource type="TileSet" id="TileSet_g7d0j"]
 sources/0 = SubResource("TileSetAtlasSource_a0ntl")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fjkr7"]
-texture = ExtResource("19_0vxke")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xyy1j"]
+texture = ExtResource("19_opftb")
 texture_region_size = Vector2i(8, 8)
+0:0/next_alternative_id = 3
 0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ta2aw"]
 tile_size = Vector2i(8, 8)
-sources/0 = SubResource("TileSetAtlasSource_fjkr7")
+sources/0 = SubResource("TileSetAtlasSource_xyy1j")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aeylb"]
 shader = ExtResource("4_ksskx")
@@ -286,28 +253,6 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46fn7"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pnfol"]
-atlas = ExtResource("23_fjkr7")
-region = Rect2(0, 0, 30, 32)
-
-[sub_resource type="GDScript" id="GDScript_cr661"]
-script/source = "extends TextureRect
-
-@export var layers: Array[TileSet]
-
-func reset() -> void:
-	texture.region.position.x = 0
-	
-
-func update(current_tileset: TileSet) -> void:
-	if current_tileset in layers:
-		var idx = layers.find(current_tileset)
-		texture.region.position.x = texture.region.size.x * (idx + 1)
-		
-	else:
-		push_error(\"LayerLabel: layer not found\")
-"
 
 [sub_resource type="InputEventKey" id="InputEventKey_opftb"]
 device = -1
@@ -741,7 +686,7 @@ tab_alignment = 1
 current_tab = 0
 drag_to_rearrange_enabled = true
 script = ExtResource("9_0vxke")
-inventory_groups = Array[ExtResource("10_fjkr7")]([SubResource("Resource_3bujr"), SubResource("Resource_go5yj"), SubResource("Resource_opftb"), SubResource("Resource_0vxke")])
+inventory_groups = Array[ExtResource("10_fjkr7")]([SubResource("Resource_3bujr"), SubResource("Resource_go5yj"), SubResource("Resource_opftb")])
 tiles_tileset = ExtResource("6_xoyte")
 walls_tileset = ExtResource("7_jgecq")
 decor1_tileset = ExtResource("8_c8ju1")
@@ -798,19 +743,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxLine_3bujr")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeContainerContainer/ThemeContainer/VBoxContainer/SubgroupContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="InventoryItemList" type="ItemList" parent="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeContainerContainer/ThemeContainer/VBoxContainer/SubgroupContainer/MarginContainer" groups=["InventoryItemLists"]]
+[node name="InventoryItemList" type="ItemList" parent="MarginContainer/HBoxContainer/LeftContainer/Inventory/GroupContainer/VBoxContainer/ThemeContainerContainer/ThemeContainer/VBoxContainer/SubgroupContainer" groups=["InventoryItemLists"]]
 layout_mode = 2
 theme_override_colors/guide_color = Color(0.39308554, 0.39308548, 0.39308557, 0.65882355)
 theme_override_styles/panel = SubResource("StyleBoxEmpty_onh5e")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_0vxke")
-theme_override_styles/hovered = SubResource("StyleBoxEmpty_fjkr7")
 theme_override_styles/hovered_selected = SubResource("StyleBoxFlat_onh5e")
 theme_override_styles/hovered_selected_focus = SubResource("StyleBoxFlat_onh5e")
 theme_override_styles/selected = SubResource("StyleBoxFlat_onh5e")
@@ -931,10 +867,8 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="TileMapViewportContainer" type="Control" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-mouse_default_cursor_shape = 2
 
 [node name="TileMaps" type="Node2D" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer"]
 unique_name_in_owner = true
@@ -976,14 +910,12 @@ tile_map_data = PackedByteArray("AAAOABQAAAAJAAAAAAA=")
 
 [node name="HitboxTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
 unique_name_in_owner = true
-self_modulate = Color(0.972549, 0, 0, 1)
 z_index = 15
 tile_set = SubResource("TileSet_ta2aw")
 
 [node name="AllLayerHitboxTilemap" type="TileMapLayer" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
 unique_name_in_owner = true
-self_modulate = Color(0, 0.5666666, 1, 1)
-z_index = 16
+z_index = 15
 tile_set = SubResource("TileSet_ta2aw")
 
 [node name="EntranceArrow" type="Node2D" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
@@ -1008,7 +940,7 @@ texture = ExtResource("20_a0ntl")
 
 [node name="PreviewSprite" type="Sprite2D" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
 unique_name_in_owner = true
-self_modulate = Color(1, 1, 1, 0.2)
+self_modulate = Color(1, 1, 1, 0.4392157)
 
 [node name="HighlightGrid" type="ColorRect" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps"]
 unique_name_in_owner = true
@@ -1029,8 +961,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-mouse_filter = 1
-mouse_behavior_recursive = 1
 region_rect = Rect2(0, 0, 46, 46)
 patch_margin_left = 13
 patch_margin_top = 13
@@ -1089,29 +1019,6 @@ theme_override_styles/grabber_area = SubResource("StyleBoxFlat_w07et")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_46fn7")
 max_value = 1.0
 step = 0.1
-
-[node name="Control4" type="Control" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-mouse_filter = 1
-
-[node name="LayerLabel" type="TextureRect" parent="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/Control4"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -30.0
-offset_top = -94.0
-offset_right = 30.0
-grow_horizontal = 2
-grow_vertical = 0
-texture = SubResource("AtlasTexture_pnfol")
-stretch_mode = 5
-script = SubResource("GDScript_cr661")
-layers = Array[TileSet]([ExtResource("7_jgecq"), ExtResource("10_3bujr"), ExtResource("6_xoyte"), ExtResource("9_onh5e"), ExtResource("8_c8ju1")])
 
 [node name="RightContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -1575,7 +1482,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 22.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1752,7 +1658,6 @@ color = Color(0, 0, 0, 0.78431374)
 [connection signal="mouse_moved" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport" to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps/HighlightGrid" method="_on_world_viewport_mouse_moved"]
 [connection signal="viewport_scrolled" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport" to="." method="_on_world_viewport_viewport_scrolled"]
 [connection signal="gui_input" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer" to="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" method="_on_input_control_gui_input"]
-[connection signal="pipette_target_found" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/WorldViewport/MarginContainer/TileMapViewportContainer/TileMaps" to="MarginContainer/HBoxContainer/LeftContainer/Inventory" method="_on_tile_maps_pipette_target_found"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/Control2/MoveRightBtn" to="." method="_on_move_right_btn_pressed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/CenterContainer/HBoxContainer/Control3/VerticalSlider" to="." method="_on_vertical_slider_value_changed"]
 [connection signal="discard_data" from="MarginContainer/HBoxContainer/RightContainer/HBoxContainer/SaveButtonsContainer/SaveButtons" to="." method="_on_save_buttons_discard_data"]

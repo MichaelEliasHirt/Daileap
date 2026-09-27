@@ -480,3 +480,85 @@ func _update_all_items_from_tilesets():
 		#trap_list_.set_item_tooltip(idx,trap.name)
 		#trap_list_.set_item_metadata(idx,trap)
 	#_sort_children_by_list(traps_control,traps_tileset_info.group_names)
+
+
+func _on_tile_maps_pipette_target_found(root: RootRes) -> void:
+	for all_itemes_in_tileset in all_items_from_tilesets:
+		if all_itemes_in_tileset.values()[0].root.tileset != root.tileset:
+			continue
+		
+		if root is RootResTile:
+			for item: InventoryItem in all_itemes_in_tileset.values():
+				if item.root is RootResTile:
+					if item.root.source_id == root.source_id:
+						if item.root.tile_coords == root.tile_coords :
+							if item.root.alt_id == root.alt_id & ~(TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V | TileSetAtlasSource.TRANSFORM_TRANSPOSE):
+								find_and_select_item(item)
+								return
+		elif root is RootResTerrain:
+			for item: InventoryItem in all_itemes_in_tileset.values():
+				if item.root is RootResTerrain:
+					if item.root.terrain_set_idx == root.terrain_set_idx:
+						if item.root.terrain_idx == root.terrain_idx:
+							find_and_select_item(item)
+							return
+
+func find_and_select_item(item: InventoryItem):
+	var item_position_y: float
+	var scroll_container: ScrollContainer
+	for group in inventory_groups:
+		if group.groups.values().has(item.group):
+			current_tab = inventory_groups.find(group)#open the tab that has the item
+			break
+	
+	await get_tree().process_frame
+	for child: Node in get_children():
+		if child.visible:
+			if child is InventoryGroupContainer:
+				child.theme_selector.select(child.themes.values().find(item.theme)) #open the theme that the item has
+				await get_tree().process_frame
+				
+				scroll_container = child.theme_container_container.get_children().filter(func(x): return x.visible)[0]
+				break
+	
+	for node: Node in get_tree().get_nodes_in_group("InventoryItemLists"):
+		if node is ItemList:
+			for idx in range(node.item_count):
+				if node.get_item_metadata(idx) == item:
+					node.select(idx,true)# find item in itemlist and select it
+					node.item_selected.emit(idx)
+					node.grab_focus()
+					item_position_y = node.get_item_rect(idx).position.y
+					scroll_to_control(scroll_container,node,item_position_y)
+
+					
+					break
+		if item_position_y:
+			break
+
+func scroll_to_control(scroll_container: ScrollContainer, target: Control, offset: float,duration: float = 0.3) -> void:
+
+	# Get the direct child container inside ScrollContainer (e.g., VBoxContainer)
+	var content_node: Control = scroll_container.get_child(0) as Control
+	if not content_node:
+		return
+
+	# Convert target's global position to local position relative to the content container
+	var local_pos: Vector2 = content_node.make_canvas_position_local(target.global_position)
+	local_pos.y += offset
+
+	# Account for current scroll offset to get absolute position inside the full content height
+	var absolute_y: float = local_pos.y# + scroll_container.scroll_vertical
+
+	# Center the target item within the ScrollContainer viewport
+	var target_scroll: float = absolute_y - (scroll_container.size.y / 2.0)#(target.size.y / 2.0)
+	
+	await get_tree().process_frame
+	# Clamp target scroll value to valid scrollbar bounds
+	var v_bar = scroll_container.get_v_scroll_bar()
+	target_scroll = clampf(target_scroll, v_bar.min_value, v_bar.max_value - v_bar.page)
+	
+	var tween: Tween = scroll_container.create_tween()
+	tween.tween_property(scroll_container, "scroll_vertical", int(target_scroll), duration)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_OUT)

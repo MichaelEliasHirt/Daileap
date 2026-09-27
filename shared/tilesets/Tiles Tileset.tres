@@ -870,7 +870,7 @@ texture = ExtResource("6_tsmuh")
 1:1/0/physics_layer_1/polygon_0/one_way_margin = 0.5
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iyyy2"]
-resource_name = "D_Spike"
+resource_name = "#md_0_Spike1"
 texture = ExtResource("7_yqe26")
 0:0/0 = 0
 0:0/0/physics_layer_2/polygon_0/points = PackedVector2Array(0, -8, 0, -8, 8, 8, -8, 8)

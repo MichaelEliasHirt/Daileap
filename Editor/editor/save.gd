@@ -16,13 +16,11 @@ var unsaved_changes: bool = false
 var prevented_function
 
 func data_changed():
-	print("changed")
 	save_buttons_container.self_modulate = Color(0.81, 0.743, 0.138, 0.714)
 	unsaved_changes = true
 
 
 func data_saved():
-	print("saved")
 	save_buttons_container.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
 	unsaved_changes = false
 

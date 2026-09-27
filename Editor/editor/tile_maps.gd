@@ -13,10 +13,12 @@ enum Brushes {
 @onready var grid: ColorRect = %HighlightGrid
 @onready var control: Control = $".."
 @onready var hitbox_tilemap: TileMapLayer = %HitboxTilemap
+@onready var all_layer_hitbox_tilemap: TileMapLayer = %AllLayerHitboxTilemap
 
 @onready var preview_sprite: Sprite2D = %PreviewSprite
 
 signal tilemap_changed
+signal pipette_target_found(root:RootRes)
 
 var active_item: InventoryItem
 var active_tilemap_layer: TileMapLayer
@@ -61,17 +63,46 @@ func _on_input_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		
 		if event.is_action_pressed("mouse_r"):
+			%TileMapViewportContainer.mouse_default_cursor_shape = Input.CursorShape.CURSOR_FORBIDDEN
 			_enable_x_ray_view()
 			
 		elif event.is_action_released("mouse_r"):
+			%TileMapViewportContainer.mouse_default_cursor_shape = Input.CursorShape.CURSOR_POINTING_HAND
 			_disable_x_ray_view()
+		
+		if event.is_action_pressed("mouse_m"):
+			%TileMapViewportContainer.mouse_default_cursor_shape = Input.CursorShape.CURSOR_HELP
+			_update_all_layer_hitbox_tilemap()
+			all_layer_hitbox_tilemap.show()
+			preview_sprite.hide()
+			
+		elif event.is_action_released("mouse_m"):
+			%TileMapViewportContainer.mouse_default_cursor_shape = Input.CursorShape.CURSOR_POINTING_HAND
+			all_layer_hitbox_tilemap.hide()
+			preview_sprite.show()
 		
 		## the decor_erase_prev get hidden but mostly gets shown again a little down the execution
 		hitbox_tilemap.hide()
 		if control.get_rect().has_point(event.position):
+			
+			if event.is_action_released("mouse_m"):
+				
+				var all_tilemaps = get_children().filter(func(x): return x.is_in_group("actuallayer"))
+				all_tilemaps.reverse()
+				for tilemap in all_tilemaps:
+					#if tilemap == active_tilemap_layer:
+						#continue
+					if tilemap.get_cell_source_id(tilemap.local_to_map(to_local(event.global_position))) != -1:
+						emit_pipette_target(tilemap,tilemap.local_to_map(to_local(event.global_position)))
+						break
+					
+				return
+			
+			
 			if not active_item:
 				return
-			preview_sprite.show()
+			if not event.button_mask == 4:
+				preview_sprite.show()
 			
 			if active_item.bulk_placement:
 				match active_brush:
@@ -449,7 +480,19 @@ func get_fill_cells_by_terrain(at: Vector2) -> Array[Vector2i]:
 	
 	return cells_hit
 
-
+func _update_all_layer_hitbox_tilemap():
+	if active_tilemap_layer:
+		all_hitbox_locations.set(active_tilemap_layer,hitbox_tilemap.tile_map_data)
+	
+	var hitbox_tilemap_dup = hitbox_tilemap.duplicate()
+	
+	all_layer_hitbox_tilemap.clear()
+	for tilemapdata in all_hitbox_locations.values():
+		hitbox_tilemap_dup.tile_map_data = tilemapdata
+		for cell in hitbox_tilemap_dup.get_used_cells():
+			all_layer_hitbox_tilemap.set_cell(cell,0,Vector2i(0,0),0)
+	
+	hitbox_tilemap_dup.queue_free()
 
 
 func _update_all_hitbox_locations():
@@ -572,15 +615,15 @@ func _on_inventory_selection_changed(item: InventoryItem) -> void:
 			if tilemap is TileMapLayer:
 				if tilemap.tile_set == active_item.root.tileset:
 					if active_tilemap_layer:
-						if active_tilemap_layer != tilemap:
-							if active_tilemap_layer.is_in_group("layerwithhitboxes"):
-								_update_current_hitbox_locations()
-							var tilemapdata = all_hitbox_locations.get(tilemap)
-							if tilemapdata:
-								hitbox_tilemap.tile_map_data = tilemapdata
-							else: hitbox_tilemap.clear()
+						if active_tilemap_layer.is_in_group("layerwithhitboxes"):
+							_update_current_hitbox_locations()
+					var tilemapdata = all_hitbox_locations.get(tilemap)
+					if tilemapdata:
+						hitbox_tilemap.tile_map_data = tilemapdata
+					else: hitbox_tilemap.clear()
 						
 					active_tilemap_layer = tilemap
+					%LayerLabel.update(active_tilemap_layer.tile_set)
 					break
 	else:
 		active_item = null
@@ -659,7 +702,6 @@ func _apply_rotation() -> void:
 			%ToolContainer.change_rotation_pressed(active_item_direction,active_item_flip)
 
 func _get_tile_rotation_alt(direction: int, flip: int):
-	print(direction,flip)
 	var tile_alt: int = 0
 	if flip == 1:
 		match direction:
@@ -682,4 +724,17 @@ func _get_vector_rotation(vector: Vector2i ,direction:int):
 		180:	vector = Vector2i(-vector.x,-vector.y)
 		90:		vector = Vector2i(-vector.y,vector.x)
 	return vector
+
+
+func emit_pipette_target(tilemap: TileMapLayer,coords: Vector2i):
+	var tileset = tilemap.tile_set
+	var tile_data = tilemap.get_cell_tile_data(coords)
+	var root: RootRes
+	if tile_data.terrain != -1:
+		root = RootResTerrain.new(tileset,tile_data.terrain_set,tile_data.terrain)
+	else:
+		root = RootResTile.new(tileset,tilemap.get_cell_source_id(coords),
+		tilemap.get_cell_atlas_coords(coords),
+		tilemap.get_cell_alternative_tile(coords))
+	pipette_target_found.emit(root)
 	
